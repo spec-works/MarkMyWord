@@ -1,0 +1,37 @@
+{
+  "styles": {
+    "defaultFontName": "Georgia",
+    "defaultFontSize": 12,
+    "headingStyles": [
+      {
+        "level": 1,
+        "fontSize": 28,
+        "bold": true,
+        "color": "2E74B5",
+        "spacingBeforeTwips": 480,
+        "spacingAfterTwips": 240
+      },
+      {
+        "level": 2,
+        "fontSize": 20,
+        "bold": true,
+        "color": "2E74B5",
+        "spacingBeforeTwips": 400,
+        "spacingAfterTwips": 200
+      },
+      {
+        "level": 3,
+        "fontSize": 16,
+        "bold": true,
+        "color": "1F4D78",
+        "spacingBeforeTwips": 320,
+        "spacingAfterTwips": 160
+      }
+    ],
+    "codeFontName": "Fira Code",
+    "codeFontSize": 10,
+    "codeBackgroundColor": "282C34",
+    "quoteLeftBorderColor": "4A90E2",
+    "quoteBackgroundColor": "EEF7FF"
+  }
+}

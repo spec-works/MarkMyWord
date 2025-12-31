@@ -1,0 +1,34 @@
+{
+  "linkset": [
+    {
+      "href": "https://spec.commonmark.org/0.31.2/",
+      "type": "text/html",
+      "rel": "describedby",
+      "title": "CommonMark Specification 0.31.2"
+    },
+    {
+      "href": "https://github.github.com/gfm/",
+      "type": "text/html",
+      "rel": "describedby",
+      "title": "GitHub Flavored Markdown Specification"
+    },
+    {
+      "href": "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/",
+      "type": "text/html",
+      "rel": "describedby",
+      "title": "Office Open XML - ECMA-376 5th edition"
+    },
+    {
+      "href": "https://learn.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/",
+      "type": "text/html",
+      "rel": "describedby",
+      "title": "Microsoft Office Implementation Information for ISO/IEC 29500"
+    },
+    {
+      "href": "https://learn.microsoft.com/en-us/office/open-xml/open-xml-sdk",
+      "type": "text/html",
+      "rel": "related",
+      "title": "Open XML SDK Documentation"
+    }
+  ]
+}
