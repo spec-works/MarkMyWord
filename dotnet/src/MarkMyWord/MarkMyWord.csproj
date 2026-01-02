@@ -4,11 +4,32 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- NuGet Package Configuration -->
+    <PackageId>SpecWorks.MarkMyWord</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>SpecWorks</Authors>
+    <Company>SpecWorks</Company>
+    <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents. Supports headings, paragraphs, emphasis, code blocks, links, images, lists, tables, and more.</Description>
+    <PackageTags>markdown;commonmark;word;docx;openxml;converter;document;office</PackageTags>
+    <PackageProjectUrl>https://github.com/spec-works/MarkMyWord</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/spec-works/MarkMyWord</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

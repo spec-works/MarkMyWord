@@ -5,6 +5,25 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- NuGet Package Configuration -->
+    <PackageId>SpecWorks.MarkMyWord.CLI</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>SpecWorks</Authors>
+    <Company>SpecWorks</Company>
+    <Description>Command-line tool for converting CommonMark markdown files to Microsoft Word (.docx) documents. Part of the MarkMyWord library suite.</Description>
+    <PackageTags>markdown;commonmark;word;docx;converter;cli;tool;command-line</PackageTags>
+    <PackageProjectUrl>https://github.com/spec-works/MarkMyWord</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/spec-works/MarkMyWord</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- .NET Tool Configuration -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>markmyword</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +32,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarkMyWord\MarkMyWord.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

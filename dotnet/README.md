@@ -114,7 +114,7 @@ MarkMyWord includes a powerful CLI for converting markdown files from the comman
 ### Installation
 
 ```bash
-dotnet tool install --global MarkMyWord.CLI
+dotnet tool install --global SpecWorks.MarkMyWord.CLI
 ```
 
 Or run directly from the project:
