@@ -226,6 +226,72 @@ var options = new ConversionOptions
 };
 ```
 
+### JSON Style Configuration
+
+You can define styles in a JSON file and load them using the CLI or programmatically:
+
+**custom-style.json:**
+```json
+{
+  "styles": {
+    "defaultFontName": "Georgia",
+    "defaultFontSize": 12,
+    "headingStyles": [
+      {
+        "level": 1,
+        "fontSize": 28,
+        "bold": true,
+        "color": "2E74B5",
+        "spacingBeforeTwips": 480,
+        "spacingAfterTwips": 240
+      },
+      {
+        "level": 2,
+        "fontSize": 20,
+        "bold": true,
+        "color": "2E74B5",
+        "spacingBeforeTwips": 400,
+        "spacingAfterTwips": 200
+      },
+      {
+        "level": 3,
+        "fontSize": 16,
+        "bold": true,
+        "color": "1F4D78",
+        "spacingBeforeTwips": 320,
+        "spacingAfterTwips": 160
+      }
+    ],
+    "codeFontName": "Fira Code",
+    "codeFontSize": 10,
+    "codeBackgroundColor": "282C34",
+    "quoteLeftBorderColor": "4A90E2",
+    "quoteLeftBorderWidth": 4,
+    "quoteBackgroundColor": "EEF7FF",
+    "listIndentationTwips": 720
+  }
+}
+```
+
+**Use with CLI:**
+```bash
+markmyword convert -i document.md --style custom-style.json
+```
+
+**Load programmatically:**
+```csharp
+using System.Text.Json;
+
+var json = File.ReadAllText("custom-style.json");
+var config = JsonSerializer.Deserialize<ConversionOptions>(json);
+MarkdownConverter.ConvertToDocx(markdown, "output.docx", config);
+```
+
+**Notes:**
+- Colors are hex values without the `#` prefix
+- Spacing values are in twips (1440 twips = 1 inch)
+- Font sizes are in points
+
 ### Document Metadata
 
 ```csharp
