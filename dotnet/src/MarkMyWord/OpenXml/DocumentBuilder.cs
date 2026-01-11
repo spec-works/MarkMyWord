@@ -12,6 +12,7 @@ public class DocumentBuilder : IDisposable
     private readonly Stream _outputStream;
     private readonly bool _leaveOpen;
     private bool _disposed;
+    private readonly bool _isExistingDocument;
 
     public WordprocessingDocument WordDocument { get; private set; }
     public MainDocumentPart MainDocumentPart { get; private set; }
@@ -22,7 +23,7 @@ public class DocumentBuilder : IDisposable
     private readonly Dictionary<string, string> _hyperlinkRelationships = new();
 
     /// <summary>
-    /// Initializes a new instance of the DocumentBuilder class.
+    /// Initializes a new instance of the DocumentBuilder class for creating a new document.
     /// </summary>
     /// <param name="outputStream">The stream to write the document to.</param>
     /// <param name="leaveOpen">Whether to leave the stream open after disposal.</param>
@@ -30,11 +31,53 @@ public class DocumentBuilder : IDisposable
     {
         _outputStream = outputStream ?? throw new ArgumentNullException(nameof(outputStream));
         _leaveOpen = leaveOpen;
+        _isExistingDocument = false;
 
         WordDocument = WordprocessingDocument.Create(_outputStream, WordprocessingDocumentType.Document, autoSave: false);
         MainDocumentPart = WordDocument.AddMainDocumentPart();
         MainDocumentPart.Document = new Document();
         Body = MainDocumentPart.Document.AppendChild(new Body());
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the DocumentBuilder class for modifying an existing document.
+    /// </summary>
+    /// <param name="inputStream">The stream containing the existing document.</param>
+    /// <param name="outputStream">The stream to write the modified document to.</param>
+    /// <param name="leaveOpen">Whether to leave the output stream open after disposal.</param>
+    public DocumentBuilder(Stream inputStream, Stream outputStream, bool leaveOpen = false)
+    {
+        if (inputStream == null)
+            throw new ArgumentNullException(nameof(inputStream));
+
+        _outputStream = outputStream ?? throw new ArgumentNullException(nameof(outputStream));
+        _leaveOpen = leaveOpen;
+        _isExistingDocument = true;
+
+        // Copy input to output so we can modify it
+        inputStream.CopyTo(_outputStream);
+        _outputStream.Position = 0;
+
+        // Open the copied document for editing
+        WordDocument = WordprocessingDocument.Open(_outputStream, true);
+        MainDocumentPart = WordDocument.MainDocumentPart ?? throw new InvalidOperationException("Document does not have a MainDocumentPart.");
+        Body = MainDocumentPart.Document?.Body ?? throw new InvalidOperationException("Document does not have a Body.");
+
+        // Load existing numbering part if it exists
+        _numberingPart = MainDocumentPart.NumberingDefinitionsPart;
+        if (_numberingPart != null)
+        {
+            // Find the highest numbering ID to avoid conflicts
+            var numbering = _numberingPart.Numbering;
+            if (numbering != null)
+            {
+                var maxNumId = numbering.Elements<NumberingInstance>()
+                    .Select(ni => ni.NumberID?.Value ?? 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+                _nextNumberingId = maxNumId + 1;
+            }
+        }
     }
 
     /// <summary>
@@ -221,6 +264,63 @@ public class DocumentBuilder : IDisposable
     public void Save()
     {
         WordDocument.Save();
+    }
+
+    /// <summary>
+    /// Removes an element from the document.
+    /// </summary>
+    /// <param name="element">The element to remove.</param>
+    public void RemoveElement(OpenXmlElement element)
+    {
+        if (element == null)
+            throw new ArgumentNullException(nameof(element));
+
+        element.Remove();
+    }
+
+    /// <summary>
+    /// Inserts an element before a reference element.
+    /// </summary>
+    /// <param name="newElement">The element to insert.</param>
+    /// <param name="referenceElement">The reference element.</param>
+    public void InsertElementBefore(OpenXmlElement newElement, OpenXmlElement referenceElement)
+    {
+        if (newElement == null)
+            throw new ArgumentNullException(nameof(newElement));
+        if (referenceElement == null)
+            throw new ArgumentNullException(nameof(referenceElement));
+
+        referenceElement.Parent?.InsertBefore(newElement, referenceElement);
+    }
+
+    /// <summary>
+    /// Inserts an element after a reference element.
+    /// </summary>
+    /// <param name="newElement">The element to insert.</param>
+    /// <param name="referenceElement">The reference element.</param>
+    public void InsertElementAfter(OpenXmlElement newElement, OpenXmlElement referenceElement)
+    {
+        if (newElement == null)
+            throw new ArgumentNullException(nameof(newElement));
+        if (referenceElement == null)
+            throw new ArgumentNullException(nameof(referenceElement));
+
+        referenceElement.Parent?.InsertAfter(newElement, referenceElement);
+    }
+
+    /// <summary>
+    /// Replaces an existing element with a new element.
+    /// </summary>
+    /// <param name="oldElement">The element to replace.</param>
+    /// <param name="newElement">The new element.</param>
+    public void ReplaceElement(OpenXmlElement oldElement, OpenXmlElement newElement)
+    {
+        if (oldElement == null)
+            throw new ArgumentNullException(nameof(oldElement));
+        if (newElement == null)
+            throw new ArgumentNullException(nameof(newElement));
+
+        oldElement.Parent?.ReplaceChild(newElement, oldElement);
     }
 
     /// <summary>
