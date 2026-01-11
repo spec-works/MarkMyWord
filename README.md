@@ -1,6 +1,6 @@
 # MarkMyWord
 
-.NET library and CLI for converting CommonMark markdown to Microsoft Word (.docx) documents.
+Software component for converting CommonMark markdown to Microsoft Word (.docx) documents.
 
 ## Specifications
 
@@ -8,9 +8,9 @@ Implements [CommonMark 0.31.2](https://spec.commonmark.org/0.31.2/) and [Office 
 
 See [specs.json](specs.json) for complete specification references.
 
-## Implementation
+## Implementations
 
-- [.NET](dotnet/README.md) - Full documentation, CLI usage, API reference, and examples
+- [.NET](dotnet/README.md) - Library and CLI
 
 ## License
 
