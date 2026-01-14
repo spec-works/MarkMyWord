@@ -54,6 +54,11 @@ public class StyleConfiguration
     /// List indentation in twips (1/1440 inch).
     /// </summary>
     public int ListIndentationTwips { get; set; } = 720; // 0.5 inch
+
+    /// <summary>
+    /// Color scheme for syntax highlighting (hex colors without #).
+    /// </summary>
+    public SyntaxColorScheme? SyntaxColorScheme { get; set; }
 }
 
 /// <summary>
@@ -90,4 +95,83 @@ public class HeadingStyle
     /// Spacing after the heading in twips (1/1440 inch).
     /// </summary>
     public int SpacingAfterTwips { get; set; }
+}
+
+/// <summary>
+/// Color scheme for syntax highlighting.
+/// All colors are hex format without # prefix (e.g., "569CD6" for blue).
+/// </summary>
+public class SyntaxColorScheme
+{
+    /// <summary>
+    /// Color for language keywords (default: VS Code blue).
+    /// </summary>
+    public string KeywordColor { get; set; } = "569CD6";
+
+    /// <summary>
+    /// Color for string literals (default: VS Code orange).
+    /// </summary>
+    public string StringColor { get; set; } = "CE9178";
+
+    /// <summary>
+    /// Color for numeric literals (default: darker green for better contrast).
+    /// </summary>
+    public string NumberColor { get; set; } = "098658";
+
+    /// <summary>
+    /// Color for comments (default: VS Code green).
+    /// </summary>
+    public string CommentColor { get; set; } = "6A9955";
+
+    /// <summary>
+    /// Color for operators (default: darker gray for better contrast).
+    /// </summary>
+    public string OperatorColor { get; set; } = "4A4A4A";
+
+    /// <summary>
+    /// Color for type names (default: VS Code cyan).
+    /// </summary>
+    public string TypeColor { get; set; } = "4EC9B0";
+
+    /// <summary>
+    /// Color for function names (default: darker yellow/gold for better contrast).
+    /// </summary>
+    public string FunctionColor { get; set; } = "C4A000";
+
+    /// <summary>
+    /// Color for property names (default: darker blue for better contrast).
+    /// </summary>
+    public string PropertyColor { get; set; } = "4FC1FF";
+
+    /// <summary>
+    /// Color for identifiers (default: darker gray for better contrast).
+    /// </summary>
+    public string IdentifierColor { get; set; } = "383838";
+
+    /// <summary>
+    /// Default color for unclassified text (default: darker gray for better contrast).
+    /// </summary>
+    public string DefaultColor { get; set; } = "383838";
+
+    /// <summary>
+    /// Gets the color for a specific token type.
+    /// </summary>
+    /// <param name="type">The token type.</param>
+    /// <returns>Hex color string without # prefix.</returns>
+    public string GetColorForTokenType(MarkMyWord.SyntaxHighlighting.TokenType type)
+    {
+        return type switch
+        {
+            MarkMyWord.SyntaxHighlighting.TokenType.Keyword => KeywordColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.String => StringColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Number => NumberColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Comment => CommentColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Operator => OperatorColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Type => TypeColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Function => FunctionColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Property => PropertyColor,
+            MarkMyWord.SyntaxHighlighting.TokenType.Identifier => IdentifierColor,
+            _ => DefaultColor
+        };
+    }
 }
