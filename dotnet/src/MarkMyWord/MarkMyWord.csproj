@@ -7,11 +7,11 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
-    <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents. Supports headings, paragraphs, emphasis, code blocks, links, images, lists, tables, and more.</Description>
-    <PackageTags>markdown;commonmark;word;docx;openxml;converter;document;office</PackageTags>
+    <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents with syntax highlighting. Supports headings, paragraphs, emphasis, code blocks with syntax highlighting (JSON, TypeSpec, Bash), links, images, lists, tables, and more.</Description>
+    <PackageTags>markdown;commonmark;word;docx;openxml;converter;document;office;syntax-highlighting;code</PackageTags>
     <PackageProjectUrl>https://github.com/spec-works/MarkMyWord</PackageProjectUrl>
     <RepositoryUrl>https://github.com/spec-works/MarkMyWord</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -24,6 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ColorCode.Core" Version="2.0.15" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
   </ItemGroup>

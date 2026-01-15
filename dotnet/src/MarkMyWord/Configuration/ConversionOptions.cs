@@ -26,6 +26,11 @@ public class ConversionOptions
     public bool EnableTaskLists { get; set; } = true;
 
     /// <summary>
+    /// Enable syntax highlighting for code blocks.
+    /// </summary>
+    public bool EnableSyntaxHighlighting { get; set; } = true;
+
+    /// <summary>
     /// Document title metadata.
     /// </summary>
     public string? DocumentTitle { get; set; }

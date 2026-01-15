@@ -65,7 +65,25 @@ public class StyleManager
         return new RunProperties(
             new RunFonts { Ascii = _config.CodeFontName, HighAnsi = _config.CodeFontName },
             new FontSize { Val = (_config.CodeFontSize * 2).ToString() }, // Half-points
-            new Shading { Fill = _config.CodeBackgroundColor }
+            new Shading { Fill = _config.CodeBackgroundColor },
+            new NoProof() // Disable spelling and grammar checking
+        );
+    }
+
+    /// <summary>
+    /// Creates run properties for syntax-highlighted code tokens.
+    /// </summary>
+    public RunProperties GetSyntaxTokenRunProperties(SyntaxHighlighting.TokenType tokenType)
+    {
+        var colorScheme = _config.SyntaxColorScheme ?? new Configuration.SyntaxColorScheme();
+        var color = colorScheme.GetColorForTokenType(tokenType);
+
+        return new RunProperties(
+            new RunFonts { Ascii = _config.CodeFontName, HighAnsi = _config.CodeFontName },
+            new FontSize { Val = (_config.CodeFontSize * 2).ToString() }, // Half-points
+            new Shading { Fill = _config.CodeBackgroundColor },
+            new Color { Val = color },
+            new NoProof() // Disable spelling and grammar checking
         );
     }
 

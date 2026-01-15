@@ -29,7 +29,8 @@ MarkMyWord converts markdown documents to Word format using the Open XML SDK. It
 ✅ **Styling**
 - Customizable fonts and colors
 - Configurable heading styles
-- Code syntax highlighting support
+- **Code syntax highlighting** for JSON, TypeSpec, and Bash
+- Automatic spell/grammar check suppression for code blocks
 
 ### Coming Soon
 
@@ -337,10 +338,17 @@ MarkMyWord/
 │   │   ├── Converters/
 │   │   │   ├── OpenXmlRenderer.cs     # Main renderer
 │   │   │   ├── BlockRenderers/        # Block element renderers
+│   │   │   │   ├── CodeBlockRenderer.cs  # Code block rendering
 │   │   │   │   ├── ListRenderer.cs    # List rendering
 │   │   │   │   └── TableRenderer.cs   # Table rendering
 │   │   │   └── InlineRenderers/       # Inline element renderers
 │   │   │       └── LinkInlineRenderer.cs  # Links & images
+│   │   ├── SyntaxHighlighting/        # Syntax highlighting
+│   │   │   ├── ISyntaxHighlighter.cs  # Highlighter interface
+│   │   │   ├── ColorCodeHighlighter.cs   # JSON highlighting
+│   │   │   ├── TypeSpecHighlighter.cs    # TypeSpec highlighting
+│   │   │   ├── BashHighlighter.cs     # Bash/Shell highlighting
+│   │   │   └── SyntaxHighlighterFactory.cs
 │   │   ├── OpenXml/
 │   │   │   ├── DocumentBuilder.cs     # OpenXML document builder
 │   │   │   ├── StyleManager.cs        # Style management
@@ -357,6 +365,7 @@ MarkMyWord/
 - Dependencies:
   - Markdig 0.37.0
   - DocumentFormat.OpenXml 3.1.0
+  - ColorCode.Core 2.0.15
 
 ## Building from Source
 
@@ -430,6 +439,75 @@ string markdown = @"
 MarkdownConverter.ConvertToDocx(markdown, "sales-report.docx");
 ```
 
+### Syntax Highlighting
+
+MarkMyWord supports syntax highlighting for code blocks, making code more readable in Word documents:
+
+**Supported Languages:**
+- **JSON** - Property names, strings, numbers, keywords (true/false/null)
+- **TypeSpec** - Keywords, types, decorators, comments
+- **Bash/Shell** - Commands, keywords, variables, strings, comments
+
+**Example:**
+```csharp
+string markdown = @"
+# API Response
+
+```json
+{
+  ""name"": ""MarkMyWord"",
+  ""version"": ""0.2.0"",
+  ""enabled"": true
+}
+```
+
+```bash
+#!/bin/bash
+echo ""Converting files...""
+for file in *.md; do
+    markmyword convert -i ""$file""
+done
+```
+";
+
+MarkdownConverter.ConvertToDocx(markdown, "highlighted.docx");
+```
+
+**Features:**
+- Colors optimized for grey code block backgrounds
+- Automatic spell/grammar check suppression (no red squiggles!)
+- Trailing empty lines automatically removed
+- Property names vs values distinguished in JSON
+
+**Disable syntax highlighting:**
+```csharp
+var options = new ConversionOptions
+{
+    EnableSyntaxHighlighting = false
+};
+
+MarkdownConverter.ConvertToDocx(markdown, "plain-code.docx", options);
+```
+
+**Custom syntax colors:**
+```csharp
+var options = new ConversionOptions
+{
+    Styles = new StyleConfiguration
+    {
+        SyntaxColorScheme = new SyntaxColorScheme
+        {
+            KeywordColor = "0000FF",     // Blue
+            StringColor = "A31515",      // Red
+            NumberColor = "098658",      // Green
+            CommentColor = "6A9955",     // Green
+            TypeColor = "4EC9B0",        // Cyan
+            FunctionColor = "C4A000"     // Gold
+        }
+    }
+};
+```
+
 ### Convert with custom code block styling
 
 ```csharp
@@ -439,20 +517,16 @@ var options = new ConversionOptions
     {
         CodeFontName = "Consolas",
         CodeFontSize = 9,
-        CodeBackgroundColor = "282C34"  // Dark theme
+        CodeBackgroundColor = "F5F5F5"  // Light grey
     }
 };
 
 string code = @"
 # Code Example
 
-```csharp
-public class HelloWorld
+```json
 {
-    public static void Main()
-    {
-        Console.WriteLine(""Hello, World!"");
-    }
+  ""message"": ""Hello, World!""
 }
 ```
 ";
@@ -511,7 +585,7 @@ MIT License - See LICENSE file for details
 
 **Fully supported:**
 - Headings, paragraphs, emphasis (bold/italic)
-- Code blocks (fenced and indented) with language labels
+- Code blocks (fenced and indented) with **syntax highlighting** (JSON, TypeSpec, Bash)
 - Inline code
 - Links and hyperlinks
 - Block quotes
@@ -520,6 +594,7 @@ MIT License - See LICENSE file for details
 - **Images** (local files and URLs with fallback support)
 - **Tables** (with headers, borders, and shading)
 - Command-line interface with full options
+- Spell/grammar check suppression for code
 
 **Coming soon:** Task lists, footnotes, definition lists
 

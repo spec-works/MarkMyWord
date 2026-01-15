@@ -125,7 +125,7 @@ Console.WriteLine(x);
         using var doc = WordprocessingDocument.Open(ms, false);
 
         var paragraphs = doc.MainDocumentPart!.Document.Body!.Elements<Paragraph>().ToList();
-        paragraphs.Should().HaveCountGreaterThan(2); // At least language label + 2 lines of code
+        paragraphs.Should().HaveCount(2); // Exactly 2 lines of code (no language label, no trailing empty lines)
     }
 
     [Fact]
