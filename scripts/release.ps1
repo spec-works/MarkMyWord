@@ -41,14 +41,12 @@ if ($Status) {
 }
 
 # Check if tag already exists
-try {
-    git rev-parse $Tag 2>$null
+git rev-parse $Tag 2>$null | Out-Null
+if ($LASTEXITCODE -eq 0) {
     Write-Host "❌ Error: Tag $Tag already exists" -ForegroundColor Red
     exit 1
 }
-catch {
-    # Tag doesn't exist, continue
-}
+# Tag doesn't exist, continue
 
 # Update version in .csproj files
 Write-Host "📝 Updating version in .csproj files..." -ForegroundColor Cyan
