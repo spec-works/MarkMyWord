@@ -160,7 +160,7 @@ public static class MarkdownConverter
     /// <param name="docxPath">Path to the existing .docx file.</param>
     /// <param name="diffContent">The unified diff content as a string.</param>
     /// <param name="options">Optional diff options.</param>
-    public static void ApplyDiffToDocx(string docxPath, string diffContent, DiffOptions? options = null)
+    public static void ApplyDiffStringToDocx(string docxPath, string diffContent, DiffOptions? options = null)
     {
         var applicator = new DiffApplicator();
         applicator.ApplyDiffString(docxPath, diffContent, options);
@@ -197,8 +197,8 @@ public static class MarkdownConverter
     /// <param name="diffContent">The unified diff content as a string.</param>
     /// <param name="options">Optional diff options.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    public static async Task ApplyDiffToDocxAsync(string docxPath, string diffContent, DiffOptions? options = null, CancellationToken cancellationToken = default)
+    public static async Task ApplyDiffStringToDocxAsync(string docxPath, string diffContent, DiffOptions? options = null, CancellationToken cancellationToken = default)
     {
-        await Task.Run(() => ApplyDiffToDocx(docxPath, diffContent, options), cancellationToken);
+        await Task.Run(() => ApplyDiffStringToDocx(docxPath, diffContent, options), cancellationToken);
     }
 }

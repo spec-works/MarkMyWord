@@ -201,7 +201,8 @@ public class WordDocumentReader
     private bool IsOrderedList(Paragraph paragraph, int numId)
     {
         // Try to get numbering part and check format
-        var mainPart = paragraph.Ancestors<Document>().FirstOrDefault()?.Parent as MainDocumentPart;
+        var document = paragraph.Ancestors<Document>().FirstOrDefault();
+        var mainPart = document?.OpenXmlPart as MainDocumentPart;
         if (mainPart?.NumberingDefinitionsPart?.Numbering != null)
         {
             var numbering = mainPart.NumberingDefinitionsPart.Numbering;
