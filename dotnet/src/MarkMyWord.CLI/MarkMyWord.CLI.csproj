@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,7 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord.CLI</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
     <Description>Command-line tool for converting CommonMark markdown files to Microsoft Word (.docx) documents with syntax highlighting support. Part of the MarkMyWord library suite.</Description>
