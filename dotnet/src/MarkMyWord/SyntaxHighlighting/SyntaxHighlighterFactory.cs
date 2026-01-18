@@ -11,6 +11,7 @@ public class SyntaxHighlighterFactory
     {
         _highlighters = new List<ISyntaxHighlighter>
         {
+            new HttpHighlighter(),      // HTTP request/response highlighting
             new TypeSpecHighlighter(),  // Check TypeSpec first (more specific)
             new BashHighlighter(),      // Bash/Shell highlighting
             new ColorCodeHighlighter()  // ColorCode supports many languages (JSON, etc.)
