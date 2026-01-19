@@ -54,6 +54,21 @@ public class ConversionOptions
     /// Maximum image width in inches.
     /// </summary>
     public int MaxImageWidthInches { get; set; } = 6;
+
+    /// <summary>
+    /// Enable rendering of Mermaid diagrams as embedded SVG images.
+    /// </summary>
+    public bool EnableMermaidDiagrams { get; set; } = true;
+
+    /// <summary>
+    /// Maximum width for Mermaid diagrams in inches.
+    /// </summary>
+    public double MaxDiagramWidthInches { get; set; } = 6.5;
+
+    /// <summary>
+    /// Maximum height for Mermaid diagrams in inches.
+    /// </summary>
+    public double MaxDiagramHeightInches { get; set; } = 8.0;
 }
 
 /// <summary>

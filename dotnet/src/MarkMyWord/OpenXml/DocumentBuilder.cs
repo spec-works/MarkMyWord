@@ -195,6 +195,7 @@ public class DocumentBuilder : IDisposable
             "image/gif" => ImagePartType.Gif,
             "image/bmp" => ImagePartType.Bmp,
             "image/tiff" => ImagePartType.Tiff,
+            "image/svg+xml" => ImagePartType.Svg,
             _ => ImagePartType.Png
         };
 
