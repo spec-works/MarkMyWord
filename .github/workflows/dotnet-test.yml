@@ -32,9 +32,10 @@ jobs:
       working-directory: dotnet
       run: dotnet build --no-restore --configuration Release
 
-    - name: Install Playwright browsers
-      working-directory: dotnet
-      run: pwsh src/MarkMyWord/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+    - name: Ensure Playwright browsers are installed
+      run: |
+        dotnet tool update --global Microsoft.Playwright.CLI || dotnet tool install --global Microsoft.Playwright.CLI
+        ~/.dotnet/tools/playwright install chromium --with-deps
 
     - name: Test
       working-directory: dotnet
