@@ -10,7 +10,7 @@ on:
   workflow_dispatch:  # Allow manual trigger
 
 env:
-  DOTNET_VERSION: '9.0.x'
+  DOTNET_VERSION: '10.0.x'
   PROJECT_PATH: 'dotnet'
 
 jobs:
@@ -32,6 +32,10 @@ jobs:
 
     - name: Build
       run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+    - name: Ensure Playwright browsers are installed
+      run: pwsh ${{ env.PROJECT_PATH }}/tests/MarkMyWord.Tests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+      continue-on-error: false
 
     - name: Run tests
       run: dotnet test ${{ env.PROJECT_PATH }} --configuration Release --no-build --verbosity normal

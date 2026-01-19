@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FluentAssertions;
 
 namespace MarkMyWord.Tests;
@@ -83,5 +84,74 @@ That's all folks!";
         using var ms = new MemoryStream(docxBytes);
         using var doc = WordprocessingDocument.Open(ms, false);
         doc.MainDocumentPart.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void HttpCodeBlock_WithJsonBody_ShouldConvertWithSyntaxHighlighting()
+    {
+        // Arrange
+        var markdown = @"# HTTP Request Example
+
+Here's an HTTP request with JSON body:
+
+```http
+POST /api/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Authorization: Bearer token123
+
+{
+  ""name"": ""Alice"",
+  ""email"": ""alice@example.com"",
+  ""age"": 30
+}
+```
+
+And here's an HTTP response:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: no-cache
+
+{
+  ""id"": 123,
+  ""status"": ""success"",
+  ""created"": true
+}
+```";
+
+        // Act
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown);
+
+        // Assert
+        docxBytes.Should().NotBeNull();
+        docxBytes.Length.Should().BeGreaterThan(0);
+
+        using var ms = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(ms, false);
+
+        doc.Should().NotBeNull();
+        doc.MainDocumentPart.Should().NotBeNull();
+
+        var runs = doc.MainDocumentPart!.Document.Body!.Descendants<Run>().ToList();
+
+        // Should have multiple runs (syntax highlighting creates separate runs for different token types)
+        runs.Should().HaveCountGreaterThan(20);
+
+        // Should have runs with different colors (indicating syntax highlighting is working)
+        var coloredRuns = runs.Where(r => r.RunProperties?.Color?.Val?.Value != null).ToList();
+        coloredRuns.Should().HaveCountGreaterThan(10, "syntax highlighting should create multiple colored runs");
+
+        // Verify we have at least a few different colors being used
+        var distinctColors = coloredRuns
+            .Select(r => r.RunProperties?.Color?.Val?.Value)
+            .Distinct()
+            .ToList();
+        distinctColors.Should().HaveCountGreaterThan(2, "should have multiple different colors for different syntax elements");
+
+        // Optionally save for manual inspection
+        var outputPath = Path.Combine(Path.GetTempPath(), "markmyword-http-test.docx");
+        File.WriteAllBytes(outputPath, docxBytes);
     }
 }

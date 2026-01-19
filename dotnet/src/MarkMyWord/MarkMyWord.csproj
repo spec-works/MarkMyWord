@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
-    <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents with syntax highlighting. Supports headings, paragraphs, emphasis, code blocks with syntax highlighting (JSON, TypeSpec, Bash), links, images, lists, tables, and more.</Description>
+    <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents with syntax highlighting and Mermaid diagrams. Supports headings, paragraphs, emphasis, code blocks with syntax highlighting (JSON, TypeSpec, Bash), Mermaid diagram rendering, links, images, lists, tables, and more.</Description>
     <PackageTags>markdown;commonmark;word;docx;openxml;converter;document;office;syntax-highlighting;code</PackageTags>
     <PackageProjectUrl>https://github.com/spec-works/MarkMyWord</PackageProjectUrl>
     <RepositoryUrl>https://github.com/spec-works/MarkMyWord</RepositoryUrl>
@@ -27,6 +27,9 @@
     <PackageReference Include="ColorCode.Core" Version="2.0.15" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.49.1" />
+    <!-- Override vulnerable transitive dependency from DocumentFormat.OpenXml -->
+    <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
