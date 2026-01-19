@@ -8,35 +8,37 @@ MarkMyWord now supports rendering Mermaid diagrams in Word documents using Micro
 
 After installing or building the MarkMyWord package, you **must** install Playwright browser binaries.
 
-#### Option A: Using Playwright CLI (Recommended)
+#### Option A: Using PowerShell Script (Recommended)
+
+**Important**: This must be run from your project directory after building.
+
+```powershell
+# Build your project first
+dotnet build
+
+# Install Chromium using the Playwright script from your build output
+pwsh bin/Debug/net10.0/playwright.ps1 install chromium
+
+# For Release builds:
+# pwsh bin/Release/net10.0/playwright.ps1 install chromium
+```
+
+#### Option B: Using Playwright CLI with Project Context
 
 ```bash
 # Install Playwright CLI globally
 dotnet tool install --global Microsoft.Playwright.CLI
 
-# Install Chromium browser (required for Mermaid rendering)
-playwright install chromium
-```
+# Navigate to your project directory (that references MarkMyWord)
+cd path/to/your/project
 
-#### Option B: Using PowerShell Script
-
-```powershell
-# Navigate to your project's output directory
-cd path/to/your/project/bin/Debug/net10.0
-
-# Run the Playwright installation script
-pwsh bin/playwright.ps1 install chromium
+# Install Chromium browser with project context
+playwright install chromium -p .
 ```
 
 ### 2. Verify Installation
 
-To verify that Playwright browsers are installed correctly:
-
-```bash
-playwright install --dry-run
-```
-
-This should show that Chromium is already installed at:
+To verify that Playwright browsers are installed correctly, check that Chromium exists at:
 - **Windows**: `%USERPROFILE%\AppData\Local\ms-playwright\chromium-*`
 - **macOS**: `~/Library/Caches/ms-playwright/chromium-*`
 - **Linux**: `~/.cache/ms-playwright/chromium-*`
@@ -101,7 +103,7 @@ If a diagram fails to render, MarkMyWord will fall back to rendering it as a pla
 
 ## CI/CD Environments
 
-In CI/CD pipelines, add these steps before running your application:
+In CI/CD pipelines, install Playwright browsers after building your project:
 
 ### GitHub Actions
 ```yaml
@@ -110,10 +112,15 @@ In CI/CD pipelines, add these steps before running your application:
   with:
     dotnet-version: '10.0.x'
 
-- name: Install Playwright
-  run: |
-    dotnet tool install --global Microsoft.Playwright.CLI
-    playwright install chromium
+- name: Build
+  run: dotnet build --configuration Release
+
+- name: Install Playwright Browsers
+  run: pwsh bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+  working-directory: your-project-path
+
+- name: Test
+  run: dotnet test --configuration Release --no-build
 ```
 
 ### Azure DevOps
@@ -122,37 +129,42 @@ In CI/CD pipelines, add these steps before running your application:
   inputs:
     version: '10.0.x'
 
-- script: |
-    dotnet tool install --global Microsoft.Playwright.CLI
-    playwright install chromium
+- script: dotnet build --configuration Release
+  displayName: 'Build Project'
+
+- pwsh: bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+  workingDirectory: your-project-path
   displayName: 'Install Playwright Browsers'
+
+- script: dotnet test --configuration Release --no-build
+  displayName: 'Run Tests'
 ```
 
 ### Docker
 
 ```dockerfile
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
 
-# Install Playwright dependencies
-RUN apt-get update && apt-get install -y \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2
+# Copy and restore
+COPY ["YourProject.csproj", "./"]
+RUN dotnet restore
 
-# Install Playwright CLI and browsers
-RUN dotnet tool install --global Microsoft.Playwright.CLI
-ENV PATH="$PATH:/root/.dotnet/tools"
-RUN playwright install chromium
+# Copy everything and build
+COPY . .
+RUN dotnet build -c Release -o /app/build
+
+# Install Playwright browsers using the build output script
+RUN pwsh /app/build/playwright.ps1 install chromium --with-deps
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app/build .
+
+# Copy Playwright browsers from build stage
+COPY --from=build /root/.cache/ms-playwright /root/.cache/ms-playwright
+
+ENTRYPOINT ["dotnet", "YourProject.dll"]
 ```
 
 ## Performance Considerations
