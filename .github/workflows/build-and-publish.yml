@@ -34,9 +34,8 @@ jobs:
       run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
     - name: Install Playwright browsers
-      run: |
-        dotnet tool install --global Microsoft.Playwright.CLI
-        playwright install chromium --with-deps
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: pwsh src/MarkMyWord/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
 
     - name: Run tests
       run: dotnet test ${{ env.PROJECT_PATH }} --configuration Release --no-build --verbosity normal
