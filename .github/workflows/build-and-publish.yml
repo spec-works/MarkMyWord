@@ -146,24 +146,14 @@ jobs:
       id: version
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-    - name: Check if RELEASE_NOTES.md exists
-      id: release_notes
-      run: |
-        if [ -f "${{ env.PROJECT_PATH }}/RELEASE_NOTES.md" ]; then
-          echo "exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "exists=false" >> $GITHUB_OUTPUT
-        fi
-
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         name: Version ${{ steps.version.outputs.VERSION }}
-        body_path: ${{ steps.release_notes.outputs.exists == 'true' && format('{0}/RELEASE_NOTES.md', env.PROJECT_PATH) || '' }}
         draft: false
         prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
         files: |
           packages/*.nupkg
-        generate_release_notes: ${{ steps.release_notes.outputs.exists == 'false' }}
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
