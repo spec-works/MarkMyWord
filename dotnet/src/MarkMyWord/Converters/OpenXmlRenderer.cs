@@ -30,6 +30,12 @@ public class OpenXmlRenderer : RendererBase, IDisposable
         _styleManager = new StyleManager(_options.Styles);
         _listManager = new ListManager(_documentBuilder, _options.Styles);
 
+        // Set document metadata if provided
+        if (_options.DocumentTitle != null || _options.Author != null || _options.Subject != null)
+        {
+            _documentBuilder.SetDocumentProperties(_options.DocumentTitle, _options.Author, _options.Subject);
+        }
+
         // Register block renderers
         ObjectRenderers.Add(new HeadingRenderer());
         ObjectRenderers.Add(new ParagraphRenderer());
