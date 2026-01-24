@@ -1,4 +1,6 @@
 # MarkMyWord
+[![Registry](https://img.shields.io/badge/Registry-SpecWorks-blue)](https://spec-works.github.io/registry/parts/markmyword/)
+
 
 Software component for bidirectional conversion between CommonMark/GitHub Flavored Markdown and Microsoft Word (.docx) documents.
 
