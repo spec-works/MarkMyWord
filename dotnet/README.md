@@ -1,12 +1,14 @@
 # MarkMyWord
 
-A .NET 9 library for converting CommonMark markdown to Microsoft Word (.docx) documents.
+A .NET 9 library for bidirectional conversion between CommonMark/GitHub Flavored Markdown and Microsoft Word (.docx) documents.
 
 ## Features
 
-MarkMyWord converts markdown documents to Word format using the Open XML SDK. It supports the CommonMark specification including:
+MarkMyWord provides bidirectional conversion between Markdown and Word:
+- **Markdown → Word**: Convert CommonMark markdown to Word (.docx) documents using the Open XML SDK
+- **Word → Markdown**: Convert Word documents back to CommonMark or GitHub Flavored Markdown, optimized for LLM grounding and roundtripping
 
-### Currently Supported
+### Markdown to Word - Currently Supported
 
 ✅ **Block Elements**
 - Headings (ATX: `# H1` through `###### H6`, Setext: underlined)
@@ -38,6 +40,27 @@ MarkMyWord converts markdown documents to Word format using the Open XML SDK. It
 - Footnotes
 - Definition lists
 
+### Word to Markdown Conversion
+
+✅ **Supported Elements**
+- Headings (H1-H6) → Markdown headings (`#` through `######`)
+- Paragraphs → Plain text with proper spacing
+- **Bold** and *Italic* text → Markdown emphasis (`**bold**`, `*italic*`)
+- Inline code → Backtick syntax (`` `code` ``)
+- Lists (ordered and unordered, nested) → Markdown lists
+- Tables → GitHub Flavored Markdown table syntax
+- Links → `[text](url)` syntax
+- Images → `![alt](path)` with optional extraction
+- Code blocks → Fenced code blocks with ` ``` `
+- Block quotes → `>` prefix
+
+✅ **Conversion Options**
+- **CommonMark or GitHub Flavored Markdown** output
+- **LLM-optimized output** - Clean, semantic content for AI grounding
+- **Metadata extraction** - Document properties as YAML frontmatter
+- **Image extraction** - Save embedded images to files
+- **Roundtripping support** - Preserve formatting for Word ↔ Markdown conversion
+
 ## Installation
 
 ```bash
@@ -46,7 +69,7 @@ dotnet add package MarkMyWord
 
 ## Quick Start
 
-### Basic Usage
+### Markdown to Word
 
 ```csharp
 using MarkMyWord;
@@ -54,6 +77,29 @@ using MarkMyWord;
 // Convert markdown string to .docx file
 string markdown = "# Hello World\n\nThis is **bold** text.";
 MarkdownConverter.ConvertToDocx(markdown, "output.docx");
+```
+
+### Word to Markdown
+
+```csharp
+using MarkMyWord;
+using MarkMyWord.Configuration;
+
+// Convert Word document to markdown file
+WordConverter.ConvertToMarkdown("input.docx", "output.md");
+
+// With options for LLM grounding
+var options = new WordToMarkdownOptions
+{
+    Flavor = MarkdownFlavor.GitHubFlavoredMarkdown,
+    OptimizeForLLM = true,
+    ExtractImages = true,
+    IncludeMetadata = false
+};
+WordConverter.ConvertToMarkdown("document.docx", "output.md", options);
+
+// Convert to string
+string markdown = WordConverter.ConvertToMarkdownString("document.docx");
 ```
 
 ### Convert to Byte Array
@@ -126,9 +172,20 @@ dotnet run --project src/MarkMyWord.CLI/MarkMyWord.CLI.csproj -- [command] [opti
 
 ### Usage
 
-**Basic conversion:**
+The CLI automatically detects the conversion direction based on file extension:
+- `.md` or `.markdown` input → converts to Word (`.docx`)
+- `.docx` input → converts to Markdown (`.md`)
+
+**Markdown to Word:**
 ```bash
 markmyword convert -i README.md
+markmyword convert -i input.md -o output.docx
+```
+
+**Word to Markdown:**
+```bash
+markmyword convert -i document.docx
+markmyword convert -i input.docx -o output.md
 ```
 
 **Specify output file:**
@@ -156,6 +213,24 @@ markmyword convert -i document.md -v
 markmyword convert -i document.md --force
 ```
 
+**Word to Markdown with options:**
+```bash
+# Convert Word to GitHub Flavored Markdown (default)
+markmyword convert -i document.docx -o output.md
+
+# Convert to strict CommonMark
+markmyword convert -i document.docx --commonmark
+
+# Optimize for LLM grounding (clean, semantic output)
+markmyword convert -i document.docx --optimize-llm
+
+# Include document metadata as YAML frontmatter
+markmyword convert -i document.docx --include-metadata
+
+# Don't extract images
+markmyword convert -i document.docx --extract-images false
+```
+
 **View version:**
 ```bash
 markmyword version
@@ -169,19 +244,76 @@ markmyword convert --help
 
 ### CLI Options
 
+#### Common Options
+
 | Option | Alias | Description |
 |--------|-------|-------------|
-| `--input` | `-i` | Input markdown file path (required) |
-| `--output` | `-o` | Output .docx file path (default: same as input) |
+| `--input` | `-i` | Input file path (.md or .docx) (required) |
+| `--output` | `-o` | Output file path (auto-detects extension) |
 | `--verbose` | `-v` | Enable verbose output |
-| `--font` | `-f` | Default font name |
+| `--force` | - | Overwrite output file if it exists |
+
+#### Markdown to Word Options
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--font` | `-f` | Default font name (e.g., 'Calibri') |
 | `--font-size` | `-s` | Default font size (6-72 points) |
 | `--style` | - | Path to JSON style configuration file |
-| `--force` | - | Overwrite output file if it exists |
+
+#### Word to Markdown Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--to-markdown` | Explicitly convert to Markdown (auto-detected) | `false` |
+| `--extract-images` | Extract and save embedded images | `true` |
+| `--optimize-llm` | Optimize output for LLM grounding | `true` |
+| `--commonmark` | Use strict CommonMark instead of GFM | `false` |
+| `--include-metadata` | Include document metadata as YAML frontmatter | `false` |
 
 ## Advanced Usage
 
-### Custom Styling
+### Word to Markdown Options
+
+```csharp
+using MarkMyWord;
+using MarkMyWord.Configuration;
+
+// Configure Word to Markdown conversion
+var options = new WordToMarkdownOptions
+{
+    // Use GitHub Flavored Markdown (supports tables, strikethrough, etc.)
+    Flavor = MarkdownFlavor.GitHubFlavoredMarkdown,
+
+    // Optimize for LLM grounding (clean, semantic content)
+    OptimizeForLLM = true,
+
+    // Extract embedded images to files
+    ExtractImages = true,
+
+    // Directory for extracted images (default: same as output file)
+    ImageOutputDirectory = "./images",
+
+    // URL prefix for image links in markdown
+    ImageUrlPrefix = "https://example.com/images/",
+
+    // Include document metadata as YAML frontmatter
+    IncludeMetadata = true,
+
+    // Preserve formatting metadata for roundtripping
+    PreserveFormattingMetadata = false,
+
+    // Use HTML for complex formatting when no markdown equivalent exists
+    UseHtmlForComplexFormatting = false,
+
+    // Line ending style
+    LineEndings = LineEndingStyle.LF
+};
+
+WordConverter.ConvertToMarkdown("document.docx", "output.md", options);
+```
+
+### Markdown to Word Custom Styling
 
 ```csharp
 using MarkMyWord.Configuration;

@@ -1,6 +1,6 @@
 # MarkMyWord
 
-Software component for converting CommonMark markdown to Microsoft Word (.docx) documents.
+Software component for bidirectional conversion between CommonMark/GitHub Flavored Markdown and Microsoft Word (.docx) documents.
 
 ## Specifications
 

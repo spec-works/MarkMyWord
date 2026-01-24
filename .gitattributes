@@ -1,0 +1,120 @@
+# Auto detect text files and normalize line endings to LF in the repository
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout (CRLF on Windows, LF on Unix)
+*.cs text diff=csharp
+*.csx text diff=csharp
+*.vb text
+*.fs text
+*.fsx text
+*.fsi text
+*.config text
+*.json text
+*.xml text
+*.xaml text
+*.sln text eol=crlf
+*.csproj text eol=lf
+*.vbproj text eol=lf
+*.fsproj text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+
+# Documentation and markdown
+*.md text diff=markdown
+*.markdown text diff=markdown
+*.txt text
+README text
+LICENSE text
+AUTHORS text
+CHANGELOG text
+
+# Scripts and shell files
+*.sh text eol=lf
+*.bash text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Source control
+.gitattributes text
+.gitignore text
+.gitconfig text
+.editorconfig text
+
+# YAML and other config files
+*.yml text
+*.yaml text
+*.toml text
+
+# Web files
+*.html text diff=html
+*.css text diff=css
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.vue text
+
+# SQL
+*.sql text
+
+# Graphics
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+*.eps binary
+*.bmp binary
+
+# Documents
+*.docx binary
+*.doc binary
+*.pdf binary
+*.rtf binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.7z binary
+*.rar binary
+
+# Fonts
+*.ttf binary
+*.otf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
+
+# Compiled binaries and libraries
+*.dll binary
+*.exe binary
+*.pdb binary
+*.so binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.obj binary
+*.o binary
+
+# NuGet packages
+*.nupkg binary
+*.snupkg binary
+
+# Other binary files
+*.cache binary
+*.pack binary
+
+# Denote all files that are truly binary and should not be modified
+*.pfx binary
+*.p12 binary
+*.cer binary
+*.crt binary
+*.key binary

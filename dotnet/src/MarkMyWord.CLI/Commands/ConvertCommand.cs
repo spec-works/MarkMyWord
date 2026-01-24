@@ -1,5 +1,7 @@
 using System.Text.Json;
+using MarkMyWord;
 using MarkMyWord.Configuration;
+using MarkMyWord.Exceptions;
 
 namespace MarkMyWord.CLI.Commands;
 
@@ -11,11 +13,16 @@ public static class ConvertCommand
     public static async Task<int> ExecuteAsync(
         FileInfo input,
         FileInfo? output,
+        bool toMarkdown,
         bool verbose,
         string? font,
         int? fontSize,
         FileInfo? styleConfig,
-        bool force)
+        bool force,
+        bool extractImages,
+        bool optimizeLlm,
+        bool useCommonMark,
+        bool includeMetadata)
     {
         try
         {
@@ -26,8 +33,21 @@ public static class ConvertCommand
                 return 1;
             }
 
+            // Auto-detect conversion direction if not explicitly specified
+            var inputExtension = input.Extension.ToLowerInvariant();
+            bool convertingToMarkdown = toMarkdown || inputExtension == ".docx" || inputExtension == ".doc";
+
             // Determine output path
-            var outputPath = output?.FullName ?? Path.ChangeExtension(input.FullName, ".docx");
+            string outputPath;
+            if (output != null)
+            {
+                outputPath = output.FullName;
+            }
+            else
+            {
+                var targetExtension = convertingToMarkdown ? ".md" : ".docx";
+                outputPath = Path.ChangeExtension(input.FullName, targetExtension);
+            }
 
             // Check if output file exists
             if (File.Exists(outputPath) && !force)
@@ -39,10 +59,55 @@ public static class ConvertCommand
 
             if (verbose)
             {
-                Console.WriteLine($"MarkMyWord - Markdown to Word Converter");
+                var direction = convertingToMarkdown ? "Word to Markdown" : "Markdown to Word";
+                Console.WriteLine($"MarkMyWord - {direction} Converter");
                 Console.WriteLine($"Input:  {input.FullName}");
                 Console.WriteLine($"Output: {outputPath}");
                 Console.WriteLine();
+            }
+
+            // Route to appropriate converter
+            if (convertingToMarkdown)
+            {
+                return await ConvertWordToMarkdown(input, outputPath, verbose, force,
+                    extractImages, optimizeLlm, useCommonMark, includeMetadata);
+            }
+            else
+            {
+                return await ConvertMarkdownToWord(input, outputPath, verbose, font, fontSize,
+                    styleConfig, force);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            if (verbose)
+            {
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Stack trace:");
+                Console.Error.WriteLine(ex.StackTrace);
+            }
+            return 1;
+        }
+    }
+
+    private static async Task<int> ConvertMarkdownToWord(
+        FileInfo input,
+        string outputPath,
+        bool verbose,
+        string? font,
+        int? fontSize,
+        FileInfo? styleConfig,
+        bool force)
+    {
+        try
+        {
+            // Check if output file exists
+            if (File.Exists(outputPath) && !force)
+            {
+                Console.Error.WriteLine($"Error: Output file already exists: {outputPath}");
+                Console.Error.WriteLine("Use --force to overwrite.");
+                return 1;
             }
 
             // Load or create conversion options
@@ -138,7 +203,122 @@ public static class ConvertCommand
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error: {ex.Message}");
+            Console.Error.WriteLine($"Error converting Markdown to Word: {ex.Message}");
+            if (verbose)
+            {
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Stack trace:");
+                Console.Error.WriteLine(ex.StackTrace);
+            }
+            return 1;
+        }
+    }
+
+    private static async Task<int> ConvertWordToMarkdown(
+        FileInfo input,
+        string outputPath,
+        bool verbose,
+        bool force,
+        bool extractImages,
+        bool optimizeLlm,
+        bool useCommonMark,
+        bool includeMetadata)
+    {
+        try
+        {
+            // Check if output file exists
+            if (File.Exists(outputPath) && !force)
+            {
+                Console.Error.WriteLine($"Error: Output file already exists: {outputPath}");
+                Console.Error.WriteLine("Use --force to overwrite.");
+                return 1;
+            }
+
+            // Create Word to Markdown options
+            var options = new WordToMarkdownOptions
+            {
+                Flavor = useCommonMark ? MarkdownFlavor.CommonMark : MarkdownFlavor.GitHubFlavoredMarkdown,
+                ExtractImages = extractImages,
+                OptimizeForLLM = optimizeLlm,
+                IncludeMetadata = includeMetadata,
+                ImageOutputDirectory = Path.GetDirectoryName(outputPath)
+            };
+
+            if (verbose)
+            {
+                Console.WriteLine($"Markdown flavor: {(useCommonMark ? "CommonMark" : "GitHub Flavored Markdown")}");
+                Console.WriteLine($"Optimize for LLM: {(optimizeLlm ? "Yes" : "No")}");
+                Console.WriteLine($"Extract images: {(extractImages ? "Yes" : "No")}");
+                Console.WriteLine($"Include metadata: {(includeMetadata ? "Yes" : "No")}");
+                Console.WriteLine();
+            }
+
+            // Convert
+            if (verbose)
+            {
+                Console.WriteLine("Converting to Markdown...");
+                var startTime = DateTime.Now;
+
+                await WordConverter.ConvertToMarkdownAsync(input.FullName, outputPath, options);
+
+                var elapsed = DateTime.Now - startTime;
+                Console.WriteLine($"Conversion completed in {elapsed.TotalMilliseconds:F0}ms");
+            }
+            else
+            {
+                await WordConverter.ConvertToMarkdownAsync(input.FullName, outputPath, options);
+            }
+
+            // Success
+            Console.WriteLine($"✓ Created: {outputPath}");
+
+            // Show file size
+            if (verbose)
+            {
+                var fileInfo = new FileInfo(outputPath);
+                Console.WriteLine($"File size: {FormatFileSize(fileInfo.Length)}");
+            }
+
+            return 0;
+        }
+        catch (EncryptedDocumentException ex)
+        {
+            // Special handling for encrypted documents
+            Console.Error.WriteLine();
+            Console.Error.WriteLine("═══════════════════════════════════════════════════════════");
+            Console.Error.WriteLine("ERROR: Document is Encrypted or Password-Protected");
+            Console.Error.WriteLine("═══════════════════════════════════════════════════════════");
+            Console.Error.WriteLine();
+            Console.Error.WriteLine("The Word document cannot be converted because it is encrypted");
+            Console.Error.WriteLine("or password-protected.");
+            Console.Error.WriteLine();
+            Console.Error.WriteLine("To convert this document:");
+            Console.Error.WriteLine("  1. Open the document in Microsoft Word");
+            Console.Error.WriteLine("  2. Go to: File → Info → Protect Document");
+            Console.Error.WriteLine("  3. Remove the password or encryption");
+            Console.Error.WriteLine("  4. Save the document");
+            Console.Error.WriteLine("  5. Try the conversion again");
+            Console.Error.WriteLine();
+            Console.Error.WriteLine("Alternative: Use 'Save As' to create an unencrypted copy.");
+            Console.Error.WriteLine();
+            Console.Error.WriteLine($"File: {input.FullName}");
+            Console.Error.WriteLine("═══════════════════════════════════════════════════════════");
+
+            if (verbose)
+            {
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Technical details:");
+                Console.Error.WriteLine(ex.Message);
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Stack trace:");
+                Console.Error.WriteLine(ex.StackTrace);
+            }
+
+            return 1;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error converting Word to Markdown: {ex.Message}");
             if (verbose)
             {
                 Console.Error.WriteLine();
