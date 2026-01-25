@@ -43,18 +43,10 @@
         "files": [
           "images/**"
         ]
-      },
-      {
-        "files": [
-          "styles/**"
-        ]
       }
     ],
     "output": "_site",
-    "template": [
-      "default",
-      "modern"
-    ],
+    "template": ["default", "modern", "template"],
     "globalMetadata": {
       "_appTitle": "MarkMyWord Documentation",
       "_appName": "MarkMyWord",
