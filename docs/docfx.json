@@ -20,20 +20,41 @@
   "build": {
     "content": [
       {
-        "files": ["api/**.yml", "api/index.md"]
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ]
       },
       {
-        "files": ["**.md", "**.yml"],
-        "exclude": ["obj/**", "_site/**", "**/bin/**", "**/obj/**"]
+        "files": [
+          "**.md",
+          "**.yml"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**",
+          "**/bin/**",
+          "**/obj/**"
+        ]
       }
     ],
     "resource": [
       {
-        "files": ["images/**"]
+        "files": [
+          "images/**"
+        ]
+      },
+      {
+        "files": [
+          "styles/**"
+        ]
       }
     ],
     "output": "_site",
-    "template": ["default", "modern"],
+    "template": [
+      "default",
+      "modern"
+    ],
     "globalMetadata": {
       "_appTitle": "MarkMyWord Documentation",
       "_appName": "MarkMyWord",
@@ -43,7 +64,12 @@
       "_gitContribute": {
         "repo": "https://github.com/spec-works/MarkMyWord",
         "branch": "main"
-      }
+      },
+      "_appLogoPath": "images/logo.svg",
+      "_appFaviconPath": "images/logo.svg",
+      "_extraCss": [
+        "styles/main.css"
+      ]
     }
   }
 }
