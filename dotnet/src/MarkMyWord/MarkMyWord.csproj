@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
+    <!-- Strong Naming -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MarkMyWord.snk</AssemblyOriginatorKeyFile>
+
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
     <Version>0.5.0</Version>
