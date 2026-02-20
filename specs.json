@@ -31,6 +31,12 @@
       "title": "Open XML SDK Documentation"
     },
     {
+      "href": "https://agentskills.io/specification",
+      "type": "text/html",
+      "rel": "describedby",
+      "title": "Agent Skills Specification"
+    },
+    {
       "rel": "registry",
       "title": "Part registry entry",
       "href": "https://spec-works.github.io/registry/parts/markmyword/"

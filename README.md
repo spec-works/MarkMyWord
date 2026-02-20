@@ -14,6 +14,7 @@ See [specs.json](specs.json) for complete specification references.
 
 - **[.NET Library](dotnet/README.md)** - ![.NET Test](https://github.com/spec-works/MarkMyWord/workflows/.NET%20Test/badge.svg)
 - **[.NET CLI](dotnet/README.md#command-line-interface)** - ![.NET Test](https://github.com/spec-works/MarkMyWord/workflows/.NET%20Test/badge.svg)
+- **[Agent Skill](skills/markmyword-cli/SKILL.md)** - for GitHub Copilot CLI, Claude Code, VS Code, Cursor
 
 ## License
 
