@@ -29,6 +29,11 @@
       "type": "text/html",
       "rel": "related",
       "title": "Open XML SDK Documentation"
+    },
+    {
+      "rel": "registry",
+      "title": "Part registry entry",
+      "href": "https://spec-works.github.io/registry/parts/markmyword/"
     }
   ]
 }

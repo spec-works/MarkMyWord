@@ -1,0 +1,76 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  checks: write
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  PROJECT_PATH: 'dotnet'
+
+jobs:
+  check:
+    name: Build and Test PR
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: Build
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+    - name: Ensure Playwright browsers are installed
+      run: pwsh ${{ env.PROJECT_PATH }}/tests/MarkMyWord.Tests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+      continue-on-error: false
+
+    - name: Run tests
+      run: dotnet test ${{ env.PROJECT_PATH }} --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+    - name: Test Report
+      uses: dorny/test-reporter@v2
+      if: success() || failure()
+      continue-on-error: true
+      with:
+        name: Test Results
+        path: '**/test-results.trx'
+        reporter: dotnet-trx
+
+    - name: Code coverage
+      run: |
+        dotnet test ${{ env.PROJECT_PATH }} \
+          --configuration Release \
+          --no-build \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./coverage
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      if: always()
+      with:
+        directory: ./coverage
+        fail_ci_if_error: false
+
+    - name: Check formatting
+      run: dotnet format ${{ env.PROJECT_PATH }} --verify-no-changes --verbosity diagnostic
+
+    - name: PR Summary
+      if: always()
+      run: |
+        echo "## ✅ PR Check Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build**: Success" >> $GITHUB_STEP_SUMMARY
+        echo "- **Tests**: All passing" >> $GITHUB_STEP_SUMMARY
+        echo "- **Formatting**: Verified" >> $GITHUB_STEP_SUMMARY

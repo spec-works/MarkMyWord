@@ -1,0 +1,8 @@
+- name: ← SpecWorks Factory
+  href: https://spec-works.github.io/
+- name: Home
+  href: index.md
+- name: API Reference
+  href: api/
+- name: GitHub
+  href: https://github.com/spec-works/MarkMyWord

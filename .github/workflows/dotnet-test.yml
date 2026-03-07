@@ -22,7 +22,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.0.x'
 
     - name: Restore dependencies
       working-directory: dotnet
@@ -31,6 +31,11 @@ jobs:
     - name: Build
       working-directory: dotnet
       run: dotnet build --no-restore --configuration Release
+
+    - name: Ensure Playwright browsers are installed
+      run: pwsh tests/MarkMyWord.Tests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+      working-directory: dotnet
+      continue-on-error: false
 
     - name: Test
       working-directory: dotnet

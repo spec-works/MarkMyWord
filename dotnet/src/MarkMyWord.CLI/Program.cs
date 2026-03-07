@@ -2,17 +2,17 @@ using System.CommandLine;
 using MarkMyWord;
 using MarkMyWord.CLI.Commands;
 
-var rootCommand = new RootCommand("MarkMyWord - Convert Markdown to Word documents")
+var rootCommand = new RootCommand("MarkMyWord - Convert between Markdown and Word documents")
 {
     Name = "markmyword"
 };
 
 // Convert command
-var convertCommand = new Command("convert", "Convert a markdown file to a Word document");
+var convertCommand = new Command("convert", "Convert between Markdown and Word documents (auto-detects direction)");
 
 var inputOption = new Option<FileInfo>(
     aliases: new[] { "--input", "-i" },
-    description: "Input markdown file path"
+    description: "Input file path (.md or .docx)"
 )
 {
     IsRequired = true
@@ -28,7 +28,13 @@ inputOption.AddValidator(result =>
 
 var outputOption = new Option<FileInfo?>(
     aliases: new[] { "--output", "-o" },
-    description: "Output .docx file path (default: same name as input with .docx extension)"
+    description: "Output file path (default: same name with appropriate extension)"
+);
+
+var toMarkdownOption = new Option<bool>(
+    aliases: new[] { "--to-markdown" },
+    description: "Convert Word document to Markdown (auto-detected from file extension)",
+    getDefaultValue: () => false
 );
 
 var verboseOption = new Option<bool>(
@@ -66,19 +72,64 @@ var forceOption = new Option<bool>(
     getDefaultValue: () => false
 );
 
+// Word to Markdown specific options
+var extractImagesOption = new Option<bool>(
+    aliases: new[] { "--extract-images" },
+    description: "Extract images from Word document (Word to Markdown only)",
+    getDefaultValue: () => true
+);
+
+var optimizeLlmOption = new Option<bool>(
+    aliases: new[] { "--optimize-llm" },
+    description: "Optimize markdown for LLM grounding (Word to Markdown only)",
+    getDefaultValue: () => true
+);
+
+var useCommonMarkOption = new Option<bool>(
+    aliases: new[] { "--commonmark" },
+    description: "Use strict CommonMark instead of GitHub Flavored Markdown (Word to Markdown only)",
+    getDefaultValue: () => false
+);
+
+var includeMetadataOption = new Option<bool>(
+    aliases: new[] { "--include-metadata" },
+    description: "Include document metadata as YAML frontmatter (Word to Markdown only)",
+    getDefaultValue: () => false
+);
+
 convertCommand.AddOption(inputOption);
 convertCommand.AddOption(outputOption);
+convertCommand.AddOption(toMarkdownOption);
 convertCommand.AddOption(verboseOption);
 convertCommand.AddOption(fontOption);
 convertCommand.AddOption(fontSizeOption);
 convertCommand.AddOption(styleOption);
 convertCommand.AddOption(forceOption);
+convertCommand.AddOption(extractImagesOption);
+convertCommand.AddOption(optimizeLlmOption);
+convertCommand.AddOption(useCommonMarkOption);
+convertCommand.AddOption(includeMetadataOption);
 
-convertCommand.SetHandler(async (input, output, verbose, font, fontSize, style, force) =>
+convertCommand.SetHandler(async (context) =>
 {
-    var exitCode = await ConvertCommand.ExecuteAsync(input, output, verbose, font, fontSize, style, force);
+    var input = context.ParseResult.GetValueForOption(inputOption)!;
+    var output = context.ParseResult.GetValueForOption(outputOption);
+    var toMarkdown = context.ParseResult.GetValueForOption(toMarkdownOption);
+    var verbose = context.ParseResult.GetValueForOption(verboseOption);
+    var font = context.ParseResult.GetValueForOption(fontOption);
+    var fontSize = context.ParseResult.GetValueForOption(fontSizeOption);
+    var style = context.ParseResult.GetValueForOption(styleOption);
+    var force = context.ParseResult.GetValueForOption(forceOption);
+    var extractImages = context.ParseResult.GetValueForOption(extractImagesOption);
+    var optimizeLlm = context.ParseResult.GetValueForOption(optimizeLlmOption);
+    var useCommonMark = context.ParseResult.GetValueForOption(useCommonMarkOption);
+    var includeMetadata = context.ParseResult.GetValueForOption(includeMetadataOption);
+
+    var exitCode = await ConvertCommand.ExecuteAsync(
+        input, output, toMarkdown, verbose, font, fontSize, style, force,
+        extractImages, optimizeLlm, useCommonMark, includeMetadata);
     Environment.Exit(exitCode);
-}, inputOption, outputOption, verboseOption, fontOption, fontSizeOption, styleOption, forceOption);
+});
 
 rootCommand.AddCommand(convertCommand);
 

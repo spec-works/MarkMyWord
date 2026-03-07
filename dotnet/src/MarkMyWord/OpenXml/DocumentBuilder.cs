@@ -81,6 +81,26 @@ public class DocumentBuilder : IDisposable
     }
 
     /// <summary>
+    /// Sets document metadata properties.
+    /// </summary>
+    /// <param name="title">Document title.</param>
+    /// <param name="author">Document author.</param>
+    /// <param name="subject">Document subject.</param>
+    public void SetDocumentProperties(string? title = null, string? author = null, string? subject = null)
+    {
+        var props = WordDocument.PackageProperties;
+
+        if (!string.IsNullOrEmpty(title))
+            props.Title = title;
+
+        if (!string.IsNullOrEmpty(author))
+            props.Creator = author;
+
+        if (!string.IsNullOrEmpty(subject))
+            props.Subject = subject;
+    }
+
+    /// <summary>
     /// Adds a paragraph to the document body.
     /// </summary>
     /// <param name="text">Optional text content for the paragraph.</param>
@@ -238,6 +258,7 @@ public class DocumentBuilder : IDisposable
             "image/gif" => ImagePartType.Gif,
             "image/bmp" => ImagePartType.Bmp,
             "image/tiff" => ImagePartType.Tiff,
+            "image/svg+xml" => ImagePartType.Svg,
             _ => ImagePartType.Png
         };
 
