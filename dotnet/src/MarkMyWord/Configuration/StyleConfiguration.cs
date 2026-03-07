@@ -51,6 +51,36 @@ public class StyleConfiguration
     public string QuoteBackgroundColor { get; set; } = "F9F9F9";
 
     /// <summary>
+    /// Text color for code blocks and inline code (hex color without #).
+    /// Empty string means use default.
+    /// </summary>
+    public string CodeTextColor { get; set; } = "";
+
+    /// <summary>
+    /// Text color for quote blocks (hex color without #).
+    /// Empty string means use default.
+    /// </summary>
+    public string QuoteTextColor { get; set; } = "";
+
+    /// <summary>
+    /// Page background color (hex color without #).
+    /// Empty string means no page background.
+    /// </summary>
+    public string PageBackgroundColor { get; set; } = "";
+
+    /// <summary>
+    /// Default text color for body text (hex color without #).
+    /// Empty string means use Word default (black).
+    /// </summary>
+    public string DefaultTextColor { get; set; } = "";
+
+    /// <summary>
+    /// Override color for all headings (hex color without #).
+    /// Empty string means use existing per-level colors.
+    /// </summary>
+    public string HeadingColor { get; set; } = "";
+
+    /// <summary>
     /// List indentation in twips (1/1440 inch).
     /// </summary>
     public int ListIndentationTwips { get; set; } = 720; // 0.5 inch
@@ -59,6 +89,45 @@ public class StyleConfiguration
     /// Color scheme for syntax highlighting (hex colors without #).
     /// </summary>
     public SyntaxColorScheme? SyntaxColorScheme { get; set; }
+
+    /// <summary>
+    /// Creates a style configuration optimized for light theme (default).
+    /// </summary>
+    public static StyleConfiguration ForLightTheme() => new();
+
+    /// <summary>
+    /// Creates a style configuration optimized for dark theme.
+    /// </summary>
+    public static StyleConfiguration ForDarkTheme() => new()
+    {
+        DefaultFontName = "Calibri",
+        DefaultFontSize = 11,
+        CodeFontName = "Consolas",
+        CodeFontSize = 9,
+        CodeBackgroundColor = "1E1E1E",
+        CodeTextColor = "D4D4D4",
+        QuoteLeftBorderColor = "4A5568",
+        QuoteBackgroundColor = "2D3748",
+        QuoteTextColor = "E2E8F0",
+        PageBackgroundColor = "1A1A2E",
+        DefaultTextColor = "E2E8F0",
+        HeadingColor = "90CDF4",
+        SyntaxColorScheme = DarkSyntaxColorScheme()
+    };
+
+    private static SyntaxColorScheme DarkSyntaxColorScheme() => new()
+    {
+        KeywordColor = "569CD6",
+        StringColor = "CE9178",
+        NumberColor = "B5CEA8",
+        CommentColor = "6A9955",
+        OperatorColor = "D4D4D4",
+        TypeColor = "4EC9B0",
+        FunctionColor = "DCDCAA",
+        PropertyColor = "9CDCFE",
+        IdentifierColor = "D4D4D4",
+        DefaultColor = "D4D4D4"
+    };
 }
 
 /// <summary>

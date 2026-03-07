@@ -69,6 +69,22 @@ public class ConversionOptions
     /// Maximum height for Mermaid diagrams in inches.
     /// </summary>
     public double MaxDiagramHeightInches { get; set; } = 8.0;
+
+    /// <summary>
+    /// Color theme for the document (affects page background, text colors, code blocks, and diagrams).
+    /// </summary>
+    public DocumentTheme Theme { get; set; } = DocumentTheme.Light;
+}
+
+/// <summary>
+/// Document color theme.
+/// </summary>
+public enum DocumentTheme
+{
+    /// <summary>Light theme with white background and dark text (default).</summary>
+    Light,
+    /// <summary>Dark theme with dark background and light text.</summary>
+    Dark
 }
 
 /// <summary>

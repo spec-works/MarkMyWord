@@ -319,7 +319,7 @@ Diagrams are rendered as PNG images and embedded in the Word document.
 
 - .NET 10.0 or .NET 8.0 (LTS)
 - C# 10.0 or later
-- For Mermaid diagrams: Playwright browsers (installed automatically)
+- For Mermaid diagrams: No additional setup required (uses Naiad, a pure .NET renderer)
 
 ## Source Code
 
