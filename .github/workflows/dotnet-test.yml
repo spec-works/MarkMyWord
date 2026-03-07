@@ -32,11 +32,6 @@ jobs:
       working-directory: dotnet
       run: dotnet build --no-restore --configuration Release
 
-    - name: Ensure Playwright browsers are installed
-      run: pwsh tests/MarkMyWord.Tests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
-      working-directory: dotnet
-      continue-on-error: false
-
     - name: Test
       working-directory: dotnet
       run: dotnet test --no-build --configuration Release --verbosity normal
