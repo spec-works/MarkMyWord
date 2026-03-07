@@ -26,20 +26,19 @@
     <ToolCommandName>markmyword</ToolCommandName>
   </PropertyGroup>
 
-  <!-- Exclude the .playwright/ directory (Node.js browser infrastructure) from the
-       tool package. This tree contains ~325 files and bloats the package from ~3MB
-       to ~47MB. It also caused DotnetToolSettings.xml packaging failures in 0.4.0
-       and 0.5.0.
-       
-       What stays in the package:
-         - Microsoft.Playwright.dll  (C# API — required for Mermaid rendering)
-         - playwright.ps1            (bootstrap script users run to install browsers)
-       What gets excluded:
-         - .playwright/              (Node.js package tree — installed at runtime) -->
-  <Target Name="ExcludePlaywrightNodeFiles" BeforeTargets="GenerateNuspec">
+  <!-- Exclude Playwright browser/node files from the tool package.
+       These bloat the NuGet package (~47MB) and have caused DotnetToolSettings.xml
+       packaging failures in versions 0.4.0 and 0.5.0. Playwright is only needed
+       when Mermaid diagram rendering is used, and browsers are installed separately
+       via the playwright.ps1 script at runtime. -->
+  <ItemGroup>
+    <PackPublishContent Remove="@(PackPublishContent)" Condition="$([System.String]::Copy('%(Identity)').Contains('.playwright'))" />
+  </ItemGroup>
+
+  <Target Name="ExcludePlaywrightFromPack" BeforeTargets="GenerateNuspec">
     <ItemGroup>
-      <_PackageFiles Remove="@(_PackageFiles)"
-        Condition="$([System.String]::Copy('%(Identity)').Replace('\','/').Contains('/.playwright/'))" />
+      <_PackageFiles Remove="@(_PackageFiles)" Condition="$([System.String]::Copy('%(Identity)').Contains('.playwright'))" />
+      <_PackageFiles Remove="@(_PackageFiles)" Condition="'%(Filename)' == 'playwright'" />
     </ItemGroup>
   </Target>
 
