@@ -1,6 +1,47 @@
 # Release Notes
 
-## Version 0.5.0 (TBD)
+## Version 0.6.0
+
+### Breaking Changes
+
+- Dropped .NET Standard 2.1 target framework — now targets `net10.0` only (required by Naiad dependency)
+- Removed Playwright dependency — Mermaid rendering no longer requires a browser runtime
+
+### New Features
+
+#### Pure .NET Mermaid Rendering
+- Replaced Playwright (browser-based) with **Naiad** for pure .NET Mermaid-to-SVG rendering
+- Added **Svg.Skia** for high-quality SVG-to-PNG rasterization at 3x scale
+- No browser installation required — Mermaid diagrams render entirely in-process
+- SVG post-processing pipeline for Word-compatible output
+- Support for all 7 diagram types: flowchart, sequence, class, state, ER, Gantt, pie
+
+#### Light/Dark Theme System
+- New `--theme light|dark` CLI parameter
+- Affects page background, text colors, headings, code blocks, syntax highlighting, and diagrams
+
+#### Soft Line Break Support
+- Soft line breaks (single newlines within paragraphs) now render as Word `Break` elements
+- Previously consecutive lines like `**Author:** Name\n**Date:** Today` merged into one line
+
+#### Strong Naming
+- Assembly is now strong-named for enterprise scenarios (public key token: `b4a532ad7fdd08b9`)
+
+#### CLI Packaging Fix
+- Fixed `DotnetToolSettings.xml` packaging failure that prevented `dotnet tool install`
+
+### Dependencies Changed
+
+- **Added**: Naiad 0.1.2, Svg.Skia 3.4.1, SkiaSharp.NativeAssets.Linux 2.88.9
+- **Removed**: Microsoft.Playwright
+
+### Testing
+
+All 99 tests passing.
+
+---
+
+## Version 0.5.0
 
 ### Breaking Changes
 

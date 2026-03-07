@@ -8,7 +8,7 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord.CLI</PackageId>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
     <Description>Command-line tool for converting CommonMark markdown files to Microsoft Word (.docx) documents with syntax highlighting and Mermaid diagram support. Part of the MarkMyWord library suite.</Description>
@@ -25,22 +25,6 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>markmyword</ToolCommandName>
   </PropertyGroup>
-
-  <!-- Exclude Playwright browser/node files from the tool package.
-       These bloat the NuGet package (~47MB) and have caused DotnetToolSettings.xml
-       packaging failures in versions 0.4.0 and 0.5.0. Playwright is only needed
-       when Mermaid diagram rendering is used, and browsers are installed separately
-       via the playwright.ps1 script at runtime. -->
-  <ItemGroup>
-    <PackPublishContent Remove="@(PackPublishContent)" Condition="$([System.String]::Copy('%(Identity)').Contains('.playwright'))" />
-  </ItemGroup>
-
-  <Target Name="ExcludePlaywrightFromPack" BeforeTargets="GenerateNuspec">
-    <ItemGroup>
-      <_PackageFiles Remove="@(_PackageFiles)" Condition="$([System.String]::Copy('%(Identity)').Contains('.playwright'))" />
-      <_PackageFiles Remove="@(_PackageFiles)" Condition="'%(Filename)' == 'playwright'" />
-    </ItemGroup>
-  </Target>
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
