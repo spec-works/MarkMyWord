@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
 
+    <!-- Strong Naming -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MarkMyWord.snk</AssemblyOriginatorKeyFile>
+
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
     <Version>0.5.0</Version>
