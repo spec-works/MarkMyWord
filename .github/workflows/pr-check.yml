@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  checks: write
+
 env:
   DOTNET_VERSION: '10.0.x'
   PROJECT_PATH: 'dotnet'
@@ -36,8 +40,9 @@ jobs:
       run: dotnet test ${{ env.PROJECT_PATH }} --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
     - name: Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v2
       if: success() || failure()
+      continue-on-error: true
       with:
         name: Test Results
         path: '**/test-results.trx'
