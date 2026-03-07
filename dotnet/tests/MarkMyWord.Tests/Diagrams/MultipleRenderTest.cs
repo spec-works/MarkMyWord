@@ -5,6 +5,7 @@ namespace MarkMyWord.Tests.Diagrams;
 public class MultipleRenderTest
 {
     [Fact]
+    [Trait("Category", "Playwright")]
     public async Task MultipleSequentialRendersWork()
     {
         // Test that rendering multiple diagrams with the same renderer instance works

@@ -5,6 +5,7 @@ namespace MarkMyWord.Tests.Diagrams;
 public class MermaidDebugTest
 {
     [Fact]
+    [Trait("Category", "Playwright")]
     public async Task DebugMermaidTextRenderingWithPlaywright()
     {
         // Arrange

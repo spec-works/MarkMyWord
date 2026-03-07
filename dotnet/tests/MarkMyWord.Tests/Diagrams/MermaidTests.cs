@@ -1,3 +1,5 @@
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MarkMyWord.Configuration;
 
 namespace MarkMyWord.Tests.Diagrams;
@@ -162,8 +164,20 @@ sequenceDiagram
         using var stream = new MemoryStream();
         MarkdownConverter.ConvertToDocx(markdown, stream, options);
 
-        // Assert
-        Assert.True(stream.Length > 8000, $"Document should contain all diagrams (actual size: {stream.Length} bytes)");
+        // Assert — document should contain all 3 headings and content for each diagram
+        // (either rendered as images when Playwright is available, or fallback code blocks)
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var paragraphs = doc.MainDocumentPart!.Document.Body!.Elements<Paragraph>().ToList();
+
+        // Should have headings for each section
+        var headings = paragraphs.Where(p =>
+            p.ParagraphProperties?.ParagraphStyleId?.Val?.Value?.StartsWith("Heading") == true).ToList();
+        Assert.True(headings.Count >= 4, $"Expected at least 4 headings (1 main + 3 sections), got {headings.Count}");
+
+        // Should have content beyond just headings (diagram images or fallback code)
+        Assert.True(paragraphs.Count > headings.Count,
+            "Document should contain diagram content beyond just headings");
     }
 
     [Fact]
@@ -286,5 +300,204 @@ flowchart TD
 
         // Assert
         Assert.True(stream.Length > 0, "Document should render with custom dimensions");
+    }
+
+    [Fact]
+    public void DisabledMermaid_RendersCodeBlockWithMermaidSource()
+    {
+        // Arrange — when disabled, the mermaid source should appear as plain code
+        string markdown = @"```mermaid
+flowchart TD
+    A[Start] --> B[End]
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = false
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        Assert.Contains("flowchart", allText);
+        Assert.Contains("Start", allText);
+        Assert.Contains("End", allText);
+    }
+
+    [Fact]
+    public void MermaidFallback_ContainsOriginalSource()
+    {
+        // Arrange — invalid syntax triggers fallback; the original source should be preserved
+        string markdown = @"```mermaid
+not-a-valid-diagram !!!
+    some --> broken syntax
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        // Fallback should preserve the original mermaid source
+        Assert.Contains("not-a-valid-diagram", allText);
+        Assert.Contains("broken syntax", allText);
+    }
+
+    [Fact]
+    public void MermaidWithSurroundingText_PreservesDocumentStructure()
+    {
+        // Arrange — text before and after a mermaid block should be preserved
+        string markdown = @"Here is an introduction paragraph.
+
+```mermaid
+graph LR
+    A --> B
+```
+
+And here is the conclusion.
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        Assert.Contains("introduction paragraph", allText);
+        Assert.Contains("conclusion", allText);
+    }
+
+    [Fact]
+    public void MermaidEnabled_ProducesLargerOutputThanDisabled()
+    {
+        // Arrange — same markdown, but enabled vs disabled should differ
+        string markdown = @"```mermaid
+flowchart TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Action 1]
+    B -->|No| D[Action 2]
+    C --> E[End]
+    D --> E
+```
+";
+
+        // Act — render with Mermaid enabled
+        using var enabledStream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, enabledStream, new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        });
+
+        // Act — render with Mermaid disabled
+        using var disabledStream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, disabledStream, new ConversionOptions
+        {
+            EnableMermaidDiagrams = false
+        });
+
+        // Assert — both should produce valid documents
+        Assert.True(enabledStream.Length > 0);
+        Assert.True(disabledStream.Length > 0);
+
+        // The outputs should differ (enabled has either image or error fallback text)
+        Assert.NotEqual(enabledStream.Length, disabledStream.Length);
+    }
+
+    [Fact]
+    public void WhitespaceOnlyMermaidBlock_FallsBackToCodeBlock()
+    {
+        // Arrange
+        string markdown = @"```mermaid
+   
+   
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert — should produce a valid document with fallback content
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        Assert.Contains("Empty Mermaid diagram", allText);
+    }
+
+    [Fact]
+    public void MermaidDefaultOptions_EnabledByDefault()
+    {
+        // Arrange — verify default ConversionOptions has Mermaid enabled
+        var options = new ConversionOptions();
+
+        // Assert
+        Assert.True(options.EnableMermaidDiagrams);
+        Assert.Equal(6.5, options.MaxDiagramWidthInches);
+        Assert.Equal(8.0, options.MaxDiagramHeightInches);
+    }
+
+    [Fact]
+    public void MermaidLanguageDetection_NonMermaidLanguagesAreNotTreatedAsMermaid()
+    {
+        // Arrange — code blocks with non-mermaid languages should render as code, not diagrams
+        string markdown = @"```javascript
+flowchart TD
+    A --> B
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert — should be a code block, not a diagram
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        // Should contain the raw source (not an error message from Mermaid rendering)
+        Assert.Contains("flowchart", allText);
+        Assert.DoesNotContain("Error", allText);
     }
 }
