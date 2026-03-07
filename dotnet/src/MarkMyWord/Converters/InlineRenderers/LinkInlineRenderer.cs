@@ -181,7 +181,8 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
                                         new A.Offset { X = 0L, Y = 0L },
                                         new A.Extents { Cx = widthEmus, Cy = heightEmus }),
                                     new A.PresetGeometry(new A.AdjustValueList()) { Preset = A.ShapeTypeValues.Rectangle }))
-                        ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
+                        )
+                        { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
                 )
                 {
                     DistanceFromTop = 0U,
