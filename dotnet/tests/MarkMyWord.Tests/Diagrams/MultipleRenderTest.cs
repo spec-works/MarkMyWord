@@ -5,40 +5,29 @@ namespace MarkMyWord.Tests.Diagrams;
 public class MultipleRenderTest
 {
     [Fact]
-    [Trait("Category", "Playwright")]
-    public async Task MultipleSequentialRendersWork()
+    public void MultipleSequentialRendersWork()
     {
-        // Test that rendering multiple diagrams with the same renderer instance works
-        await using var renderer = new MermaidRenderer();
+        var renderer = new MermaidRenderer();
 
-        // First diagram
-        var mermaid1 = @"flowchart TD
-    A[First] --> B[Diagram]";
+        var svg1 = renderer.RenderToSvg(@"flowchart TD
+    A[First] --> B[Diagram]");
+        Assert.NotNull(svg1);
+        Assert.Contains("<svg", svg1);
 
-        var png1 = await renderer.RenderToPngAsync(mermaid1);
-        Assert.NotNull(png1);
-        Assert.True(png1.Length > 1000, $"First diagram too small: {png1.Length} bytes");
+        var svg2 = renderer.RenderToSvg(@"flowchart LR
+    X[Second] --> Y[Diagram]");
+        Assert.NotNull(svg2);
+        Assert.Contains("<svg", svg2);
 
-        // Second diagram
-        var mermaid2 = @"flowchart LR
-    X[Second] --> Y[Diagram]";
-
-        var png2 = await renderer.RenderToPngAsync(mermaid2);
-        Assert.NotNull(png2);
-        Assert.True(png2.Length > 1000, $"Second diagram too small: {png2.Length} bytes");
-
-        // Third diagram
-        var mermaid3 = @"sequenceDiagram
+        var svg3 = renderer.RenderToSvg(@"sequenceDiagram
     Alice->>Bob: Third
-    Bob->>Alice: Diagram";
+    Bob->>Alice: Diagram");
+        Assert.NotNull(svg3);
+        Assert.Contains("<svg", svg3);
 
-        var png3 = await renderer.RenderToPngAsync(mermaid3);
-        Assert.NotNull(png3);
-        Assert.True(png3.Length > 1000, $"Third diagram too small: {png3.Length} bytes");
-
-        // All three should be different
-        Assert.NotEqual(png1, png2);
-        Assert.NotEqual(png2, png3);
-        Assert.NotEqual(png1, png3);
+        // All three should produce different SVGs
+        Assert.NotEqual(svg1, svg2);
+        Assert.NotEqual(svg2, svg3);
+        Assert.NotEqual(svg1, svg3);
     }
 }

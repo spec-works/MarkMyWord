@@ -2,35 +2,63 @@ using MarkMyWord.Diagrams;
 
 namespace MarkMyWord.Tests.Diagrams;
 
-public class MermaidDebugTest
+public class MermaidRendererTests
 {
     [Fact]
-    [Trait("Category", "Playwright")]
-    public async Task DebugMermaidTextRenderingWithPlaywright()
+    public void RenderFlowchartToSvg()
     {
-        // Arrange
-        var mermaidCode = @"flowchart TD
+        var renderer = new MermaidRenderer();
+        var svg = renderer.RenderToSvg(@"flowchart TD
     A[Start] --> B{Decision}
     B -->|Yes| C[Action 1]
-    B -->|No| D[Action 2]";
+    B -->|No| D[Action 2]");
 
-        // Render to PNG using Playwright
-        await using var renderer = new MermaidRenderer();
-        var pngBytes = await renderer.RenderToPngAsync(mermaidCode);
+        Assert.NotNull(svg);
+        Assert.Contains("<svg", svg);
+        Assert.Contains("</svg>", svg);
+    }
 
-        Assert.NotNull(pngBytes);
-        File.WriteAllBytes("debug-playwright-output.png", pngBytes!);
+    [Fact]
+    public void RenderSequenceDiagramToSvg()
+    {
+        var renderer = new MermaidRenderer();
+        var svg = renderer.RenderToSvg(@"sequenceDiagram
+    Alice->>Bob: Hello
+    Bob-->>Alice: Hi");
 
-        // Get PNG dimensions by parsing header
-        int width = (pngBytes[16] << 24) | (pngBytes[17] << 16) | (pngBytes[18] << 8) | pngBytes[19];
-        int height = (pngBytes[20] << 24) | (pngBytes[21] << 16) | (pngBytes[22] << 8) | pngBytes[23];
+        Assert.NotNull(svg);
+        Assert.Contains("<svg", svg);
+    }
 
-        Console.WriteLine($"=== PNG Analysis (Playwright) ===");
-        Console.WriteLine($"PNG size: {pngBytes.Length} bytes");
-        Console.WriteLine($"PNG dimensions: {width}x{height}");
+    [Fact]
+    public void RenderClassDiagramToSvg()
+    {
+        var renderer = new MermaidRenderer();
+        var svg = renderer.RenderToSvg(@"classDiagram
+    Animal <|-- Duck
+    Animal <|-- Fish");
 
-        // Assert - PNG should be generated
-        Assert.True(pngBytes.Length > 1000, "PNG should be substantial size");
-        Assert.True(width > 100 && height > 100, "PNG should have reasonable dimensions");
+        Assert.NotNull(svg);
+        Assert.Contains("<svg", svg);
+    }
+
+    [Fact]
+    public void EmptyInput_ReturnsNull()
+    {
+        var renderer = new MermaidRenderer();
+        Assert.Null(renderer.RenderToSvg(""));
+        Assert.Null(renderer.RenderToSvg("   "));
+        Assert.Null(renderer.RenderToSvg(null!));
+    }
+
+    [Fact]
+    public void IsMermaidLanguage_CaseInsensitive()
+    {
+        Assert.True(MermaidRenderer.IsMermaidLanguage("mermaid"));
+        Assert.True(MermaidRenderer.IsMermaidLanguage("MERMAID"));
+        Assert.True(MermaidRenderer.IsMermaidLanguage("Mermaid"));
+        Assert.False(MermaidRenderer.IsMermaidLanguage("javascript"));
+        Assert.False(MermaidRenderer.IsMermaidLanguage(null));
+        Assert.False(MermaidRenderer.IsMermaidLanguage(""));
     }
 }

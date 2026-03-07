@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>10.0</LangVersion>
 
     <!-- Strong Naming -->
     <SignAssembly>true</SignAssembly>
@@ -32,7 +31,9 @@
     <PackageReference Include="ColorCode.Core" Version="2.0.15" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.49.1" />
+    <PackageReference Include="Naiad" Version="0.1.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.9" />
+    <PackageReference Include="Svg.Skia" Version="3.4.1" />
     <!-- Override vulnerable transitive dependency from DocumentFormat.OpenXml -->
     <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
   </ItemGroup>

@@ -42,6 +42,18 @@ public class StyleManager
 
         // Add hyperlink style
         stylesPart.Styles.AppendChild(CreateHyperlinkStyle());
+
+        // Apply page background color if configured
+        if (!string.IsNullOrEmpty(_config.PageBackgroundColor))
+        {
+            var settingsPart = mainPart.DocumentSettingsPart ?? mainPart.AddNewPart<DocumentSettingsPart>();
+            settingsPart.Settings ??= new Settings();
+            settingsPart.Settings.PrependChild(new DisplayBackgroundShape());
+
+            mainPart.Document.InsertBefore(
+                new DocumentBackground { Color = _config.PageBackgroundColor },
+                mainPart.Document.Body);
+        }
     }
 
     /// <summary>
@@ -62,12 +74,19 @@ public class StyleManager
     /// </summary>
     public RunProperties GetCodeRunProperties()
     {
-        return new RunProperties(
+        var props = new RunProperties(
             new RunFonts { Ascii = _config.CodeFontName, HighAnsi = _config.CodeFontName },
             new FontSize { Val = (_config.CodeFontSize * 2).ToString() }, // Half-points
             new Shading { Fill = _config.CodeBackgroundColor },
             new NoProof() // Disable spelling and grammar checking
         );
+
+        if (!string.IsNullOrEmpty(_config.CodeTextColor))
+        {
+            props.AppendChild(new Color { Val = _config.CodeTextColor });
+        }
+
+        return props;
     }
 
     /// <summary>
@@ -108,6 +127,19 @@ public class StyleManager
     }
 
     /// <summary>
+    /// Creates run properties for quote block text.
+    /// </summary>
+    public RunProperties? GetQuoteRunProperties()
+    {
+        if (string.IsNullOrEmpty(_config.QuoteTextColor))
+            return null;
+
+        return new RunProperties(
+            new Color { Val = _config.QuoteTextColor }
+        );
+    }
+
+    /// <summary>
     /// Creates paragraph properties for a code block.
     /// </summary>
     public ParagraphProperties GetCodeBlockProperties()
@@ -120,6 +152,16 @@ public class StyleManager
 
     private Style CreateDefaultParagraphStyle()
     {
+        var runProps = new StyleRunProperties(
+            new RunFonts { Ascii = _config.DefaultFontName, HighAnsi = _config.DefaultFontName },
+            new FontSize { Val = (_config.DefaultFontSize * 2).ToString() }
+        );
+
+        if (!string.IsNullOrEmpty(_config.DefaultTextColor))
+        {
+            runProps.AppendChild(new Color { Val = _config.DefaultTextColor });
+        }
+
         return new Style
         {
             Type = StyleValues.Paragraph,
@@ -129,10 +171,7 @@ public class StyleManager
             StyleParagraphProperties = new StyleParagraphProperties(
                 new SpacingBetweenLines { After = "160", Line = "240" }
             ),
-            StyleRunProperties = new StyleRunProperties(
-                new RunFonts { Ascii = _config.DefaultFontName, HighAnsi = _config.DefaultFontName },
-                new FontSize { Val = (_config.DefaultFontSize * 2).ToString() }
-            )
+            StyleRunProperties = runProps
         };
     }
 
@@ -174,10 +213,14 @@ public class StyleManager
 
     private StyleRunProperties CreateHeadingRunProperties(HeadingStyle headingStyle)
     {
+        var colorVal = !string.IsNullOrEmpty(_config.HeadingColor)
+            ? _config.HeadingColor
+            : headingStyle.Color;
+
         var props = new StyleRunProperties(
             new RunFonts { Ascii = _config.DefaultFontName, HighAnsi = _config.DefaultFontName },
             new FontSize { Val = (headingStyle.FontSize * 2).ToString() },
-            new Color { Val = headingStyle.Color }
+            new Color { Val = colorVal }
         );
 
         if (headingStyle.Bold)

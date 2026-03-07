@@ -18,6 +18,7 @@ public static class ConvertCommand
         string? font,
         int? fontSize,
         FileInfo? styleConfig,
+        string? theme,
         bool force,
         bool extractImages,
         bool optimizeLlm,
@@ -75,7 +76,7 @@ public static class ConvertCommand
             else
             {
                 return await ConvertMarkdownToWord(input, outputPath, verbose, font, fontSize,
-                    styleConfig, force);
+                    styleConfig, theme, force);
             }
         }
         catch (Exception ex)
@@ -98,6 +99,7 @@ public static class ConvertCommand
         string? font,
         int? fontSize,
         FileInfo? styleConfig,
+        string? theme,
         bool force)
     {
         try
@@ -146,6 +148,13 @@ public static class ConvertCommand
                 {
                     Styles = new StyleConfiguration()
                 };
+
+                // Apply theme
+                if (theme == "dark")
+                {
+                    options.Theme = DocumentTheme.Dark;
+                    options.Styles = StyleConfiguration.ForDarkTheme();
+                }
 
                 if (font != null)
                 {

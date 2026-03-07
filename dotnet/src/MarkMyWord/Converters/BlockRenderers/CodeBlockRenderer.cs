@@ -3,8 +3,11 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using MarkMyWord.Configuration;
 using MarkMyWord.Diagrams;
 using MarkMyWord.SyntaxHighlighting;
+using SkiaSharp;
+using Svg.Skia;
 using System.Text;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
@@ -18,7 +21,13 @@ namespace MarkMyWord.Converters.BlockRenderers;
 public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
 {
     private readonly SyntaxHighlighterFactory _highlighterFactory = new();
-    private readonly MermaidRenderer _mermaidRenderer = new();
+    private MermaidRenderer? _mermaidRenderer;
+
+    private MermaidRenderer GetMermaidRenderer(ConversionOptions options)
+    {
+        _mermaidRenderer ??= new MermaidRenderer(options.Theme);
+        return _mermaidRenderer;
+    }
 
     protected override void Write(OpenXmlRenderer renderer, CodeBlock obj)
     {
@@ -106,24 +115,25 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
                 return;
             }
 
-            // Render Mermaid to PNG using Playwright (async bridge for sync context)
-            byte[]? pngBytes = _mermaidRenderer.RenderToPngAsync(mermaidCode).GetAwaiter().GetResult();
+            // Render Mermaid to SVG using Naiad (pure .NET, no browser)
+            string? svg = GetMermaidRenderer(renderer.Options).RenderToSvg(mermaidCode);
 
-            if (pngBytes == null)
+            if (svg == null)
             {
                 RenderAsCodeBlockFallback(renderer, obj, "[Error rendering Mermaid diagram]");
                 return;
             }
 
-            // Get PNG dimensions and calculate constrained dimensions in EMUs
-            var (widthPixels, heightPixels) = GetPngDimensions(pngBytes);
+            // Parse SVG dimensions and calculate constrained dimensions in EMUs
+            var (widthPixels, heightPixels) = GetSvgDimensions(svg);
             var (widthEmu, heightEmu) = CalculateDiagramDimensions(
                 widthPixels,
                 heightPixels,
                 renderer.Options.MaxDiagramWidthInches,
                 renderer.Options.MaxDiagramHeightInches);
 
-            // Add PNG as image part
+            // Rasterize SVG to high-quality PNG for reliable Word/web rendering
+            byte[] pngBytes = RasterizeSvgToPng(svg);
             ImagePart imagePart = renderer.DocumentBuilder.AddImagePart(pngBytes, "image/png");
             string relationshipId = renderer.DocumentBuilder.GetImageRelationshipId(imagePart);
 
@@ -194,64 +204,51 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
     }
 
     /// <summary>
-    /// Calculates diagram dimensions in EMUs, applying max width/height constraints.
-    /// Maintains aspect ratio.
+    /// Calculates diagram dimensions in EMUs. Always fills the full page width
+    /// and derives height from the SVG aspect ratio, capped by max height.
     /// </summary>
     private static (long widthEmu, long heightEmu) CalculateDiagramDimensions(
-        double widthPixels,
-        double heightPixels,
+        double svgWidth,
+        double svgHeight,
         double maxWidthInches,
         double maxHeightInches)
     {
         const int emusPerInch = 914400;
-        const double pixelsPerInch = 96.0;
 
-        // Convert pixels to inches
-        double widthInches = widthPixels / pixelsPerInch;
-        double heightInches = heightPixels / pixelsPerInch;
+        double aspectRatio = svgWidth / svgHeight;
 
-        // Apply constraints while maintaining aspect ratio
-        double aspectRatio = widthInches / heightInches;
+        // Fill the full page width, derive height from aspect ratio
+        double widthInches = maxWidthInches;
+        double heightInches = widthInches / aspectRatio;
 
-        if (widthInches > maxWidthInches)
-        {
-            widthInches = maxWidthInches;
-            heightInches = widthInches / aspectRatio;
-        }
-
+        // Cap height if it exceeds the max, and shrink width to match
         if (heightInches > maxHeightInches)
         {
             heightInches = maxHeightInches;
             widthInches = heightInches * aspectRatio;
         }
 
-        // Convert to EMUs
-        long widthEmu = (long)(widthInches * emusPerInch);
-        long heightEmu = (long)(heightInches * emusPerInch);
-
-        return (widthEmu, heightEmu);
+        return ((long)(widthInches * emusPerInch), (long)(heightInches * emusPerInch));
     }
 
     /// <summary>
-    /// Gets image dimensions from PNG byte array by parsing PNG header.
-    /// Returns default dimensions (800x600) if parsing fails.
+    /// Gets the aspect ratio dimensions from SVG viewBox attribute.
+    /// Naiad SVGs use width="100%" so viewBox is the authoritative source.
+    /// Returns default dimensions (4:3) if parsing fails.
     /// </summary>
-    private static (double width, double height) GetPngDimensions(byte[] pngBytes)
+    private static (double width, double height) GetSvgDimensions(string svg)
     {
         try
         {
-            // PNG header format:
-            // Bytes 16-19: Width (big-endian)
-            // Bytes 20-23: Height (big-endian)
-            if (pngBytes.Length >= 24)
-            {
-                int width = (pngBytes[16] << 24) | (pngBytes[17] << 16) | (pngBytes[18] << 8) | pngBytes[19];
-                int height = (pngBytes[20] << 24) | (pngBytes[21] << 16) | (pngBytes[22] << 8) | pngBytes[23];
+            var viewBoxMatch = System.Text.RegularExpressions.Regex.Match(
+                svg, @"viewBox=""[0-9.-]+\s+[0-9.-]+\s+([0-9.]+)\s+([0-9.]+)""");
 
-                if (width > 0 && height > 0 && width < 10000 && height < 10000)
-                {
-                    return (width, height);
-                }
+            if (viewBoxMatch.Success &&
+                double.TryParse(viewBoxMatch.Groups[1].Value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double vw) &&
+                double.TryParse(viewBoxMatch.Groups[2].Value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double vh) &&
+                vw > 0 && vh > 0)
+            {
+                return (vw, vh);
             }
         }
         catch
@@ -260,6 +257,34 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
         }
 
         return (800, 600);
+    }
+
+    /// <summary>
+    /// Rasterizes an SVG string to a high-quality PNG byte array using Svg.Skia.
+    /// Renders at 3x scale for crisp output in print and high-DPI displays.
+    /// </summary>
+    private static byte[] RasterizeSvgToPng(string svgContent, float scale = 3.0f)
+    {
+        using var svg = new SKSvg();
+        using var svgStream = new MemoryStream(Encoding.UTF8.GetBytes(svgContent));
+        svg.Load(svgStream);
+
+        var picture = svg.Picture
+            ?? throw new InvalidOperationException("Failed to parse SVG for rasterization");
+
+        var bounds = picture.CullRect;
+        int width = Math.Max(1, (int)(bounds.Width * scale));
+        int height = Math.Max(1, (int)(bounds.Height * scale));
+
+        using var bitmap = new SKBitmap(width, height);
+        using var canvas = new SKCanvas(bitmap);
+        canvas.Scale(scale);
+        canvas.DrawPicture(picture);
+
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+        return data.ToArray();
     }
 
     /// <summary>

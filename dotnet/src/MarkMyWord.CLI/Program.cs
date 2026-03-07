@@ -66,6 +66,19 @@ var styleOption = new Option<FileInfo?>(
     description: "Path to JSON style configuration file"
 );
 
+var themeOption = new Option<string?>(
+    aliases: new[] { "--theme" },
+    description: "Color theme: 'light' (default) or 'dark'"
+);
+themeOption.AddValidator(result =>
+{
+    var value = result.GetValueForOption(themeOption);
+    if (value != null && value != "light" && value != "dark")
+    {
+        result.ErrorMessage = "Theme must be 'light' or 'dark'";
+    }
+});
+
 var forceOption = new Option<bool>(
     aliases: new[] { "--force" },
     description: "Overwrite output file if it exists",
@@ -104,6 +117,7 @@ convertCommand.AddOption(verboseOption);
 convertCommand.AddOption(fontOption);
 convertCommand.AddOption(fontSizeOption);
 convertCommand.AddOption(styleOption);
+convertCommand.AddOption(themeOption);
 convertCommand.AddOption(forceOption);
 convertCommand.AddOption(extractImagesOption);
 convertCommand.AddOption(optimizeLlmOption);
@@ -119,6 +133,7 @@ convertCommand.SetHandler(async (context) =>
     var font = context.ParseResult.GetValueForOption(fontOption);
     var fontSize = context.ParseResult.GetValueForOption(fontSizeOption);
     var style = context.ParseResult.GetValueForOption(styleOption);
+    var theme = context.ParseResult.GetValueForOption(themeOption);
     var force = context.ParseResult.GetValueForOption(forceOption);
     var extractImages = context.ParseResult.GetValueForOption(extractImagesOption);
     var optimizeLlm = context.ParseResult.GetValueForOption(optimizeLlmOption);
@@ -126,7 +141,7 @@ convertCommand.SetHandler(async (context) =>
     var includeMetadata = context.ParseResult.GetValueForOption(includeMetadataOption);
 
     var exitCode = await ConvertCommand.ExecuteAsync(
-        input, output, toMarkdown, verbose, font, fontSize, style, force,
+        input, output, toMarkdown, verbose, font, fontSize, style, theme, force,
         extractImages, optimizeLlm, useCommonMark, includeMetadata);
     Environment.Exit(exitCode);
 });
