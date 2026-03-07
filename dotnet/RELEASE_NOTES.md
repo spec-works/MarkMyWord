@@ -1,5 +1,35 @@
 # Release Notes
 
+## Version 0.5.0 (TBD)
+
+### Breaking Changes
+
+None
+
+### New Features
+
+#### Strong Naming Support
+- Added strong name signing to the .NET library assembly
+- Enables consumption by applications that require strong-named dependencies
+- Public key token: `b4a532ad7fdd08b9`
+- Backward compatible - existing consumers are not affected
+
+### Technical Details
+
+**New Files:**
+- `MarkMyWord.snk` - Strong name key file (2048-bit RSA)
+
+**Updated Files:**
+- `MarkMyWord.csproj` - Added `<SignAssembly>true</SignAssembly>` and `<AssemblyOriginatorKeyFile>MarkMyWord.snk</AssemblyOriginatorKeyFile>`
+
+### Notes
+
+- The assembly is now strong-named for enterprise scenarios
+- Some dependencies (e.g., Markdig) are not strong-named, which produces a warning (CS8002) but is acceptable
+- The key file is committed to the repository for reproducible builds
+
+---
+
 ## Version 0.2.0 (2026-01-14)
 
 ### New Features

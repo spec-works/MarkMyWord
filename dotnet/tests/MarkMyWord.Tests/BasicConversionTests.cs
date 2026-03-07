@@ -144,4 +144,27 @@ Console.WriteLine(x);
         var hyperlinks = doc.MainDocumentPart!.Document.Body!.Descendants<Hyperlink>().ToList();
         hyperlinks.Should().HaveCount(1);
     }
+
+    [Fact]
+    public void ConsecutiveLines_ShouldNotMergeIntoOneLine()
+    {
+        // Arrange — two lines in the same paragraph block, separated by a soft break
+        var markdown = "**Authors:** Sebastien Levert\n**Date:** March 6, 2026";
+
+        // Act
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown);
+
+        // Assert
+        using var ms = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(ms, false);
+
+        var paragraph = doc.MainDocumentPart!.Document.Body!.Elements<Paragraph>().First();
+        var breaks = paragraph.Descendants<Break>().ToList();
+        breaks.Should().HaveCountGreaterThan(0, "a soft line break should produce a line break in Word");
+
+        // Verify both text fragments are present
+        var text = paragraph.InnerText;
+        text.Should().Contain("Authors:");
+        text.Should().Contain("Date:");
+    }
 }

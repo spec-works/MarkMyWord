@@ -17,13 +17,13 @@ public class LineBreakInlineRenderer : OpenXmlObjectRenderer<LineBreakInline>
             currentParagraph = renderer.DocumentBuilder.AddParagraph();
         }
 
-        // Add a hard line break if this is a hard break
-        if (obj.IsHard)
-        {
-            var run = new Run();
-            run.AppendChild(new Break());
-            currentParagraph.AppendChild(run);
-        }
-        // Soft breaks are typically ignored in Word documents (treated as spaces)
+        // Both hard and soft line breaks produce a new line in the same paragraph.
+        // Hard breaks come from explicit "  " or "\" at end of line.
+        // Soft breaks come from regular newlines within a paragraph block.
+        // Without this, consecutive markdown lines (e.g. "**Authors:** ...\n**Date:** ...")
+        // merge into a single line in Word with no separation.
+        var run = new Run();
+        run.AppendChild(new Break());
+        currentParagraph.AppendChild(run);
     }
 }
