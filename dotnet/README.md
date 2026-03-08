@@ -198,6 +198,11 @@ markmyword convert -i input.md -o output.docx
 markmyword convert -i document.md --font "Times New Roman" --font-size 12
 ```
 
+**Use dark theme:**
+```bash
+markmyword convert -i document.md --theme dark
+```
+
 **Use custom style configuration:**
 ```bash
 markmyword convert -i document.md --style custom-style.json
@@ -259,6 +264,7 @@ markmyword convert --help
 |--------|-------|-------------|
 | `--font` | `-f` | Default font name (e.g., 'Calibri') |
 | `--font-size` | `-s` | Default font size (6-72 points) |
+| `--theme` | - | Color theme: `light` (default) or `dark` |
 | `--style` | - | Path to JSON style configuration file |
 
 #### Word to Markdown Options
