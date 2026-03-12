@@ -1,6 +1,7 @@
 using Markdig;
 using MarkMyWord.Configuration;
 using MarkMyWord.Converters;
+using MarkMyWord.Diff;
 
 namespace MarkMyWord;
 
@@ -125,5 +126,79 @@ public static class MarkdownConverter
     public static async Task ConvertToDocxAsync(Stream markdownStream, Stream outputStream, ConversionOptions? options = null, CancellationToken cancellationToken = default)
     {
         await Task.Run(() => ConvertToDocx(markdownStream, outputStream, options), cancellationToken);
+    }
+
+    // ========== Diff Application Methods ==========
+
+    /// <summary>
+    /// Applies a unified diff to an existing Word document.
+    /// </summary>
+    /// <param name="docxPath">Path to the existing .docx file.</param>
+    /// <param name="diffPath">Path to the unified diff file.</param>
+    /// <param name="options">Optional diff options.</param>
+    public static void ApplyDiffToDocx(string docxPath, string diffPath, DiffOptions? options = null)
+    {
+        var applicator = new DiffApplicator();
+        applicator.ApplyDiffToFile(docxPath, diffPath, options);
+    }
+
+    /// <summary>
+    /// Applies a unified diff to an existing Word document using streams.
+    /// </summary>
+    /// <param name="docxStream">Stream containing the existing .docx file.</param>
+    /// <param name="diffStream">Stream containing the unified diff.</param>
+    /// <param name="options">Optional diff options.</param>
+    public static void ApplyDiffToDocx(Stream docxStream, Stream diffStream, DiffOptions? options = null)
+    {
+        var applicator = new DiffApplicator();
+        applicator.ApplyDiffToStream(docxStream, diffStream, options);
+    }
+
+    /// <summary>
+    /// Applies a unified diff string to an existing Word document.
+    /// </summary>
+    /// <param name="docxPath">Path to the existing .docx file.</param>
+    /// <param name="diffContent">The unified diff content as a string.</param>
+    /// <param name="options">Optional diff options.</param>
+    public static void ApplyDiffStringToDocx(string docxPath, string diffContent, DiffOptions? options = null)
+    {
+        var applicator = new DiffApplicator();
+        applicator.ApplyDiffString(docxPath, diffContent, options);
+    }
+
+    /// <summary>
+    /// Asynchronously applies a unified diff to an existing Word document.
+    /// </summary>
+    /// <param name="docxPath">Path to the existing .docx file.</param>
+    /// <param name="diffPath">Path to the unified diff file.</param>
+    /// <param name="options">Optional diff options.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public static async Task ApplyDiffToDocxAsync(string docxPath, string diffPath, DiffOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await Task.Run(() => ApplyDiffToDocx(docxPath, diffPath, options), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously applies a unified diff to an existing Word document using streams.
+    /// </summary>
+    /// <param name="docxStream">Stream containing the existing .docx file.</param>
+    /// <param name="diffStream">Stream containing the unified diff.</param>
+    /// <param name="options">Optional diff options.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public static async Task ApplyDiffToDocxAsync(Stream docxStream, Stream diffStream, DiffOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await Task.Run(() => ApplyDiffToDocx(docxStream, diffStream, options), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously applies a unified diff string to an existing Word document.
+    /// </summary>
+    /// <param name="docxPath">Path to the existing .docx file.</param>
+    /// <param name="diffContent">The unified diff content as a string.</param>
+    /// <param name="options">Optional diff options.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public static async Task ApplyDiffStringToDocxAsync(string docxPath, string diffContent, DiffOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await Task.Run(() => ApplyDiffStringToDocx(docxPath, diffContent, options), cancellationToken);
     }
 }
