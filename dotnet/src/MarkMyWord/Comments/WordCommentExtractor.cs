@@ -53,7 +53,9 @@ internal class WordCommentExtractor
             {
                 Id = id,
                 Author = comment.Author?.Value ?? "Unknown",
-                Date = comment.Date?.Value is DateTime dt ? dt.ToString("o") : DateTimeOffset.UtcNow.ToString("o"),
+                Date = comment.Date?.Value is DateTime dt
+                    ? new DateTimeOffset(DateTime.SpecifyKind(dt, DateTimeKind.Utc)).ToString("o")
+                    : DateTimeOffset.UtcNow.ToString("o"),
                 Text = text,
                 AnchoredText = anchorMap.GetValueOrDefault(id)
             };
