@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Sidemark\dotnet\src\Sidemark\Sidemark.csproj" />
+    <PackageReference Include="SpecWorks.Sidemark" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
