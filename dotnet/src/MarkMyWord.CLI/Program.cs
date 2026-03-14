@@ -110,6 +110,17 @@ var includeMetadataOption = new Option<bool>(
     getDefaultValue: () => false
 );
 
+var commentsOption = new Option<bool>(
+    aliases: new[] { "--comments" },
+    description: "Enable Sidemark comment roundtripping. Word→Markdown: extract comments to .review.yaml sidecar. Markdown→Word: inject comments from .review.yaml sidecar.",
+    getDefaultValue: () => false
+);
+
+var sidemarkFileOption = new Option<FileInfo?>(
+    aliases: new[] { "--sidemark-file" },
+    description: "Path to a Sidemark .review.yaml file (Markdown to Word only). If omitted with --comments, auto-discovers <input>.review.yaml."
+);
+
 convertCommand.AddOption(inputOption);
 convertCommand.AddOption(outputOption);
 convertCommand.AddOption(toMarkdownOption);
@@ -123,6 +134,8 @@ convertCommand.AddOption(extractImagesOption);
 convertCommand.AddOption(optimizeLlmOption);
 convertCommand.AddOption(useCommonMarkOption);
 convertCommand.AddOption(includeMetadataOption);
+convertCommand.AddOption(commentsOption);
+convertCommand.AddOption(sidemarkFileOption);
 
 convertCommand.SetHandler(async (context) =>
 {
@@ -139,10 +152,12 @@ convertCommand.SetHandler(async (context) =>
     var optimizeLlm = context.ParseResult.GetValueForOption(optimizeLlmOption);
     var useCommonMark = context.ParseResult.GetValueForOption(useCommonMarkOption);
     var includeMetadata = context.ParseResult.GetValueForOption(includeMetadataOption);
+    var comments = context.ParseResult.GetValueForOption(commentsOption);
+    var sidemarkFile = context.ParseResult.GetValueForOption(sidemarkFileOption);
 
     var exitCode = await ConvertCommand.ExecuteAsync(
         input, output, toMarkdown, verbose, font, fontSize, style, theme, force,
-        extractImages, optimizeLlm, useCommonMark, includeMetadata);
+        extractImages, optimizeLlm, useCommonMark, includeMetadata, comments, sidemarkFile);
     Environment.Exit(exitCode);
 });
 

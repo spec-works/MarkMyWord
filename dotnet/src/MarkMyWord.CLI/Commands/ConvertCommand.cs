@@ -1,7 +1,9 @@
 using System.Text.Json;
 using MarkMyWord;
+using MarkMyWord.Comments;
 using MarkMyWord.Configuration;
 using MarkMyWord.Exceptions;
+using Sidemark;
 
 namespace MarkMyWord.CLI.Commands;
 
@@ -23,7 +25,9 @@ public static class ConvertCommand
         bool extractImages,
         bool optimizeLlm,
         bool useCommonMark,
-        bool includeMetadata)
+        bool includeMetadata,
+        bool comments,
+        FileInfo? sidemarkFile)
     {
         try
         {
@@ -71,12 +75,12 @@ public static class ConvertCommand
             if (convertingToMarkdown)
             {
                 return await ConvertWordToMarkdown(input, outputPath, verbose, force,
-                    extractImages, optimizeLlm, useCommonMark, includeMetadata);
+                    extractImages, optimizeLlm, useCommonMark, includeMetadata, comments);
             }
             else
             {
                 return await ConvertMarkdownToWord(input, outputPath, verbose, font, fontSize,
-                    styleConfig, theme, force);
+                    styleConfig, theme, force, comments, sidemarkFile);
             }
         }
         catch (Exception ex)
@@ -100,7 +104,9 @@ public static class ConvertCommand
         int? fontSize,
         FileInfo? styleConfig,
         string? theme,
-        bool force)
+        bool force,
+        bool comments,
+        FileInfo? sidemarkFile)
     {
         try
         {
@@ -182,6 +188,38 @@ public static class ConvertCommand
                 Console.Error.WriteLine("Warning: Input file is empty.");
             }
 
+            // Load Sidemark comments if requested
+            if (comments)
+            {
+                if (sidemarkFile != null)
+                {
+                    if (!sidemarkFile.Exists)
+                    {
+                        Console.Error.WriteLine($"Error: Sidemark file not found: {sidemarkFile.FullName}");
+                        return 1;
+                    }
+                    options.SidemarkFilePath = sidemarkFile.FullName;
+                    if (verbose)
+                        Console.WriteLine($"Loading Sidemark comments from: {sidemarkFile.FullName}");
+                }
+                else
+                {
+                    // Auto-discover sidecar: <input>.review.yaml
+                    var autoSidecar = input.FullName + ".review.yaml";
+                    if (File.Exists(autoSidecar))
+                    {
+                        options.SidemarkFilePath = autoSidecar;
+                        if (verbose)
+                            Console.WriteLine($"Auto-discovered Sidemark sidecar: {autoSidecar}");
+                    }
+                    else if (verbose)
+                    {
+                        Console.WriteLine("No Sidemark sidecar found (looked for: " +
+                            Path.GetFileName(autoSidecar) + ")");
+                    }
+                }
+            }
+
             // Convert
             if (verbose)
             {
@@ -200,6 +238,10 @@ public static class ConvertCommand
 
             // Success
             Console.WriteLine($"✓ Created: {outputPath}");
+            if (comments && !string.IsNullOrEmpty(options.SidemarkFilePath))
+            {
+                Console.WriteLine($"  (with Sidemark comments from {Path.GetFileName(options.SidemarkFilePath)})");
+            }
 
             // Show file size
             if (verbose)
@@ -231,7 +273,8 @@ public static class ConvertCommand
         bool extractImages,
         bool optimizeLlm,
         bool useCommonMark,
-        bool includeMetadata)
+        bool includeMetadata,
+        bool comments)
     {
         try
         {
@@ -250,7 +293,8 @@ public static class ConvertCommand
                 ExtractImages = extractImages,
                 OptimizeForLLM = optimizeLlm,
                 IncludeMetadata = includeMetadata,
-                ImageOutputDirectory = Path.GetDirectoryName(outputPath)
+                ImageOutputDirectory = Path.GetDirectoryName(outputPath),
+                ExtractCommentsAsSidemark = comments
             };
 
             if (verbose)
@@ -259,23 +303,50 @@ public static class ConvertCommand
                 Console.WriteLine($"Optimize for LLM: {(optimizeLlm ? "Yes" : "No")}");
                 Console.WriteLine($"Extract images: {(extractImages ? "Yes" : "No")}");
                 Console.WriteLine($"Include metadata: {(includeMetadata ? "Yes" : "No")}");
+                Console.WriteLine($"Sidemark comments: {(comments ? "Yes" : "No")}");
                 Console.WriteLine();
             }
 
             // Convert
             if (verbose)
-            {
                 Console.WriteLine("Converting to Markdown...");
-                var startTime = DateTime.Now;
 
-                await WordConverter.ConvertToMarkdownAsync(input.FullName, outputPath, options);
+            var startTime = DateTime.Now;
 
-                var elapsed = DateTime.Now - startTime;
-                Console.WriteLine($"Conversion completed in {elapsed.TotalMilliseconds:F0}ms");
+            if (comments)
+            {
+                // Use Sidemark-aware conversion
+                using var docxStream = new FileStream(input.FullName, FileMode.Open, FileAccess.Read);
+                var result = WordConverter.ConvertToMarkdownWithComments(docxStream, options, outputPath);
+
+                // Write markdown
+                await File.WriteAllTextAsync(outputPath, result.Markdown);
+
+                // Write Sidemark sidecar if comments were found
+                if (result.HasComments && result.SidemarkDocument != null)
+                {
+                    var sidecarPath = outputPath + ".review.yaml";
+                    result.SidemarkDocument.Document = Path.GetFileName(outputPath);
+                    MrsfSerializer.WriteFile(result.SidemarkDocument, sidecarPath);
+
+                    if (verbose)
+                        Console.WriteLine($"Extracted {result.SidemarkDocument.Comments.Count} comment(s) to Sidemark sidecar");
+                    Console.WriteLine($"✓ Created: {sidecarPath}");
+                }
+                else if (verbose)
+                {
+                    Console.WriteLine("No comments found in Word document.");
+                }
             }
             else
             {
                 await WordConverter.ConvertToMarkdownAsync(input.FullName, outputPath, options);
+            }
+
+            if (verbose)
+            {
+                var elapsed = DateTime.Now - startTime;
+                Console.WriteLine($"Conversion completed in {elapsed.TotalMilliseconds:F0}ms");
             }
 
             // Success
