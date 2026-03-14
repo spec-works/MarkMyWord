@@ -87,7 +87,7 @@ internal static class WordCommentInjector
             Id = commentId,
             Author = mrsfComment.Author,
             Initials = GetInitials(mrsfComment.Author),
-            Date = timestamp?.DateTime ?? DateTime.UtcNow
+            Date = timestamp?.UtcDateTime ?? DateTime.UtcNow
         };
 
         // Split comment text into paragraphs

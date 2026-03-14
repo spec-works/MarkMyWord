@@ -415,6 +415,77 @@ public class SidemarkCommentTests
 
     #endregion
 
+    #region Timezone Handling Tests
+
+    [Fact]
+    public void WordToMarkdown_ExtractedTimestamp_HasTimezoneOffset()
+    {
+        // Word stores dates as UTC DateTime. MRSF requires ISO 8601 with timezone offset.
+        var docxBytes = CreateWordDocWithComments(
+            "Timezone test content",
+            ("0", "TZ Author", "Check timezone", "Timezone"));
+
+        using var stream = new MemoryStream(docxBytes);
+        var result = WordConverter.ConvertToMarkdownWithComments(stream);
+
+        result.SidemarkDocument.Should().NotBeNull();
+        var timestamp = result.SidemarkDocument!.Comments[0].Timestamp;
+
+        // Must parse as a valid DateTimeOffset (has timezone info)
+        DateTimeOffset.TryParse(timestamp, out var parsed).Should().BeTrue(
+            $"Timestamp '{timestamp}' should be a valid ISO 8601 with timezone offset");
+
+        // The "o" format for DateTimeOffset always includes offset like +00:00 or Z
+        timestamp.Should().MatchRegex(@"[\+\-Z]",
+            "Timestamp must contain a timezone offset indicator (+, -, or Z)");
+    }
+
+    [Fact]
+    public void Roundtrip_TimezoneOffset_IsPreserved()
+    {
+        // Inject a comment with a specific timezone offset, then extract it back
+        var markdown = "# Title\n\nSome content here.";
+        var originalTimestamp = "2025-06-15T14:30:00+05:30";
+
+        var mrsfDoc = new MrsfDocument
+        {
+            MrsfVersion = "1.0",
+            Document = "test.md",
+            Comments =
+            [
+                new MrsfComment
+                {
+                    Id = "tz-roundtrip",
+                    Author = "India Reviewer",
+                    Timestamp = originalTimestamp,
+                    Text = "Comment with IST offset",
+                    Resolved = false,
+                    Line = 3
+                }
+            ]
+        };
+
+        // Markdown → Word (inject)
+        var options = new ConversionOptions { SidemarkDocument = mrsfDoc };
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown, options);
+
+        // Word → Markdown (extract)
+        using var stream = new MemoryStream(docxBytes);
+        var result = WordConverter.ConvertToMarkdownWithComments(stream);
+
+        result.SidemarkDocument.Should().NotBeNull();
+        var extractedTimestamp = result.SidemarkDocument!.Comments[0].Timestamp;
+
+        // Parse both as DateTimeOffset and compare the actual instant
+        DateTimeOffset.TryParse(originalTimestamp, out var original).Should().BeTrue();
+        DateTimeOffset.TryParse(extractedTimestamp, out var extracted).Should().BeTrue();
+
+        // The UTC instant should be preserved (Word normalizes to UTC internally)
+        extracted.UtcDateTime.Should().BeCloseTo(original.UtcDateTime, TimeSpan.FromSeconds(1));
+    }
+
+    #endregion
+
     #region Comment Mapper Unit Tests
 
     [Fact]
