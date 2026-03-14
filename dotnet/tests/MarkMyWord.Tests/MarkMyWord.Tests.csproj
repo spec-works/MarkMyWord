@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MarkMyWord\MarkMyWord.csproj" />
+    <ProjectReference Include="..\..\..\..\Sidemark\dotnet\src\Sidemark\Sidemark.csproj" />
   </ItemGroup>
 
 </Project>

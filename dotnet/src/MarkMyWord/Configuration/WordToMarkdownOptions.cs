@@ -59,6 +59,20 @@ public class WordToMarkdownOptions
     /// Extract comments from the Word document as markdown comments.
     /// </summary>
     public bool ExtractComments { get; set; } = false;
+
+    /// <summary>
+    /// Extract Word comments as an MRSF (Sidemark) sidecar document.
+    /// When true, comments are extracted into a structured <see cref="Sidemark.MrsfDocument"/>
+    /// with line-level targeting, enabling roundtripping between Word and Markdown.
+    /// </summary>
+    public bool ExtractCommentsAsSidemark { get; set; } = false;
+
+    /// <summary>
+    /// When <see cref="ExtractCommentsAsSidemark"/> is true and the conversion
+    /// target is a file, automatically write the .review.yaml sidecar file
+    /// alongside the output markdown file.
+    /// </summary>
+    public bool WriteSidemarkFile { get; set; } = true;
 }
 
 /// <summary>
