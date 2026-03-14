@@ -1,6 +1,8 @@
 using Markdig;
+using MarkMyWord.Comments;
 using MarkMyWord.Configuration;
 using MarkMyWord.Converters;
+using Sidemark;
 
 namespace MarkMyWord;
 
@@ -56,6 +58,21 @@ public static class MarkdownConverter
         // Render to OpenXML
         using var renderer = new OpenXmlRenderer(outputStream, options);
         renderer.Render(document);
+
+        // Inject Sidemark comments if provided
+        var mrsfDoc = options?.SidemarkDocument;
+        if (mrsfDoc == null && !string.IsNullOrEmpty(options?.SidemarkFilePath))
+        {
+            if (File.Exists(options.SidemarkFilePath))
+                mrsfDoc = MrsfParser.ParseFile(options.SidemarkFilePath);
+        }
+
+        if (mrsfDoc != null && mrsfDoc.Comments.Count > 0)
+        {
+            var mappings = SidemarkCommentMapper.MapToMarkdownLines(mrsfDoc, markdown);
+            WordCommentInjector.InjectComments(renderer.DocumentBuilder.WordDocument, mappings);
+        }
+
         renderer.FinalizeDocument();
     }
 

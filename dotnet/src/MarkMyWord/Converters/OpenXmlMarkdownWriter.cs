@@ -2,8 +2,10 @@ using System.Text;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using MarkMyWord.Comments;
 using MarkMyWord.Configuration;
 using MarkMyWord.Exceptions;
+using Sidemark;
 
 namespace MarkMyWord.Converters;
 
@@ -17,6 +19,11 @@ public class OpenXmlMarkdownWriter : IDisposable
     private readonly StringBuilder _markdown;
     private bool _inCodeBlock;
     private readonly Stack<ListInfo> _listStack;
+
+    /// <summary>
+    /// After conversion, contains the extracted MRSF document if comment extraction was enabled.
+    /// </summary>
+    public MrsfDocument? ExtractedSidemarkDocument { get; private set; }
 
     public OpenXmlMarkdownWriter(WordToMarkdownOptions options, string baseDirectory)
     {
@@ -45,7 +52,20 @@ public class OpenXmlMarkdownWriter : IDisposable
             // Process document body
             ProcessBody(document.MainDocumentPart.Document.Body, document);
 
-            return GetMarkdown();
+            var markdown = GetMarkdown();
+
+            // Extract Sidemark comments if requested
+            if (_options.ExtractCommentsAsSidemark)
+            {
+                var extractedComments = WordCommentExtractor.Extract(document);
+                if (extractedComments.Count > 0)
+                {
+                    ExtractedSidemarkDocument = SidemarkCommentMapper.FromWordComments(
+                        extractedComments, markdown, "document.md");
+                }
+            }
+
+            return markdown;
         }
         catch (System.IO.FileFormatException ex)
         {

@@ -42,4 +42,8 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Sidemark\dotnet\src\Sidemark\Sidemark.csproj" />
+  </ItemGroup>
+
 </Project>

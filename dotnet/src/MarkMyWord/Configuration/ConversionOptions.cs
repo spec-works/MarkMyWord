@@ -74,6 +74,19 @@ public class ConversionOptions
     /// Color theme for the document (affects page background, text colors, code blocks, and diagrams).
     /// </summary>
     public DocumentTheme Theme { get; set; } = DocumentTheme.Light;
+
+    /// <summary>
+    /// An optional MRSF (Sidemark) document whose comments should be injected
+    /// as native Word comments in the output document. When set, comment anchors
+    /// are mapped from markdown line numbers to Word paragraph positions.
+    /// </summary>
+    public Sidemark.MrsfDocument? SidemarkDocument { get; set; }
+
+    /// <summary>
+    /// Path to an MRSF sidecar file (.review.yaml) to load and inject as Word comments.
+    /// If both this and <see cref="SidemarkDocument"/> are set, the document takes precedence.
+    /// </summary>
+    public string? SidemarkFilePath { get; set; }
 }
 
 /// <summary>
