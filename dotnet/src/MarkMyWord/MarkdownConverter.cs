@@ -2,6 +2,7 @@ using Markdig;
 using MarkMyWord.Comments;
 using MarkMyWord.Configuration;
 using MarkMyWord.Converters;
+using MarkMyWord.OfficeTalk;
 using Sidemark;
 
 namespace MarkMyWord;
@@ -11,6 +12,48 @@ namespace MarkMyWord;
 /// </summary>
 public static class MarkdownConverter
 {
+    /// <summary>
+    /// Compiles markdown text to an OfficeTalk (.otk) document string.
+    /// </summary>
+    /// <param name="markdown">The markdown text to compile.</param>
+    /// <param name="options">Optional conversion options (styles, highlighting, etc.).</param>
+    /// <returns>The OfficeTalk document as a string.</returns>
+    public static string CompileToOtk(string markdown, ConversionOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(markdown))
+            throw new ArgumentException("Markdown content cannot be null or empty.", nameof(markdown));
+
+        var compiler = new OfficeTalkCompiler(options);
+        return compiler.Compile(markdown);
+    }
+
+    /// <summary>
+    /// Compiles markdown text to an OfficeTalk (.otk) document and saves it to a file.
+    /// </summary>
+    /// <param name="markdown">The markdown text to compile.</param>
+    /// <param name="outputPath">The path where the .otk file will be saved.</param>
+    /// <param name="options">Optional conversion options.</param>
+    public static void CompileToOtkFile(string markdown, string outputPath, ConversionOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(outputPath))
+            throw new ArgumentException("Output path cannot be null or empty.", nameof(outputPath));
+
+        var otk = CompileToOtk(markdown, options);
+        File.WriteAllText(outputPath, otk);
+    }
+
+    /// <summary>
+    /// Asynchronously compiles markdown text to an OfficeTalk (.otk) document and saves it to a file.
+    /// </summary>
+    public static async Task CompileToOtkFileAsync(string markdown, string outputPath, ConversionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(outputPath))
+            throw new ArgumentException("Output path cannot be null or empty.", nameof(outputPath));
+
+        var otk = CompileToOtk(markdown, options);
+        await File.WriteAllTextAsync(outputPath, otk, cancellationToken);
+    }
+
     /// <summary>
     /// Converts markdown text to a Word document and saves it to a file.
     /// </summary>

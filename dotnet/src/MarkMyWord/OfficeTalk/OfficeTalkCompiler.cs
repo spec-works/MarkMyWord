@@ -181,7 +181,7 @@ public class OfficeTalkCompiler
     {
         var code = ExtractCodeContent(codeBlock);
         var language = (codeBlock as FencedCodeBlock)?.Info ?? "";
-        var lines = code.Split('\n');
+        var lines = code.Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
 
         // Check for mermaid diagrams
         if (_options.EnableMermaidDiagrams && IsMermaidLanguage(language))
