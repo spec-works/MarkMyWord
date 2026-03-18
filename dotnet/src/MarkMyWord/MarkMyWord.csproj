@@ -11,7 +11,7 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
-    <Version>0.8.0-preview2</Version>
+    <Version>0.8.0-preview3</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
     <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents with syntax highlighting and Mermaid diagrams. Supports headings, paragraphs, emphasis, code blocks with syntax highlighting (JSON, TypeSpec, Bash), Mermaid diagram rendering, links, images, lists, tables, and more.</Description>
@@ -38,13 +38,9 @@
     <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
   </ItemGroup>
 
-  <!-- Use local project references when sibling repos exist; NuGet packages otherwise (CI) -->
-  <ItemGroup Condition="Exists('..\..\..\..\..\OfficeTalkEngine\dotnet\src\OfficeTalkEngine\OfficeTalkEngine.csproj')">
-    <ProjectReference Include="..\..\..\..\..\OfficeTalkEngine\dotnet\src\OfficeTalkEngine\OfficeTalkEngine.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="!Exists('..\..\..\..\..\OfficeTalkEngine\dotnet\src\OfficeTalkEngine\OfficeTalkEngine.csproj')">
-    <PackageReference Include="SpecWorks.OfficeTalkEngine" Version="0.5.0" />
-    <PackageReference Include="SpecWorks.OfficeTalk" Version="0.4.0" />
+  <ItemGroup>
+    <PackageReference Include="SpecWorks.OfficeTalkEngine" Version="0.6.0" />
+    <PackageReference Include="SpecWorks.OfficeTalk" Version="0.5.0" />
   </ItemGroup>
 
   <ItemGroup>
