@@ -18,8 +18,11 @@ public class OfficeTalkCompiler
     private readonly StyleConfiguration _styles;
     private readonly SyntaxHighlighterFactory _highlighter = new();
     private readonly StringBuilder _output = new();
+    private int _headingIndex;
     private int _paragraphIndex;
     private int _tableIndex;
+    // Tracks the address of the last emitted element for INSERT AFTER chaining
+    private string? _lastAddress;
 
     public OfficeTalkCompiler(ConversionOptions? options = null)
     {
@@ -46,8 +49,10 @@ public class OfficeTalkCompiler
     public string Compile(MarkdownDocument document)
     {
         _output.Clear();
+        _headingIndex = 0;
         _paragraphIndex = 1; // blank doc starts with paragraph[1]
         _tableIndex = 0;
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
 
         // Header
         _output.AppendLine("OFFICETALK/1.0");
@@ -110,22 +115,40 @@ public class OfficeTalkCompiler
     private void CompileHeading(HeadingBlock heading, bool isFirst)
     {
         var runs = CollectInlineRuns(heading.Inline);
+        var text = runs.All(r => !r.Bold && !r.Italic && !r.IsCode && r.Href == null)
+            ? string.Concat(runs.Select(r => r.Text))
+            : null;
 
         if (isFirst)
         {
-            // Use the existing first paragraph
+            // Use the existing first paragraph — SET + STYLE in one block is fine
             _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            EmitContent(runs);
+            _output.AppendLine($"STYLE \"Heading{heading.Level}\"");
+            _output.AppendLine();
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            // Block 1: Insert a new empty paragraph after the last element
+            _output.AppendLine($"AT {_lastAddress}");
             _output.AppendLine("INSERT AFTER \"\"");
+            _output.AppendLine();
             _paragraphIndex++;
+
+            // Block 2: Target the new paragraph, set content and style
+            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            EmitContent(runs);
+            _output.AppendLine($"STYLE \"Heading{heading.Level}\"");
+            _output.AppendLine();
         }
 
-        EmitContent(runs);
-        _output.AppendLine($"STYLE \"Heading{heading.Level}\"");
-        _output.AppendLine();
+        // After STYLE "HeadingN", this element is now a heading
+        if (isFirst)
+            _paragraphIndex--; // paragraph[1] was consumed and converted to heading
+        else
+            _paragraphIndex--; // the inserted paragraph was converted to heading
+        _headingIndex++;
+        _lastAddress = $"body/heading[{_headingIndex}]";
     }
 
     private void CompileParagraph(ParagraphBlock paragraph, bool isFirst)
@@ -138,20 +161,37 @@ public class OfficeTalkCompiler
         }
 
         var runs = CollectInlineRuns(paragraph.Inline);
+        bool isPlainText = runs.All(r => !r.Bold && !r.Italic && !r.IsCode && r.Href == null);
 
         if (isFirst)
         {
             _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            EmitContent(runs);
+            _output.AppendLine();
+        }
+        else if (isPlainText)
+        {
+            // Simple text: INSERT AFTER carries the content directly
+            var text = string.Concat(runs.Select(r => r.Text));
+            _output.AppendLine($"AT {_lastAddress}");
+            _output.AppendLine($"INSERT AFTER \"{Escape(text)}\"");
+            _output.AppendLine();
+            _paragraphIndex++;
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            // Formatted runs: two blocks — INSERT AFTER empty, then SET RUNS
+            _output.AppendLine($"AT {_lastAddress}");
             _output.AppendLine("INSERT AFTER \"\"");
+            _output.AppendLine();
             _paragraphIndex++;
+
+            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            EmitContent(runs);
+            _output.AppendLine();
         }
 
-        EmitContent(runs);
-        _output.AppendLine();
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
     }
 
     private void CompileImage(LinkInline link, bool isFirst)
@@ -165,7 +205,7 @@ public class OfficeTalkCompiler
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            _output.AppendLine($"AT {_lastAddress}");
         }
 
         _output.AppendLine($"INSERT IMAGE AFTER \"{Escape(source)}\"");
@@ -174,6 +214,7 @@ public class OfficeTalkCompiler
         if (_options.MaxImageWidthInches > 0)
             _output.AppendLine($"  width={_options.MaxImageWidthInches}in");
         _paragraphIndex++;
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
         _output.AppendLine();
     }
 
@@ -203,9 +244,14 @@ public class OfficeTalkCompiler
             }
             else
             {
-                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+                // Block 1: Insert empty paragraph
+                _output.AppendLine($"AT {_lastAddress}");
                 _output.AppendLine("INSERT AFTER \"\"");
+                _output.AppendLine();
                 _paragraphIndex++;
+
+                // Block 2: Target new paragraph with SET RUNS
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
             }
 
             if (highlight)
@@ -237,19 +283,20 @@ public class OfficeTalkCompiler
             }
 
             _output.AppendLine();
+            _lastAddress = $"body/paragraph[{_paragraphIndex}]";
         }
     }
 
     private void CompileMermaidBlock(string code, bool isFirst)
     {
-        // Mermaid diagrams require pre-rendering to PNG by the caller.
-        // Emit a placeholder comment — the caller should render mermaid
-        // to a temp file and replace this with INSERT IMAGE.
         if (!isFirst)
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            _output.AppendLine($"AT {_lastAddress}");
             _output.AppendLine("INSERT AFTER \"\"");
+            _output.AppendLine();
             _paragraphIndex++;
+
+            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
         }
         else
         {
@@ -259,6 +306,7 @@ public class OfficeTalkCompiler
         _output.AppendLine("# TODO: Mermaid diagram — pre-render to PNG and use INSERT IMAGE");
         _output.AppendLine($"SET \"[Mermaid diagram]\"");
         _output.AppendLine();
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
     }
 
     private void CompileThematicBreak(bool isFirst)
@@ -269,13 +317,19 @@ public class OfficeTalkCompiler
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            // Block 1: Insert empty paragraph
+            _output.AppendLine($"AT {_lastAddress}");
             _output.AppendLine("INSERT AFTER \"\"");
+            _output.AppendLine();
             _paragraphIndex++;
+
+            // Block 2: Format the new paragraph as a horizontal rule
+            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
         }
 
         _output.AppendLine("FORMAT border-bottom=single, border-color=#000000, spacing-before=8pt, spacing-after=8pt");
         _output.AppendLine();
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
     }
 
     private void CompileQuoteBlock(QuoteBlock quote, bool isFirst)
@@ -293,14 +347,20 @@ public class OfficeTalkCompiler
                 }
                 else
                 {
-                    _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+                    // Block 1: Insert empty paragraph
+                    _output.AppendLine($"AT {_lastAddress}");
                     _output.AppendLine("INSERT AFTER \"\"");
+                    _output.AppendLine();
                     _paragraphIndex++;
+
+                    // Block 2: Target new paragraph
+                    _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
                 }
 
                 EmitContent(runs);
                 _output.AppendLine("STYLE \"Quote\"");
                 _output.AppendLine();
+                _lastAddress = $"body/paragraph[{_paragraphIndex}]";
             }
         }
     }
@@ -316,7 +376,7 @@ public class OfficeTalkCompiler
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            _output.AppendLine($"AT {_lastAddress}");
         }
 
         _output.AppendLine($"INSERT LIST AFTER {listType}");
@@ -329,6 +389,7 @@ public class OfficeTalkCompiler
 
         // INSERT LIST creates N paragraphs (one per item)
         _paragraphIndex += items.Count;
+        _lastAddress = $"body/paragraph[{_paragraphIndex}]";
         _output.AppendLine();
     }
 
@@ -345,12 +406,12 @@ public class OfficeTalkCompiler
         }
         else
         {
-            _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            _output.AppendLine($"AT {_lastAddress}");
         }
 
         _output.AppendLine($"INSERT TABLE AFTER rows={rows.Count}, columns={colCount}");
         _tableIndex++;
-        _paragraphIndex++; // table occupies space
+        _lastAddress = $"body/table[{_tableIndex}]";
         _output.AppendLine();
 
         // Populate rows

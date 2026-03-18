@@ -28,7 +28,8 @@ public static class ConvertCommand
         bool includeMetadata,
         bool comments,
         FileInfo? sidemarkFile,
-        bool emitOtk = false)
+        bool emitOtk = false,
+        bool viaOtk = false)
     {
         try
         {
@@ -81,6 +82,11 @@ public static class ConvertCommand
             else if (emitOtk)
             {
                 return await ConvertMarkdownToOtk(input, outputPath, verbose, font, fontSize,
+                    styleConfig, theme, force);
+            }
+            else if (viaOtk)
+            {
+                return await ConvertMarkdownToWordViaOtk(input, outputPath, verbose, font, fontSize,
                     styleConfig, theme, force);
             }
             else
@@ -357,6 +363,101 @@ public static class ConvertCommand
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error compiling Markdown to OfficeTalk: {ex.Message}");
+            if (verbose)
+            {
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Stack trace:");
+                Console.Error.WriteLine(ex.StackTrace);
+            }
+            return 1;
+        }
+    }
+
+    private static async Task<int> ConvertMarkdownToWordViaOtk(
+        FileInfo input,
+        string outputPath,
+        bool verbose,
+        string? font,
+        int? fontSize,
+        FileInfo? styleConfig,
+        string? theme,
+        bool force)
+    {
+        try
+        {
+            if (File.Exists(outputPath) && !force)
+            {
+                Console.Error.WriteLine($"Error: Output file already exists: {outputPath}");
+                Console.Error.WriteLine("Use --force to overwrite.");
+                return 1;
+            }
+
+            ConversionOptions? options = null;
+
+            if (styleConfig != null)
+            {
+                if (!styleConfig.Exists)
+                {
+                    Console.Error.WriteLine($"Error: Style configuration file not found: {styleConfig.FullName}");
+                    return 1;
+                }
+
+                var json = await File.ReadAllTextAsync(styleConfig.FullName);
+                options = JsonSerializer.Deserialize<ConversionOptions>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                });
+            }
+            else
+            {
+                options = new ConversionOptions { Styles = new StyleConfiguration() };
+
+                if (theme == "dark")
+                {
+                    options.Theme = DocumentTheme.Dark;
+                    options.Styles = StyleConfiguration.ForDarkTheme();
+                }
+
+                if (font != null) options.Styles.DefaultFontName = font;
+                if (fontSize.HasValue) options.Styles.DefaultFontSize = fontSize.Value;
+            }
+
+            var markdown = await File.ReadAllTextAsync(input.FullName);
+
+            if (string.IsNullOrWhiteSpace(markdown))
+            {
+                Console.Error.WriteLine("Warning: Input file is empty.");
+            }
+
+            if (verbose)
+            {
+                Console.WriteLine("Converting via OfficeTalk pipeline (Markdown → OTK → .docx)...");
+                var startTime = DateTime.Now;
+
+                await MarkdownConverter.ConvertToDocxViaOtkAsync(markdown, outputPath, options);
+
+                var elapsed = DateTime.Now - startTime;
+                Console.WriteLine($"Conversion completed in {elapsed.TotalMilliseconds:F0}ms");
+            }
+            else
+            {
+                await MarkdownConverter.ConvertToDocxViaOtkAsync(markdown, outputPath, options);
+            }
+
+            Console.WriteLine($"✓ Created: {outputPath}");
+
+            if (verbose)
+            {
+                var fileInfo = new FileInfo(outputPath);
+                Console.WriteLine($"File size: {FormatFileSize(fileInfo.Length)}");
+            }
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error converting Markdown to Word via OTK: {ex.Message}");
             if (verbose)
             {
                 Console.Error.WriteLine();

@@ -3,6 +3,11 @@ using MarkMyWord.Comments;
 using MarkMyWord.Configuration;
 using MarkMyWord.Converters;
 using MarkMyWord.OfficeTalk;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using OfficeTalk.Parsing;
+using OfficeTalkEngine.Execution;
 using Sidemark;
 
 namespace MarkMyWord;
@@ -52,6 +57,80 @@ public static class MarkdownConverter
 
         var otk = CompileToOtk(markdown, options);
         await File.WriteAllTextAsync(outputPath, otk, cancellationToken);
+    }
+
+    /// <summary>
+    /// Converts markdown to a Word document via the OfficeTalk pipeline:
+    /// Markdown → OTK → OfficeTalkEngine → .docx
+    /// </summary>
+    /// <param name="markdown">The markdown text to convert.</param>
+    /// <param name="outputPath">The path where the .docx file will be saved.</param>
+    /// <param name="options">Optional conversion options.</param>
+    public static void ConvertToDocxViaOtk(string markdown, string outputPath, ConversionOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(markdown))
+            throw new ArgumentException("Markdown content cannot be null or empty.", nameof(markdown));
+        if (string.IsNullOrEmpty(outputPath))
+            throw new ArgumentException("Output path cannot be null or empty.", nameof(outputPath));
+
+        var bytes = ConvertToDocxViaOtkBytes(markdown, options);
+        File.WriteAllBytes(outputPath, bytes);
+    }
+
+    /// <summary>
+    /// Converts markdown to a Word document via the OfficeTalk pipeline and writes to a stream.
+    /// </summary>
+    public static void ConvertToDocxViaOtk(string markdown, Stream outputStream, ConversionOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(markdown))
+            throw new ArgumentException("Markdown content cannot be null or empty.", nameof(markdown));
+        if (outputStream == null)
+            throw new ArgumentNullException(nameof(outputStream));
+
+        var bytes = ConvertToDocxViaOtkBytes(markdown, options);
+        outputStream.Write(bytes, 0, bytes.Length);
+    }
+
+    /// <summary>
+    /// Converts markdown to a Word document via the OfficeTalk pipeline and returns as bytes.
+    /// </summary>
+    public static byte[] ConvertToDocxViaOtkBytes(string markdown, ConversionOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(markdown))
+            throw new ArgumentException("Markdown content cannot be null or empty.", nameof(markdown));
+
+        // Step 1: Compile markdown to OTK
+        var otkText = CompileToOtk(markdown, options);
+
+        // Step 2: Parse OTK into AST
+        var lexer = new OfficeTalkLexer(otkText);
+        var tokens = lexer.Tokenize();
+        var parser = new OfficeTalkParser(tokens);
+        var otkDocument = parser.Parse();
+
+        // Step 3: Create blank .docx in memory
+        var stream = new MemoryStream();
+        using (var wordDoc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+        {
+            var mainPart = wordDoc.AddMainDocumentPart();
+            mainPart.Document = new Document();
+            mainPart.Document.Body = new Body(new Paragraph());
+            mainPart.Document.Save();
+
+            // Step 4: Execute OTK operations against the blank document
+            var executor = new WordExecutor();
+            executor.Execute(otkDocument, wordDoc);
+        }
+
+        return stream.ToArray();
+    }
+
+    /// <summary>
+    /// Asynchronously converts markdown to a Word document via the OfficeTalk pipeline.
+    /// </summary>
+    public static async Task ConvertToDocxViaOtkAsync(string markdown, string outputPath, ConversionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await Task.Run(() => ConvertToDocxViaOtk(markdown, outputPath, options), cancellationToken);
     }
 
     /// <summary>
