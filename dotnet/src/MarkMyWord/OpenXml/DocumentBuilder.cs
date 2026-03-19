@@ -101,86 +101,32 @@ public class DocumentBuilder : IDisposable
     }
 
     /// <summary>
-    /// Creates or gets a numbering ID for a specific list format and level.
+    /// Creates a new numbering instance that references an existing abstract numbering definition.
+    /// Adds a level override to restart numbering from 1 for each new list.
     /// </summary>
-    /// <param name="format">The numbering format (e.g., bullet, decimal).</param>
+    /// <param name="abstractNumId">The abstract numbering definition ID to reference.</param>
     /// <param name="level">The list level (0-8).</param>
     /// <returns>The numbering ID to use in paragraph properties.</returns>
-    public int GetOrCreateNumberingId(NumberFormatValues format, int level)
+    public int CreateNumberingInstance(int abstractNumId, int level)
     {
         var numberingPart = GetOrCreateNumberingPart();
         var numbering = numberingPart.Numbering;
 
-        // For simplicity, we'll create separate numbering definitions for bullets vs numbered
-        // In a more sophisticated implementation, we'd cache and reuse these
-        int abstractNumId = format == NumberFormatValues.Bullet ? 1 : 2;
-
-        // Check if abstract num exists
-        var abstractNum = numbering.Elements<AbstractNum>().FirstOrDefault(an => an.AbstractNumberId?.Value == abstractNumId);
-
-        if (abstractNum == null)
-        {
-            abstractNum = CreateAbstractNum(abstractNumId, format);
-            numbering.AppendChild(abstractNum);
-        }
-
-        // Create a new numbering instance
         var numId = _nextNumberingId++;
         var numberingInstance = new NumberingInstance(
             new AbstractNumId { Val = abstractNumId }
         )
         { NumberID = numId };
 
+        // Override the start value so each separate list restarts at 1
+        numberingInstance.AppendChild(new LevelOverride
+        {
+            LevelIndex = level,
+            StartOverrideNumberingValue = new StartOverrideNumberingValue { Val = 1 }
+        });
+
         numbering.AppendChild(numberingInstance);
         return numId;
-    }
-
-    /// <summary>
-    /// Creates an abstract numbering definition.
-    /// </summary>
-    private AbstractNum CreateAbstractNum(int abstractNumId, NumberFormatValues format)
-    {
-        var abstractNum = new AbstractNum { AbstractNumberId = abstractNumId };
-
-        // Create levels 0-8
-        for (int i = 0; i <= 8; i++)
-        {
-            var level = new Level
-            {
-                LevelIndex = i,
-                StartNumberingValue = new StartNumberingValue { Val = 1 }
-            };
-
-            if (format == NumberFormatValues.Bullet)
-            {
-                // Use bullet character with Calibri/Arial font (not Symbol font)
-                level.NumberingFormat = new NumberingFormat { Val = NumberFormatValues.Bullet };
-                level.LevelText = new LevelText { Val = "•" };
-                level.LevelJustification = new LevelJustification { Val = LevelJustificationValues.Left };
-                level.NumberingSymbolRunProperties = new NumberingSymbolRunProperties(
-                    new RunFonts { Ascii = "Calibri", HighAnsi = "Calibri", ComplexScript = "Calibri" }
-                );
-            }
-            else
-            {
-                // Use decimal format for numbered lists
-                level.NumberingFormat = new NumberingFormat { Val = NumberFormatValues.Decimal };
-                level.LevelText = new LevelText { Val = $"%{i + 1}." };
-                level.LevelJustification = new LevelJustification { Val = LevelJustificationValues.Left };
-            }
-
-            level.PreviousParagraphProperties = new PreviousParagraphProperties(
-                new Indentation
-                {
-                    Left = (720 * (i + 1)).ToString(), // 0.5 inch per level
-                    Hanging = "360" // 0.25 inch hanging indent
-                }
-            );
-
-            abstractNum.AppendChild(level);
-        }
-
-        return abstractNum;
     }
 
     /// <summary>

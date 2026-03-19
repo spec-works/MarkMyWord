@@ -36,11 +36,8 @@ public class ListManager
             _abstractNumCache[cacheKey] = abstractNumId;
         }
 
-        // Create a new numbering instance
-        var numberingId = _builder.GetOrCreateNumberingId(
-            isOrdered ? NumberFormatValues.Decimal : NumberFormatValues.Bullet,
-            level
-        );
+        // Create a new numbering instance referencing the correct abstract definition
+        var numberingId = _builder.CreateNumberingInstance(abstractNumId, level);
 
         _listStack.Push(new ListContext
         {
