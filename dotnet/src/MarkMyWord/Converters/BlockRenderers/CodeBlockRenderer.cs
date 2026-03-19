@@ -67,9 +67,12 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
             {
                 var line = lines[i];
                 var text = line.Slice.ToString();
+                bool isLastLine = (i == lastNonEmptyLine);
 
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
-                paragraph.ParagraphProperties = renderer.StyleManager.GetCodeBlockProperties();
+                paragraph.ParagraphProperties = isLastLine
+                    ? renderer.StyleManager.GetCodeBlockProperties(isLastParagraph: true)
+                    : renderer.StyleManager.GetCodeBlockProperties();
 
                 if (useSyntaxHighlighting)
                 {

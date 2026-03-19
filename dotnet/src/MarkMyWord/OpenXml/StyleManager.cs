@@ -142,11 +142,13 @@ public class StyleManager
     /// <summary>
     /// Creates paragraph properties for a code block.
     /// </summary>
-    public ParagraphProperties GetCodeBlockProperties()
+    public ParagraphProperties GetCodeBlockProperties(bool isLastParagraph = false)
     {
+        // 120 twips ≈ 6pt spacing after the last code line
+        var afterSpacing = isLastParagraph ? "120" : "0";
         return new ParagraphProperties(
             new Shading { Fill = _config.CodeBackgroundColor },
-            new SpacingBetweenLines { After = "0", Before = "0", Line = "240" }
+            new SpacingBetweenLines { After = afterSpacing, Before = "0", Line = "240" }
         );
     }
 
