@@ -36,11 +36,8 @@ public class ListManager
             _abstractNumCache[cacheKey] = abstractNumId;
         }
 
-        // Create a new numbering instance
-        var numberingId = _builder.GetOrCreateNumberingId(
-            isOrdered ? NumberFormatValues.Decimal : NumberFormatValues.Bullet,
-            level
-        );
+        // Create a new numbering instance referencing the correct abstract definition
+        var numberingId = _builder.CreateNumberingInstance(abstractNumId, level);
 
         _listStack.Push(new ListContext
         {
@@ -93,6 +90,9 @@ public class ListManager
 
         var abstractNum = new AbstractNum { AbstractNumberId = abstractNumId };
 
+        // MultiLevelType is required for Word to correctly interpret the numbering
+        abstractNum.AppendChild(new MultiLevelType { Val = MultiLevelValues.HybridMultilevel });
+
         // Create levels 0-8 (OpenXML supports up to 9 levels)
         for (int i = 0; i <= 8; i++)
         {
@@ -111,9 +111,12 @@ public class ListManager
             else
             {
                 level.NumberingFormat = new NumberingFormat { Val = NumberFormatValues.Bullet };
-                // Use different bullet styles for different levels
                 level.LevelText = new LevelText { Val = GetBulletChar(i) };
                 level.LevelJustification = new LevelJustification { Val = LevelJustificationValues.Left };
+                // Specify font so Word doesn't fall back to a numbered-style glyph
+                level.NumberingSymbolRunProperties = new NumberingSymbolRunProperties(
+                    new RunFonts { Ascii = "Calibri", HighAnsi = "Calibri", ComplexScript = "Calibri" }
+                );
             }
 
             // Set indentation
@@ -129,7 +132,12 @@ public class ListManager
             abstractNum.AppendChild(level);
         }
 
-        numbering.AppendChild(abstractNum);
+        // Insert before any NumberingInstance to maintain required XML element ordering
+        var firstNumInstance = numbering.Elements<NumberingInstance>().FirstOrDefault();
+        if (firstNumInstance != null)
+            numbering.InsertBefore(abstractNum, firstNumInstance);
+        else
+            numbering.AppendChild(abstractNum);
     }
 
     /// <summary>
