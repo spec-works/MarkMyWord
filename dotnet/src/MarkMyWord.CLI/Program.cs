@@ -121,6 +121,18 @@ var sidemarkFileOption = new Option<FileInfo?>(
     description: "Path to a Sidemark .review.yaml file (Markdown to Word only). If omitted with --comments, auto-discovers <input>.review.yaml."
 );
 
+var emitOtkOption = new Option<bool>(
+    aliases: new[] { "--emit-otk" },
+    description: "Emit OfficeTalk (.otk) document instead of Word (.docx). Useful for debugging the OTK compiler output.",
+    getDefaultValue: () => false
+);
+
+var viaOtkOption = new Option<bool>(
+    aliases: new[] { "--via-otk" },
+    description: "Convert Markdown to Word via the OfficeTalk pipeline (Markdown → OTK → OfficeTalkEngine → .docx).",
+    getDefaultValue: () => false
+);
+
 convertCommand.AddOption(inputOption);
 convertCommand.AddOption(outputOption);
 convertCommand.AddOption(toMarkdownOption);
@@ -136,6 +148,8 @@ convertCommand.AddOption(useCommonMarkOption);
 convertCommand.AddOption(includeMetadataOption);
 convertCommand.AddOption(commentsOption);
 convertCommand.AddOption(sidemarkFileOption);
+convertCommand.AddOption(emitOtkOption);
+convertCommand.AddOption(viaOtkOption);
 
 convertCommand.SetHandler(async (context) =>
 {
@@ -154,10 +168,12 @@ convertCommand.SetHandler(async (context) =>
     var includeMetadata = context.ParseResult.GetValueForOption(includeMetadataOption);
     var comments = context.ParseResult.GetValueForOption(commentsOption);
     var sidemarkFile = context.ParseResult.GetValueForOption(sidemarkFileOption);
+    var emitOtk = context.ParseResult.GetValueForOption(emitOtkOption);
+    var viaOtk = context.ParseResult.GetValueForOption(viaOtkOption);
 
     var exitCode = await ConvertCommand.ExecuteAsync(
         input, output, toMarkdown, verbose, font, fontSize, style, theme, force,
-        extractImages, optimizeLlm, useCommonMark, includeMetadata, comments, sidemarkFile);
+        extractImages, optimizeLlm, useCommonMark, includeMetadata, comments, sidemarkFile, emitOtk, viaOtk);
     Environment.Exit(exitCode);
 });
 
