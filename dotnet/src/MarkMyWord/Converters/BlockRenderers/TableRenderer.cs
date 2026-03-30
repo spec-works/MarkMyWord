@@ -13,33 +13,78 @@ namespace MarkMyWord.Converters.BlockRenderers;
 
 /// <summary>
 /// Renderer for table blocks.
+/// Generates Word Online–compatible OpenXML with explicit TableGrid,
+/// fixed column widths, border colors, cell margins, and TableLook.
 /// </summary>
 public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
 {
+    // Standard page body width in DXA (twips): 8.5" − 1" left − 1" right = 6.5" × 1440 dxa/inch
+    private const int PageBodyWidthDxa = 9360;
+
+    private const string BorderColor = "BFBFBF";
+    private const string HeaderFillColor = "D3D3D3";
+
     protected override void Write(OpenXmlRenderer renderer, MarkdigTable table)
     {
+        int columnCount = GetColumnCount(table);
+        if (columnCount == 0)
+            return;
+
+        int cellWidthDxa = PageBodyWidthDxa / columnCount;
+
         var wordTable = new WordTable();
 
-        // Set table properties
+        // Table properties — explicit layout and border colors for Word Online compatibility
         var tableProperties = new TableProperties(
+            new TableStyle { Val = "TableGrid" },
+            new TableWidth { Width = PageBodyWidthDxa.ToString(), Type = TableWidthUnitValues.Dxa },
+            new TableLayout { Type = TableLayoutValues.Fixed },
             new TableBorders(
-                new TopBorder { Val = BorderValues.Single, Size = 4 },
-                new BottomBorder { Val = BorderValues.Single, Size = 4 },
-                new LeftBorder { Val = BorderValues.Single, Size = 4 },
-                new RightBorder { Val = BorderValues.Single, Size = 4 },
-                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
-                new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                new TopBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
+                new BottomBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
+                new LeftBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
+                new RightBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
+                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
+                new InsideVerticalBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 }
             ),
-            new TableWidth { Width = "5000", Type = TableWidthUnitValues.Pct }
+            new TableCellMarginDefault(
+                new TopMargin { Width = "40", Type = TableWidthUnitValues.Dxa },
+                new StartMargin { Width = "80", Type = TableWidthUnitValues.Dxa },
+                new BottomMargin { Width = "40", Type = TableWidthUnitValues.Dxa },
+                new EndMargin { Width = "80", Type = TableWidthUnitValues.Dxa }
+            ),
+            new TableLook
+            {
+                Val = "04A0",
+                FirstRow = true,
+                LastRow = false,
+                FirstColumn = false,
+                LastColumn = false,
+                NoHorizontalBand = false,
+                NoVerticalBand = true
+            }
         );
         wordTable.AppendChild(tableProperties);
+
+        // TableGrid — explicit column widths required by Word Online
+        var tableGrid = new TableGrid();
+        for (int i = 0; i < columnCount; i++)
+        {
+            tableGrid.AppendChild(new GridColumn { Width = cellWidthDxa.ToString() });
+        }
+        wordTable.AppendChild(tableGrid);
+
+        // Column alignments from Markdig
+        var alignments = table.ColumnDefinitions?
+            .Select(cd => cd?.Alignment)
+            .ToArray() ?? Array.Empty<TableColumnAlign?>();
 
         // Process table rows
         foreach (var row in table)
         {
             if (row is MarkdigTableRow tableRow)
             {
-                WriteTableRow(renderer, wordTable, tableRow);
+                WriteTableRow(renderer, wordTable, tableRow, cellWidthDxa, alignments);
             }
         }
 
@@ -47,56 +92,90 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
         renderer.DocumentBuilder.Body.AppendChild(wordTable);
     }
 
-    private void WriteTableRow(OpenXmlRenderer renderer, WordTable wordTable, MarkdigTableRow tableRow)
+    /// <summary>
+    /// Determines the column count from the first row's actual cell count.
+    /// Falls back to ColumnDefinitions if no rows are present.
+    /// </summary>
+    private static int GetColumnCount(MarkdigTable table)
+    {
+        // Prefer actual cell count from the first row — most reliable source
+        foreach (var row in table)
+        {
+            if (row is MarkdigTableRow tableRow)
+                return tableRow.Count;
+        }
+
+        if (table.ColumnDefinitions?.Count > 0)
+            return table.ColumnDefinitions.Count;
+
+        return 0;
+    }
+
+    private void WriteTableRow(OpenXmlRenderer renderer, WordTable wordTable, MarkdigTableRow tableRow, int cellWidthDxa, TableColumnAlign?[] alignments)
     {
         var wordRow = new WordTableRow();
 
-        // Check if this is a header row
         bool isHeaderRow = tableRow.IsHeader;
 
+        // Mark header rows so Word repeats them across page breaks
+        if (isHeaderRow)
+        {
+            wordRow.AppendChild(new TableRowProperties(
+                new TableHeader()
+            ));
+        }
+
+        int colIndex = 0;
         foreach (var cell in tableRow)
         {
             if (cell is MarkdigTableCell tableCell)
             {
-                WriteTableCell(renderer, wordRow, tableCell, isHeaderRow);
+                var alignment = colIndex < alignments.Length ? alignments[colIndex] : null;
+                WriteTableCell(renderer, wordRow, tableCell, isHeaderRow, cellWidthDxa, alignment);
+                colIndex++;
             }
         }
 
         wordTable.AppendChild(wordRow);
     }
 
-    private void WriteTableCell(OpenXmlRenderer renderer, WordTableRow wordRow, MarkdigTableCell tableCell, bool isHeader)
+    private void WriteTableCell(OpenXmlRenderer renderer, WordTableRow wordRow, MarkdigTableCell tableCell, bool isHeader, int cellWidthDxa, TableColumnAlign? alignment)
     {
         var wordCell = new WordTableCell();
 
-        // Set cell properties
+        // Explicit cell width in DXA for Word Online compatibility
         var cellProperties = new TableCellProperties(
-            new TableCellWidth { Type = TableWidthUnitValues.Auto }
+            new TableCellWidth { Width = cellWidthDxa.ToString(), Type = TableWidthUnitValues.Dxa }
         );
 
-        // Add shading for header cells
+        // Header cell shading
         if (isHeader)
         {
             cellProperties.AppendChild(new Shading
             {
                 Val = ShadingPatternValues.Clear,
-                Fill = "D3D3D3" // Light gray background for headers
+                Color = "auto",
+                Fill = HeaderFillColor
             });
         }
 
         wordCell.AppendChild(cellProperties);
 
-        // Create a paragraph for the cell content
+        // Create a paragraph for the cell content with alignment and tight spacing
         var paragraph = new Paragraph();
+        var paragraphProperties = new ParagraphProperties();
 
-        // Apply bold formatting for header cells
-        if (isHeader)
+        var justification = alignment switch
         {
-            var paragraphProperties = new ParagraphProperties();
-            paragraph.ParagraphProperties = paragraphProperties;
-        }
+            TableColumnAlign.Center => JustificationValues.Center,
+            TableColumnAlign.Right => JustificationValues.Right,
+            _ => JustificationValues.Left
+        };
+        paragraphProperties.AppendChild(new Justification { Val = justification });
+        paragraphProperties.AppendChild(new SpacingBetweenLines { After = "0", Line = "240", LineRule = LineSpacingRuleValues.Auto });
 
-        // Add the paragraph to the cell
+        paragraph.ParagraphProperties = paragraphProperties;
+
         wordCell.AppendChild(paragraph);
 
         // Render cell content
@@ -104,10 +183,8 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
         {
             foreach (var block in tableCell)
             {
-                // For simple cases, just render inline content
                 if (block is Markdig.Syntax.ParagraphBlock paragraphBlock && paragraphBlock.Inline != null)
                 {
-                    // Render inline elements directly to the cell's paragraph
                     RenderInlineContent(renderer, paragraph, paragraphBlock, isHeader);
                 }
             }
