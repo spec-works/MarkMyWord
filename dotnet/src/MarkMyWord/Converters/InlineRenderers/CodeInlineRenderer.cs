@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using MarkMyWord.OpenXml;
 
 namespace MarkMyWord.Converters.InlineRenderers;
 
@@ -21,7 +22,7 @@ public class CodeInlineRenderer : OpenXmlObjectRenderer<CodeInline>
         // Create a run with code styling
         var runProperties = renderer.StyleManager.GetCodeRunProperties();
         var run = new Run(runProperties);
-        run.AppendChild(new Text(obj.Content) { Space = SpaceProcessingModeValues.Preserve });
+        run.AppendChild(new Text(TextSanitizer.Sanitize(obj.Content)) { Space = SpaceProcessingModeValues.Preserve });
 
         currentParagraph.AppendChild(run);
     }
