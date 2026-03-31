@@ -88,7 +88,7 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
                     new WP.Color { Val = "0563C1" },
                     new WP.Underline { Val = WP.UnderlineValues.Single }
                 ),
-                new WP.Text(obj.Url) { Space = SpaceProcessingModeValues.Preserve }
+                new WP.Text(TextSanitizer.Sanitize(obj.Url)) { Space = SpaceProcessingModeValues.Preserve }
             );
             hyperlink.AppendChild(run);
         }
@@ -208,7 +208,7 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
         var altText = link.Title ?? link.Url ?? "image";
         var run = new WP.Run(
             new WP.RunProperties(new WP.Italic()),
-            new WP.Text($"[Image: {altText}]") { Space = SpaceProcessingModeValues.Preserve }
+            new WP.Text($"[Image: {TextSanitizer.Sanitize(altText)}]") { Space = SpaceProcessingModeValues.Preserve }
         );
         paragraph.AppendChild(run);
     }
