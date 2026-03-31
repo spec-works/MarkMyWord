@@ -164,12 +164,30 @@ public class TableWebCompatibilityTests
         var borders = table.Elements<TableProperties>().First().TableBorders;
 
         borders.Should().NotBeNull();
-        borders!.TopBorder!.Color!.Value.Should().NotBeNullOrEmpty("border color prevents rendering differences");
-        borders.BottomBorder!.Color!.Value.Should().NotBeNullOrEmpty();
-        borders.LeftBorder!.Color!.Value.Should().NotBeNullOrEmpty();
-        borders.RightBorder!.Color!.Value.Should().NotBeNullOrEmpty();
-        borders.InsideHorizontalBorder!.Color!.Value.Should().NotBeNullOrEmpty();
-        borders.InsideVerticalBorder!.Color!.Value.Should().NotBeNullOrEmpty();
+
+        borders!.TopBorder.Should().NotBeNull("top border should be defined");
+        borders.TopBorder!.Color.Should().NotBeNull("top border color should be set");
+        borders.TopBorder.Color!.Value.Should().NotBeNullOrEmpty("border color prevents rendering differences");
+
+        borders.BottomBorder.Should().NotBeNull("bottom border should be defined");
+        borders.BottomBorder!.Color.Should().NotBeNull("bottom border color should be set");
+        borders.BottomBorder.Color!.Value.Should().NotBeNullOrEmpty();
+
+        borders.LeftBorder.Should().NotBeNull("left border should be defined");
+        borders.LeftBorder!.Color.Should().NotBeNull("left border color should be set");
+        borders.LeftBorder.Color!.Value.Should().NotBeNullOrEmpty();
+
+        borders.RightBorder.Should().NotBeNull("right border should be defined");
+        borders.RightBorder!.Color.Should().NotBeNull("right border color should be set");
+        borders.RightBorder.Color!.Value.Should().NotBeNullOrEmpty();
+
+        borders.InsideHorizontalBorder.Should().NotBeNull("inside horizontal border should be defined");
+        borders.InsideHorizontalBorder!.Color.Should().NotBeNull("inside horizontal border color should be set");
+        borders.InsideHorizontalBorder.Color!.Value.Should().NotBeNullOrEmpty();
+
+        borders.InsideVerticalBorder.Should().NotBeNull("inside vertical border should be defined");
+        borders.InsideVerticalBorder!.Color.Should().NotBeNull("inside vertical border color should be set");
+        borders.InsideVerticalBorder.Color!.Value.Should().NotBeNullOrEmpty();
     }
 
     #endregion

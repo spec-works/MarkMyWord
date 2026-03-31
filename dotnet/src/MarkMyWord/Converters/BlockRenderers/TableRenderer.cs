@@ -31,13 +31,13 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
             return;
 
         int cellWidthDxa = PageBodyWidthDxa / columnCount;
+        int tableWidthDxa = cellWidthDxa * columnCount;
 
         var wordTable = new WordTable();
 
         // Table properties — explicit layout and border colors for Word Online compatibility
         var tableProperties = new TableProperties(
-            new TableStyle { Val = "TableGrid" },
-            new TableWidth { Width = PageBodyWidthDxa.ToString(), Type = TableWidthUnitValues.Dxa },
+            new TableWidth { Width = tableWidthDxa.ToString(), Type = TableWidthUnitValues.Dxa },
             new TableLayout { Type = TableLayoutValues.Fixed },
             new TableBorders(
                 new TopBorder { Val = BorderValues.Single, Size = 4, Color = BorderColor, Space = 0 },
