@@ -72,13 +72,13 @@ public class PipelineParityTests
     #region Headings
 
     [Theory]
-    [InlineData("# Heading 1", "Heading1")]
-    [InlineData("## Heading 2", "Heading2")]
-    [InlineData("### Heading 3", "Heading3")]
-    [InlineData("#### Heading 4", "Heading4")]
-    [InlineData("##### Heading 5", "Heading5")]
-    [InlineData("###### Heading 6", "Heading6")]
-    public void Heading_TextAndStyleMatch(string markdown, string expectedStyle)
+    [InlineData("# Heading 1")]
+    [InlineData("## Heading 2")]
+    [InlineData("### Heading 3")]
+    [InlineData("#### Heading 4")]
+    [InlineData("##### Heading 5")]
+    [InlineData("###### Heading 6")]
+    public void Heading_TextAndStyleMatch(string markdown)
     {
         var (direct, otk) = ConvertBothPipelines(markdown);
 
