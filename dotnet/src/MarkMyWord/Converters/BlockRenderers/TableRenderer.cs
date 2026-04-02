@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Markdig.Extensions.Tables;
 using Markdig.Renderers;
+using MarkMyWord.OpenXml;
 using MarkdigTable = Markdig.Extensions.Tables.Table;
 using MarkdigTableRow = Markdig.Extensions.Tables.TableRow;
 using MarkdigTableCell = Markdig.Extensions.Tables.TableCell;
@@ -216,7 +217,7 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     run.RunProperties = runProps;
                 }
 
-                run.AppendChild(new Text(literal.Content.ToString()) { Space = SpaceProcessingModeValues.Preserve });
+                run.AppendChild(new Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
                 paragraph.AppendChild(run);
             }
             else if (inline is Markdig.Syntax.Inlines.EmphasisInline emphasis)
@@ -252,7 +253,7 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     {
                         if (emphInline is Markdig.Syntax.Inlines.LiteralInline emphLiteral)
                         {
-                            run.AppendChild(new Text(emphLiteral.Content.ToString()) { Space = SpaceProcessingModeValues.Preserve });
+                            run.AppendChild(new Text(TextSanitizer.Sanitize(emphLiteral.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
                         }
                         emphInline = emphInline.NextSibling;
                     }
@@ -272,7 +273,7 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
 
                 runProps.AppendChild(new RunFonts { Ascii = "Consolas", HighAnsi = "Consolas" });
                 run.RunProperties = runProps;
-                run.AppendChild(new Text(code.Content) { Space = SpaceProcessingModeValues.Preserve });
+                run.AppendChild(new Text(TextSanitizer.Sanitize(code.Content)) { Space = SpaceProcessingModeValues.Preserve });
                 paragraph.AppendChild(run);
             }
             else if (inline is Markdig.Syntax.Inlines.LineBreakInline)

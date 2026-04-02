@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using MarkMyWord.OpenXml;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
@@ -72,7 +73,7 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
                             new WP.Color { Val = "0563C1" },
                             new WP.Underline { Val = WP.UnderlineValues.Single }
                         ),
-                        new WP.Text(literal.Content.ToString()) { Space = SpaceProcessingModeValues.Preserve }
+                        new WP.Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve }
                     );
                     hyperlink.AppendChild(run);
                 }
@@ -87,7 +88,7 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
                     new WP.Color { Val = "0563C1" },
                     new WP.Underline { Val = WP.UnderlineValues.Single }
                 ),
-                new WP.Text(obj.Url) { Space = SpaceProcessingModeValues.Preserve }
+                new WP.Text(TextSanitizer.Sanitize(obj.Url)) { Space = SpaceProcessingModeValues.Preserve }
             );
             hyperlink.AppendChild(run);
         }
@@ -207,7 +208,7 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
         var altText = link.Title ?? link.Url ?? "image";
         var run = new WP.Run(
             new WP.RunProperties(new WP.Italic()),
-            new WP.Text($"[Image: {altText}]") { Space = SpaceProcessingModeValues.Preserve }
+            new WP.Text($"[Image: {TextSanitizer.Sanitize(altText)}]") { Space = SpaceProcessingModeValues.Preserve }
         );
         paragraph.AppendChild(run);
     }

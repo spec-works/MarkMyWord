@@ -5,6 +5,7 @@ using Markdig.Renderers;
 using Markdig.Syntax;
 using MarkMyWord.Configuration;
 using MarkMyWord.Diagrams;
+using MarkMyWord.OpenXml;
 using MarkMyWord.SyntaxHighlighting;
 using SkiaSharp;
 using Svg.Skia;
@@ -66,7 +67,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
             for (int i = 0; i <= lastNonEmptyLine; i++)
             {
                 var line = lines[i];
-                var text = line.Slice.ToString();
+                var text = TextSanitizer.Sanitize(line.Slice.ToString());
                 bool isLastLine = (i == lastNonEmptyLine);
 
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
@@ -83,7 +84,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
                     {
                         var run = new Run(
                             renderer.StyleManager.GetSyntaxTokenRunProperties(token.Type),
-                            new Text(token.Text) { Space = SpaceProcessingModeValues.Preserve }
+                            new Text(TextSanitizer.Sanitize(token.Text)) { Space = SpaceProcessingModeValues.Preserve }
                         );
                         paragraph.AppendChild(run);
                     }
@@ -192,7 +193,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
             for (int i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
-                var text = line.Slice.ToString();
+                var text = TextSanitizer.Sanitize(line.Slice.ToString());
 
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
                 paragraph.ParagraphProperties = renderer.StyleManager.GetCodeBlockProperties();

@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using MarkMyWord.OpenXml;
 
 namespace MarkMyWord.Converters.InlineRenderers;
 
@@ -15,7 +16,7 @@ public class LiteralInlineRenderer : OpenXmlObjectRenderer<LiteralInline>
         if (obj.Content.IsEmpty)
             return;
 
-        var text = obj.Content.ToString();
+        var text = TextSanitizer.Sanitize(obj.Content.ToString());
         if (string.IsNullOrEmpty(text))
             return;
 

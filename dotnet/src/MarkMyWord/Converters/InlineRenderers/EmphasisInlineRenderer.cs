@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using MarkMyWord.OpenXml;
 
 namespace MarkMyWord.Converters.InlineRenderers;
 
@@ -26,7 +27,7 @@ public class EmphasisInlineRenderer : OpenXmlObjectRenderer<EmphasisInline>
             if (child is LiteralInline literal)
             {
                 var run = new Run(CreateEmphasisRunProperties(obj));
-                run.AppendChild(new Text(literal.Content.ToString()) { Space = SpaceProcessingModeValues.Preserve });
+                run.AppendChild(new Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
                 currentParagraph.AppendChild(run);
             }
             else if (child is CodeInline codeInline)
@@ -35,7 +36,7 @@ public class EmphasisInlineRenderer : OpenXmlObjectRenderer<EmphasisInline>
                 var codeRunProps = renderer.StyleManager.GetCodeRunProperties();
                 ApplyEmphasisFormatting(obj, codeRunProps);
                 var codeRun = new Run(codeRunProps);
-                codeRun.AppendChild(new Text(codeInline.Content) { Space = SpaceProcessingModeValues.Preserve });
+                codeRun.AppendChild(new Text(TextSanitizer.Sanitize(codeInline.Content)) { Space = SpaceProcessingModeValues.Preserve });
                 currentParagraph.AppendChild(codeRun);
             }
             else
