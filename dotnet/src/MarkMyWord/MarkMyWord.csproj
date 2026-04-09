@@ -11,7 +11,7 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SpecWorks.MarkMyWord</PackageId>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <Authors>SpecWorks</Authors>
     <Company>SpecWorks</Company>
     <Description>A .NET library for converting CommonMark markdown to Microsoft Word (.docx) documents with syntax highlighting and Mermaid diagrams. Supports headings, paragraphs, emphasis, code blocks with syntax highlighting (JSON, TypeSpec, Bash), Mermaid diagram rendering, links, images, lists, tables, and more.</Description>
