@@ -1,5 +1,38 @@
 # Release Notes
 
+## Version 0.9.0
+
+### Bug Fixes
+
+#### Word Online Table Rendering Compatibility
+- Fixed table rendering to produce Word Online-compatible output
+- Tables now use explicit `TableCellWidth` with `Dxa` units for consistent column sizing
+- Added `TableBorders` with proper border definitions for reliable rendering across Word desktop and Word Online
+- Improved `GridColumn` width calculations for uniform table layout
+
+#### Unicode and Emoji Handling
+- Added `TextSanitizer` utility for safe OpenXML text serialization
+- Preserves valid surrogate pairs (emoji, astral plane Unicode characters U+10000+)
+- Strips only XML-invalid control characters and orphaned surrogates
+- Sanitizes URL fallback text and image alt text in `LinkInlineRenderer`
+- Applied sanitization across all inline and block renderers: `CodeBlockRenderer`, `CodeInlineRenderer`, `EmphasisInlineRenderer`, `LiteralInlineRenderer`, and `TableRenderer`
+
+### New Components
+
+- `OpenXml/TextSanitizer.cs` — Static utility for sanitizing text before OpenXML insertion
+
+### Testing
+
+- Added `TableWebCompatibilityTests` — 460 lines of tests covering Word Online table rendering
+- Added `UnicodeHandlingTests` — 423 lines of tests covering emoji, surrogate pair, and control character handling
+- Cleaned up unused parameters in `PipelineParityTests`
+
+### Breaking Changes
+
+None
+
+---
+
 ## Version 0.6.0
 
 ### Breaking Changes
