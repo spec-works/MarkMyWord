@@ -363,6 +363,18 @@ public partial class MermaidRenderer
             string text = textMatch.Success ? textMatch.Groups[1].Value.Trim() : "";
             if (string.IsNullOrEmpty(text)) return match.Value;
 
+            // Decode HTML entities from the foreignObject content (e.g. &quot; → ")
+            // before re-escaping for SVG — prevents double-escaping like &amp;quot;
+            text = System.Net.WebUtility.HtmlDecode(text);
+
+            // Strip surrounding quotes that are Mermaid label syntax, not content.
+            // In Mermaid, A["Label"] means the label is "Label" — the quotes delimit
+            // the label text and should not appear in the rendered output.
+            if (text.Length >= 2 && text[0] == '"' && text[^1] == '"')
+            {
+                text = text[1..^1];
+            }
+
             double cx = x + w / 2;
             double cy = y + h / 2;
             string fontSize = h > 30 ? "13" : "11";
