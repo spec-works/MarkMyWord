@@ -35,6 +35,43 @@ public class DocumentBuilder : IDisposable
         MainDocumentPart = WordDocument.AddMainDocumentPart();
         MainDocumentPart.Document = new Document();
         Body = MainDocumentPart.Document.AppendChild(new Body());
+
+        CreateFontTable();
+    }
+
+    /// <summary>
+    /// Creates a font table part declaring fonts used in the document.
+    /// Notably declares "Segoe UI Emoji" so Word can properly resolve it
+    /// for supplementary-plane emoji characters (color rendering).
+    /// </summary>
+    private void CreateFontTable()
+    {
+        var fontTablePart = MainDocumentPart.AddNewPart<FontTablePart>();
+
+        var fonts = new Fonts();
+
+        fonts.AppendChild(new Font(
+            new FontCharSet { Val = "00" },
+            new FontFamily { Val = FontFamilyValues.Swiss },
+            new Pitch { Val = FontPitchValues.Variable }
+        )
+        { Name = "Calibri" });
+
+        fonts.AppendChild(new Font(
+            new FontCharSet { Val = "00" },
+            new FontFamily { Val = FontFamilyValues.Modern },
+            new Pitch { Val = FontPitchValues.Fixed }
+        )
+        { Name = "Consolas" });
+
+        fonts.AppendChild(new Font(
+            new FontCharSet { Val = "00" },
+            new FontFamily { Val = FontFamilyValues.Auto },
+            new Pitch { Val = FontPitchValues.Variable }
+        )
+        { Name = EmojiSegmenter.EmojiFontName });
+
+        fontTablePart.Fonts = fonts;
     }
 
     /// <summary>

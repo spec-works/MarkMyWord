@@ -67,6 +67,7 @@ public static class EmojiRunHelper
             existingFonts.HighAnsi = EmojiSegmenter.EmojiFontName;
             existingFonts.ComplexScript = EmojiSegmenter.EmojiFontName;
             existingFonts.EastAsia = EmojiSegmenter.EmojiFontName;
+            existingFonts.Hint = FontTypeHintValues.EastAsia;
         }
         else
         {
@@ -76,6 +77,7 @@ public static class EmojiRunHelper
                 HighAnsi = EmojiSegmenter.EmojiFontName,
                 ComplexScript = EmojiSegmenter.EmojiFontName,
                 EastAsia = EmojiSegmenter.EmojiFontName,
+                Hint = FontTypeHintValues.EastAsia,
             });
         }
     }

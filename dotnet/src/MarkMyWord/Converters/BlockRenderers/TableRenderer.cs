@@ -268,8 +268,60 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                 run.AppendChild(new Break());
                 paragraph.AppendChild(run);
             }
-            // For any other inline types, just skip them for now
-            // (LinkInline would need special handling if needed in tables)
+            else if (inline is Markdig.Syntax.Inlines.LinkInline link)
+            {
+                if (link.IsImage)
+                {
+                    // Skip images in tables — just show alt text
+                    var altText = link.Title ?? link.Url ?? "image";
+                    var imgRun = new Run(
+                        new RunProperties(isBold ? new Bold() : null!, new Italic()),
+                        new Text($"[Image: {TextSanitizer.Sanitize(altText)}]") { Space = SpaceProcessingModeValues.Preserve }
+                    );
+                    paragraph.AppendChild(imgRun);
+                }
+                else if (!string.IsNullOrEmpty(link.Url))
+                {
+                    var relationshipId = renderer.DocumentBuilder.AddHyperlinkRelationship(link.Url);
+
+                    var hyperlink = new Hyperlink
+                    {
+                        Id = relationshipId,
+                        History = OnOffValue.FromBoolean(true)
+                    };
+
+                    var linkProps = new RunProperties(
+                        new Color { Val = "0563C1" },
+                        new Underline { Val = UnderlineValues.Single }
+                    );
+
+                    if (isBold)
+                        linkProps.AppendChild(new Bold());
+
+                    // Extract link text from children
+                    string linkText = "";
+                    if (link.FirstChild != null)
+                    {
+                        var child = link.FirstChild;
+                        while (child != null)
+                        {
+                            if (child is Markdig.Syntax.Inlines.LiteralInline linkLiteral)
+                                linkText += linkLiteral.Content.ToString();
+                            child = child.NextSibling;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(linkText))
+                        linkText = link.Url;
+
+                    EmojiRunHelper.AppendText(
+                        hyperlink,
+                        TextSanitizer.Sanitize(linkText),
+                        linkProps);
+
+                    paragraph.AppendChild(hyperlink);
+                }
+            }
 
             inline = inline.NextSibling;
         }
