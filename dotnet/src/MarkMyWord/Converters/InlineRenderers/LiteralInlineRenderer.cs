@@ -28,9 +28,7 @@ public class LiteralInlineRenderer : OpenXmlObjectRenderer<LiteralInline>
             currentParagraph = renderer.DocumentBuilder.AddParagraph();
         }
 
-        // Create a run with the text
-        var run = new Run();
-        run.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
-        currentParagraph.AppendChild(run);
+        // Use EmojiRunHelper to split emoji into separate runs with the emoji font
+        EmojiRunHelper.AppendText(currentParagraph, text);
     }
 }

@@ -26,9 +26,11 @@ public class EmphasisInlineRenderer : OpenXmlObjectRenderer<EmphasisInline>
         {
             if (child is LiteralInline literal)
             {
-                var run = new Run(CreateEmphasisRunProperties(obj));
-                run.AppendChild(new Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
-                currentParagraph.AppendChild(run);
+                var emphasisProps = CreateEmphasisRunProperties(obj);
+                EmojiRunHelper.AppendText(
+                    currentParagraph,
+                    TextSanitizer.Sanitize(literal.Content.ToString()),
+                    emphasisProps);
             }
             else if (child is CodeInline codeInline)
             {

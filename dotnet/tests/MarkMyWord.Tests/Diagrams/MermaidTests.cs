@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using FluentAssertions;
 using MarkMyWord.Configuration;
 
 namespace MarkMyWord.Tests.Diagrams;
@@ -479,5 +480,57 @@ flowchart TD
         // Should contain the raw source (not an error message from Mermaid rendering)
         Assert.Contains("flowchart", allText);
         Assert.DoesNotContain("Error", allText);
+    }
+
+    [Fact]
+    public void MermaidWithEmoji_RendersAsDiagramNotFallback()
+    {
+        // Arrange — emoji in node labels should not cause Mermaid parsing to fail
+        string markdown = @"```mermaid
+flowchart LR
+    A[""🔍 Discover""] --> B[""🤔 Understand""] --> C[""🛠️ Build""]
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        // Act
+        using var stream = new MemoryStream();
+        MarkdownConverter.ConvertToDocx(markdown, stream, options);
+
+        // Assert — should produce a valid document without the error fallback
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var body = doc.MainDocumentPart!.Document.Body!;
+        var allText = body.InnerText;
+
+        // If emoji stripping works, it should render as a diagram (no error message)
+        Assert.DoesNotContain("Error rendering Mermaid", allText);
+    }
+
+    [Fact]
+    public void MermaidWithEmoji_ShouldNotThrow()
+    {
+        string markdown = @"```mermaid
+flowchart LR
+    A[""🔍 Discover""] --> B[""🤔 Understand""] --> C[""🛠️ Build""] --> D[""📦 Publish""] --> E[""📊 Observe""]
+```
+";
+
+        var options = new ConversionOptions
+        {
+            EnableMermaidDiagrams = true
+        };
+
+        var act = () =>
+        {
+            using var stream = new MemoryStream();
+            MarkdownConverter.ConvertToDocx(markdown, stream, options);
+        };
+
+        act.Should().NotThrow();
     }
 }

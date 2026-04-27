@@ -204,25 +204,15 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
         {
             if (inline is Markdig.Syntax.Inlines.LiteralInline literal)
             {
-                var run = new Run();
-                var runProps = new RunProperties();
+                var runProps = isBold ? new RunProperties(new Bold()) : null;
 
-                if (isBold)
-                {
-                    runProps.AppendChild(new Bold());
-                }
-
-                if (runProps.HasChildren)
-                {
-                    run.RunProperties = runProps;
-                }
-
-                run.AppendChild(new Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
-                paragraph.AppendChild(run);
+                EmojiRunHelper.AppendText(
+                    paragraph,
+                    TextSanitizer.Sanitize(literal.Content.ToString()),
+                    runProps);
             }
             else if (inline is Markdig.Syntax.Inlines.EmphasisInline emphasis)
             {
-                var run = new Run();
                 var runProps = new RunProperties();
 
                 if (isBold)
@@ -240,11 +230,6 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     runProps.AppendChild(new Italic());
                 }
 
-                if (runProps.HasChildren)
-                {
-                    run.RunProperties = runProps;
-                }
-
                 // Recursively render emphasis content
                 if (emphasis.FirstChild != null)
                 {
@@ -253,13 +238,14 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     {
                         if (emphInline is Markdig.Syntax.Inlines.LiteralInline emphLiteral)
                         {
-                            run.AppendChild(new Text(TextSanitizer.Sanitize(emphLiteral.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
+                            EmojiRunHelper.AppendText(
+                                paragraph,
+                                TextSanitizer.Sanitize(emphLiteral.Content.ToString()),
+                                runProps.HasChildren ? runProps : null);
                         }
                         emphInline = emphInline.NextSibling;
                     }
                 }
-
-                paragraph.AppendChild(run);
             }
             else if (inline is Markdig.Syntax.Inlines.CodeInline code)
             {
