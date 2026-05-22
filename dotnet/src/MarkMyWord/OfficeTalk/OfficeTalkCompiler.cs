@@ -24,6 +24,7 @@ public class OfficeTalkCompiler
     private int _tableIndex;
     // Tracks the address of the last emitted element for INSERT AFTER chaining
     private string? _lastAddress;
+    private FrontmatterData? _frontmatter;
 
     public OfficeTalkCompiler(ConversionOptions? options = null)
     {
@@ -67,6 +68,7 @@ public class OfficeTalkCompiler
                 SidemarkFilePath = _options.SidemarkFilePath
             };
         }
+        _frontmatter = frontmatter;
 
         return Compile(document);
     }
@@ -98,8 +100,11 @@ public class OfficeTalkCompiler
         if (_options.DocumentTitle != null || _options.Author != null || _options.Subject != null)
             _output.AppendLine();
 
-        // Walk AST blocks (skip frontmatter blocks)
+        // Emit frontmatter metadata as document header (title heading + author/date)
         bool isFirst = true;
+        isFirst = EmitFrontmatterHeader(isFirst);
+
+        // Walk AST blocks (skip frontmatter blocks)
         foreach (var block in document)
         {
             if (block is YamlFrontMatterBlock)
@@ -110,6 +115,100 @@ public class OfficeTalkCompiler
         }
 
         return _output.ToString();
+    }
+
+    /// <summary>
+    /// Emits frontmatter metadata as a title heading and author/date paragraphs.
+    /// Returns the updated isFirst flag.
+    /// </summary>
+    private bool EmitFrontmatterHeader(bool isFirst)
+    {
+        if (_frontmatter == null)
+            return isFirst;
+
+        // Emit title as Heading1
+        if (!string.IsNullOrEmpty(_frontmatter.Title))
+        {
+            if (isFirst)
+            {
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+                _output.AppendLine($"SET \"{Escape(_frontmatter.Title)}\"");
+                _output.AppendLine("STYLE \"Heading1\"");
+                _output.AppendLine();
+                _paragraphIndex--;
+                _headingIndex++;
+                _lastAddress = $"body/heading[{_headingIndex}]";
+            }
+            else
+            {
+                _output.AppendLine($"AT {_lastAddress}");
+                _output.AppendLine("INSERT AFTER \"\"");
+                _output.AppendLine();
+                _paragraphIndex++;
+
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+                _output.AppendLine($"SET \"{Escape(_frontmatter.Title)}\"");
+                _output.AppendLine("STYLE \"Heading1\"");
+                _output.AppendLine();
+                _paragraphIndex--;
+                _headingIndex++;
+                _lastAddress = $"body/heading[{_headingIndex}]";
+            }
+            isFirst = false;
+        }
+
+        // Emit authors
+        if (_frontmatter.Authors.Count > 0)
+        {
+            var label = _frontmatter.Authors.Count == 1 ? "Author: " : "Authors: ";
+            var value = string.Join(", ", _frontmatter.Authors);
+
+            if (isFirst)
+            {
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            }
+            else
+            {
+                _output.AppendLine($"AT {_lastAddress}");
+                _output.AppendLine("INSERT AFTER \"\"");
+                _output.AppendLine();
+                _paragraphIndex++;
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            }
+
+            _output.AppendLine("SET RUNS");
+            _output.AppendLine($"  RUN \"{Escape(label)}\" bold=true");
+            _output.AppendLine($"  RUN \"{Escape(value)}\"");
+            _output.AppendLine();
+            _lastAddress = $"body/paragraph[{_paragraphIndex}]";
+            isFirst = false;
+        }
+
+        // Emit date
+        if (!string.IsNullOrEmpty(_frontmatter.Date))
+        {
+            if (isFirst)
+            {
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            }
+            else
+            {
+                _output.AppendLine($"AT {_lastAddress}");
+                _output.AppendLine("INSERT AFTER \"\"");
+                _output.AppendLine();
+                _paragraphIndex++;
+                _output.AppendLine($"AT body/paragraph[{_paragraphIndex}]");
+            }
+
+            _output.AppendLine("SET RUNS");
+            _output.AppendLine($"  RUN \"Date: \" bold=true");
+            _output.AppendLine($"  RUN \"{Escape(_frontmatter.Date)}\"");
+            _output.AppendLine();
+            _lastAddress = $"body/paragraph[{_paragraphIndex}]";
+            isFirst = false;
+        }
+
+        return isFirst;
     }
 
     private void CompileBlock(Block block, bool isFirst)
