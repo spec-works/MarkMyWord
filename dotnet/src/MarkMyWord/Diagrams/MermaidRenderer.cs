@@ -1,6 +1,8 @@
 using MarkMyWord.Configuration;
+using MarkMyWord.OpenXml;
 using MermaidSharp;
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MarkMyWord.Diagrams;
@@ -101,12 +103,25 @@ public partial class MermaidRenderer
 
         try
         {
-            var svg = Mermaid.Render(mermaidCode, RenderOptions.Default);
+            // Strip emoji characters before parsing — MermaidSharp's parser
+            // cannot handle astral-plane Unicode. We replace each unique emoji
+            // grapheme cluster with a single Private Use Area character and
+            // restore them in the SVG output after rendering.
+            var (sanitizedCode, emojiMap) = StripEmojisFromMermaid(mermaidCode);
+
+            var svg = Mermaid.Render(sanitizedCode, RenderOptions.Default);
             svg = ReplaceForeignObjectsWithText(svg);
             svg = NormalizeErDiagram(svg);
             svg = NormalizeClassDiagram(svg);
             svg = ApplyModernTheme(svg);
             svg = EnsureOpaqueBackground(svg);
+
+            // Restore emoji characters in the SVG text content
+            if (emojiMap.Count > 0)
+            {
+                svg = RestoreEmojisInSvg(svg, emojiMap);
+            }
+
             return svg;
         }
         catch (Exception ex)
@@ -348,6 +363,18 @@ public partial class MermaidRenderer
             string text = textMatch.Success ? textMatch.Groups[1].Value.Trim() : "";
             if (string.IsNullOrEmpty(text)) return match.Value;
 
+            // Decode HTML entities from the foreignObject content (e.g. &quot; → ")
+            // before re-escaping for SVG — prevents double-escaping like &amp;quot;
+            text = System.Net.WebUtility.HtmlDecode(text);
+
+            // Strip surrounding quotes that are Mermaid label syntax, not content.
+            // In Mermaid, A["Label"] means the label is "Label" — the quotes delimit
+            // the label text and should not appear in the rendered output.
+            if (text.Length >= 2 && text[0] == '"' && text[^1] == '"')
+            {
+                text = text[1..^1];
+            }
+
             double cx = x + w / 2;
             double cy = y + h / 2;
             string fontSize = h > 30 ? "13" : "11";
@@ -374,6 +401,63 @@ public partial class MermaidRenderer
 
     private static string F(double value) =>
         value.ToString("F2", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Replaces emoji grapheme clusters in Mermaid source code with single Private Use Area
+    /// characters so MermaidSharp can parse the diagram without failing on astral-plane Unicode.
+    /// Returns the sanitized code and a mapping from PUA placeholder → original emoji.
+    /// </summary>
+    private static (string sanitized, Dictionary<string, string> emojiMap) StripEmojisFromMermaid(string mermaidCode)
+    {
+        if (!EmojiSegmenter.ContainsEmoji(mermaidCode))
+            return (mermaidCode, new Dictionary<string, string>());
+
+        var emojiToPlaceholder = new Dictionary<string, string>();
+        var placeholderToEmoji = new Dictionary<string, string>();
+        char nextPua = '\uE000';
+
+        var result = new StringBuilder(mermaidCode.Length);
+        var enumerator = System.Globalization.StringInfo.GetTextElementEnumerator(mermaidCode);
+
+        while (enumerator.MoveNext())
+        {
+            string element = enumerator.GetTextElement();
+
+            if (EmojiSegmenter.ContainsEmoji(element))
+            {
+                if (!emojiToPlaceholder.TryGetValue(element, out string? placeholder))
+                {
+                    placeholder = nextPua.ToString();
+                    emojiToPlaceholder[element] = placeholder;
+                    placeholderToEmoji[placeholder] = element;
+                    nextPua++;
+                }
+
+                result.Append(placeholder);
+            }
+            else
+            {
+                result.Append(element);
+            }
+        }
+
+        return (result.ToString(), placeholderToEmoji);
+    }
+
+    /// <summary>
+    /// Restores emoji characters in SVG output by replacing PUA placeholders.
+    /// PUA characters (U+E000+) don't appear in SVG syntax, CSS, or attribute names,
+    /// so global replacement is safe and only affects text content.
+    /// </summary>
+    private static string RestoreEmojisInSvg(string svg, Dictionary<string, string> emojiMap)
+    {
+        foreach (var (placeholder, emoji) in emojiMap)
+        {
+            svg = svg.Replace(placeholder, emoji);
+        }
+
+        return svg;
+    }
 
     [GeneratedRegex(
         @"<foreignObject\s+x=""(?<x>[0-9.]+)""\s+y=""(?<y>[0-9.]+)""\s+width=""(?<w>[0-9.]+)""\s+height=""(?<h>[0-9.]+)""[^>]*>(?<inner>.*?)</foreignObject>",

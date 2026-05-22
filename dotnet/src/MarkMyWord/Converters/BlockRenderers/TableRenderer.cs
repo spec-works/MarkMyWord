@@ -204,25 +204,15 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
         {
             if (inline is Markdig.Syntax.Inlines.LiteralInline literal)
             {
-                var run = new Run();
-                var runProps = new RunProperties();
+                var runProps = isBold ? new RunProperties(new Bold()) : null;
 
-                if (isBold)
-                {
-                    runProps.AppendChild(new Bold());
-                }
-
-                if (runProps.HasChildren)
-                {
-                    run.RunProperties = runProps;
-                }
-
-                run.AppendChild(new Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
-                paragraph.AppendChild(run);
+                EmojiRunHelper.AppendText(
+                    paragraph,
+                    TextSanitizer.Sanitize(literal.Content.ToString()),
+                    runProps);
             }
             else if (inline is Markdig.Syntax.Inlines.EmphasisInline emphasis)
             {
-                var run = new Run();
                 var runProps = new RunProperties();
 
                 if (isBold)
@@ -240,11 +230,6 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     runProps.AppendChild(new Italic());
                 }
 
-                if (runProps.HasChildren)
-                {
-                    run.RunProperties = runProps;
-                }
-
                 // Recursively render emphasis content
                 if (emphasis.FirstChild != null)
                 {
@@ -253,13 +238,14 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                     {
                         if (emphInline is Markdig.Syntax.Inlines.LiteralInline emphLiteral)
                         {
-                            run.AppendChild(new Text(TextSanitizer.Sanitize(emphLiteral.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve });
+                            EmojiRunHelper.AppendText(
+                                paragraph,
+                                TextSanitizer.Sanitize(emphLiteral.Content.ToString()),
+                                runProps.HasChildren ? runProps : null);
                         }
                         emphInline = emphInline.NextSibling;
                     }
                 }
-
-                paragraph.AppendChild(run);
             }
             else if (inline is Markdig.Syntax.Inlines.CodeInline code)
             {
@@ -282,8 +268,60 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
                 run.AppendChild(new Break());
                 paragraph.AppendChild(run);
             }
-            // For any other inline types, just skip them for now
-            // (LinkInline would need special handling if needed in tables)
+            else if (inline is Markdig.Syntax.Inlines.LinkInline link)
+            {
+                if (link.IsImage)
+                {
+                    // Skip images in tables — just show alt text
+                    var altText = link.Title ?? link.Url ?? "image";
+                    var imgRun = new Run(
+                        new RunProperties(isBold ? new Bold() : null!, new Italic()),
+                        new Text($"[Image: {TextSanitizer.Sanitize(altText)}]") { Space = SpaceProcessingModeValues.Preserve }
+                    );
+                    paragraph.AppendChild(imgRun);
+                }
+                else if (!string.IsNullOrEmpty(link.Url))
+                {
+                    var relationshipId = renderer.DocumentBuilder.AddHyperlinkRelationship(link.Url);
+
+                    var hyperlink = new Hyperlink
+                    {
+                        Id = relationshipId,
+                        History = OnOffValue.FromBoolean(true)
+                    };
+
+                    var linkProps = new RunProperties(
+                        new Color { Val = "0563C1" },
+                        new Underline { Val = UnderlineValues.Single }
+                    );
+
+                    if (isBold)
+                        linkProps.AppendChild(new Bold());
+
+                    // Extract link text from children
+                    string linkText = "";
+                    if (link.FirstChild != null)
+                    {
+                        var child = link.FirstChild;
+                        while (child != null)
+                        {
+                            if (child is Markdig.Syntax.Inlines.LiteralInline linkLiteral)
+                                linkText += linkLiteral.Content.ToString();
+                            child = child.NextSibling;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(linkText))
+                        linkText = link.Url;
+
+                    EmojiRunHelper.AppendText(
+                        hyperlink,
+                        TextSanitizer.Sanitize(linkText),
+                        linkProps);
+
+                    paragraph.AppendChild(hyperlink);
+                }
+            }
 
             inline = inline.NextSibling;
         }

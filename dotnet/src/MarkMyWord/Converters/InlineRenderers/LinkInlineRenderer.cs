@@ -68,14 +68,14 @@ public class LinkInlineRenderer : OpenXmlObjectRenderer<LinkInline>
             {
                 if (child is LiteralInline literal)
                 {
-                    var run = new WP.Run(
-                        new WP.RunProperties(
-                            new WP.Color { Val = "0563C1" },
-                            new WP.Underline { Val = WP.UnderlineValues.Single }
-                        ),
-                        new WP.Text(TextSanitizer.Sanitize(literal.Content.ToString())) { Space = SpaceProcessingModeValues.Preserve }
+                    var linkProps = new WP.RunProperties(
+                        new WP.Color { Val = "0563C1" },
+                        new WP.Underline { Val = WP.UnderlineValues.Single }
                     );
-                    hyperlink.AppendChild(run);
+                    EmojiRunHelper.AppendText(
+                        hyperlink,
+                        TextSanitizer.Sanitize(literal.Content.ToString()),
+                        linkProps);
                 }
                 child = child.NextSibling;
             }
