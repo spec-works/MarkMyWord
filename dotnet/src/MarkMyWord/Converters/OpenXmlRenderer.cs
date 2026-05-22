@@ -1,3 +1,4 @@
+using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -37,6 +38,7 @@ public class OpenXmlRenderer : RendererBase, IDisposable
         }
 
         // Register block renderers
+        ObjectRenderers.Add(new YamlFrontMatterRenderer());
         ObjectRenderers.Add(new HeadingRenderer());
         ObjectRenderers.Add(new ParagraphRenderer());
         ObjectRenderers.Add(new CodeBlockRenderer());

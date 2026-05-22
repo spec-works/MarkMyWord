@@ -1,6 +1,7 @@
 using System.Text;
 using Markdig;
 using Markdig.Extensions.Tables;
+using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using MarkMyWord.Configuration;
@@ -14,7 +15,7 @@ namespace MarkMyWord.OfficeTalk;
 /// </summary>
 public class OfficeTalkCompiler
 {
-    private readonly ConversionOptions _options;
+    private ConversionOptions _options;
     private readonly StyleConfiguration _styles;
     private readonly SyntaxHighlighterFactory _highlighter = new();
     private readonly StringBuilder _output = new();
@@ -36,10 +37,37 @@ public class OfficeTalkCompiler
     public string Compile(string markdown)
     {
         var pipeline = new MarkdownPipelineBuilder()
+            .UseYamlFrontMatter()
             .UseAdvancedExtensions()
             .Build();
 
         var document = Markdown.Parse(markdown, pipeline);
+
+        // Extract frontmatter title and apply it to document properties
+        var frontmatter = FrontmatterExtractor.Extract(document);
+        if (frontmatter?.Title != null && string.IsNullOrEmpty(_options.DocumentTitle))
+        {
+            _options = new ConversionOptions
+            {
+                DocumentTitle = frontmatter.Title,
+                Author = _options.Author,
+                Subject = _options.Subject,
+                Styles = _options.Styles,
+                EnableAdvancedExtensions = _options.EnableAdvancedExtensions,
+                EnableTables = _options.EnableTables,
+                EnableTaskLists = _options.EnableTaskLists,
+                EnableSyntaxHighlighting = _options.EnableSyntaxHighlighting,
+                ImageStrategy = _options.ImageStrategy,
+                MaxImageWidthInches = _options.MaxImageWidthInches,
+                EnableMermaidDiagrams = _options.EnableMermaidDiagrams,
+                MaxDiagramWidthInches = _options.MaxDiagramWidthInches,
+                MaxDiagramHeightInches = _options.MaxDiagramHeightInches,
+                Theme = _options.Theme,
+                SidemarkDocument = _options.SidemarkDocument,
+                SidemarkFilePath = _options.SidemarkFilePath
+            };
+        }
+
         return Compile(document);
     }
 
@@ -70,10 +98,13 @@ public class OfficeTalkCompiler
         if (_options.DocumentTitle != null || _options.Author != null || _options.Subject != null)
             _output.AppendLine();
 
-        // Walk AST blocks
+        // Walk AST blocks (skip frontmatter blocks)
         bool isFirst = true;
         foreach (var block in document)
         {
+            if (block is YamlFrontMatterBlock)
+                continue;
+
             CompileBlock(block, isFirst);
             isFirst = false;
         }

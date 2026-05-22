@@ -166,7 +166,8 @@ public static class MarkdownConverter
             throw new ArgumentNullException(nameof(outputStream));
 
         // Parse markdown using Markdig with extensions
-        var pipelineBuilder = new MarkdownPipelineBuilder();
+        var pipelineBuilder = new MarkdownPipelineBuilder()
+            .UseYamlFrontMatter();
 
         // Enable extensions based on options
         if (options?.EnableTables ?? true)
@@ -177,8 +178,17 @@ public static class MarkdownConverter
         var pipeline = pipelineBuilder.Build();
         var document = Markdown.Parse(markdown, pipeline);
 
+        // Extract frontmatter and apply title to document properties
+        var frontmatter = FrontmatterExtractor.Extract(document);
+
         // Render to OpenXML
         using var renderer = new OpenXmlRenderer(outputStream, options);
+
+        if (frontmatter?.Title != null && string.IsNullOrEmpty(options?.DocumentTitle))
+        {
+            renderer.DocumentBuilder.SetDocumentProperties(title: frontmatter.Title);
+        }
+
         renderer.Render(document);
 
         // Inject Sidemark comments if provided
