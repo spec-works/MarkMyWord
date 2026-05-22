@@ -297,7 +297,7 @@ public static class MarkdownConverter
 
             var titleRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
             titleRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(frontmatter.Title)
-                { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
             titleParagraph.AppendChild(titleRun);
         }
 
@@ -310,13 +310,13 @@ public static class MarkdownConverter
                 new DocumentFormat.OpenXml.Wordprocessing.Bold());
             var labelText = frontmatter.Authors.Count == 1 ? "Author: " : "Authors: ";
             labelRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(labelText)
-                { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
             authorParagraph.AppendChild(labelRun);
 
             var valueRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
             valueRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(
                 string.Join(", ", frontmatter.Authors))
-                { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
             authorParagraph.AppendChild(valueRun);
         }
 
@@ -328,12 +328,12 @@ public static class MarkdownConverter
             labelRun.RunProperties = new DocumentFormat.OpenXml.Wordprocessing.RunProperties(
                 new DocumentFormat.OpenXml.Wordprocessing.Bold());
             labelRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text("Date: ")
-                { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
             dateParagraph.AppendChild(labelRun);
 
             var valueRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
             valueRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(frontmatter.Date)
-                { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
             dateParagraph.AppendChild(valueRun);
         }
     }
