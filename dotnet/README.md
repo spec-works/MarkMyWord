@@ -18,6 +18,7 @@ MarkMyWord provides bidirectional conversion between Markdown and Word:
 - Thematic breaks (`---`, `***`, `___`)
 - **Lists** (ordered, unordered, nested with proper indentation)
 - **Tables** (with headers, borders, and shading)
+  - All inline elements supported in prose (hyperlinks, inline code, emphasis/strong, line breaks, images) are also rendered inside table cells. Images currently render as `[Image: alt]` placeholders.
 
 ✅ **Inline Elements**
 - Bold (`**text**` or `__text__`)
@@ -731,6 +732,7 @@ MIT License - See LICENSE file for details
 - **Lists** (ordered, unordered, nested with proper numbering)
 - **Images** (local files and URLs with fallback support)
 - **Tables** (with headers, borders, and shading)
+  - All inline elements supported in prose (hyperlinks, inline code, emphasis/strong, line breaks, images) are also rendered inside table cells. Images currently render as `[Image: alt]` placeholders.
 - Command-line interface with full options
 - Spell/grammar check suppression for code
 
