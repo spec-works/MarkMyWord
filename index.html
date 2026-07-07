@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>MarkMyWord | MarkMyWord Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="MarkMyWord | MarkMyWord Documentation ">
+      
+      
+      <link rel="icon" href="images/logo.svg">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/spec-works/MarkMyWord/blob/main/docs/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="images/logo.svg" alt="MarkMyWord">
+            MarkMyWord
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="markmyword">MarkMyWord</h1>
+
+<p>A .NET 9 library for bidirectional conversion between CommonMark/GitHub Flavored Markdown and Microsoft Word (.docx) documents.</p>
+<h2 id="features">Features</h2>
+<p>MarkMyWord provides bidirectional conversion between Markdown and Word:</p>
+<ul>
+<li><strong>Markdown → Word</strong>: Convert CommonMark markdown to Word (.docx) documents using the Open XML SDK</li>
+<li><strong>Word → Markdown</strong>: Convert Word documents back to CommonMark or GitHub Flavored Markdown, optimized for LLM grounding and roundtripping</li>
+</ul>
+<h3 id="markdown-to-word---currently-supported">Markdown to Word - Currently Supported</h3>
+<p>✅ <strong>Block Elements</strong></p>
+<ul>
+<li>Headings (ATX: <code># H1</code> through <code>###### H6</code>, Setext: underlined)</li>
+<li>Paragraphs</li>
+<li>Code blocks (fenced with ``` and indented)</li>
+<li>Block quotes (<code>&gt;</code>)</li>
+<li>Thematic breaks (<code>---</code>, <code>***</code>, <code>___</code>)</li>
+<li><strong>Lists</strong> (ordered, unordered, nested with proper indentation)</li>
+<li><strong>Tables</strong> (with headers, borders, and shading)</li>
+</ul>
+<p>✅ <strong>Inline Elements</strong></p>
+<ul>
+<li>Bold (<code>**text**</code> or <code>__text__</code>)</li>
+<li>Italic (<code>*text*</code> or <code>_text_</code>)</li>
+<li>Bold + Italic (<code>***text***</code>)</li>
+<li>Inline code (<code>`code`</code>)</li>
+<li>Links (<code>[text](url)</code>)</li>
+<li><strong>Images</strong> (<code>![alt](url)</code> - supports local files and URLs with fallback)</li>
+<li>Hard line breaks (two spaces or <code>\</code> at end of line)</li>
+</ul>
+<p>✅ <strong>Styling</strong></p>
+<ul>
+<li>Customizable fonts and colors</li>
+<li>Configurable heading styles</li>
+<li><strong>Code syntax highlighting</strong> for JSON, TypeSpec, and Bash</li>
+<li>Automatic spell/grammar check suppression for code blocks</li>
+</ul>
+<h3 id="coming-soon">Coming Soon</h3>
+<ul>
+<li>Task lists</li>
+<li>Footnotes</li>
+<li>Definition lists</li>
+</ul>
+<h3 id="word-to-markdown-conversion">Word to Markdown Conversion</h3>
+<p>✅ <strong>Supported Elements</strong></p>
+<ul>
+<li>Headings (H1-H6) → Markdown headings (<code>#</code> through <code>######</code>)</li>
+<li>Paragraphs → Plain text with proper spacing</li>
+<li><strong>Bold</strong> and <em>Italic</em> text → Markdown emphasis (<code>**bold**</code>, <code>*italic*</code>)</li>
+<li>Inline code → Backtick syntax (<code>`code`</code>)</li>
+<li>Lists (ordered and unordered, nested) → Markdown lists</li>
+<li>Tables → GitHub Flavored Markdown table syntax</li>
+<li>Links → <code>[text](url)</code> syntax</li>
+<li>Images → <code>![alt](path)</code> with optional extraction</li>
+<li>Code blocks → Fenced code blocks with <code>```</code></li>
+<li>Block quotes → <code>&gt;</code> prefix</li>
+</ul>
+<p>✅ <strong>Conversion Options</strong></p>
+<ul>
+<li><strong>CommonMark or GitHub Flavored Markdown</strong> output</li>
+<li><strong>LLM-optimized output</strong> - Clean, semantic content for AI grounding</li>
+<li><strong>Metadata extraction</strong> - Document properties as YAML frontmatter</li>
+<li><strong>Image extraction</strong> - Save embedded images to files</li>
+<li><strong>Roundtripping support</strong> - Preserve formatting for Word ↔ Markdown conversion</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash">dotnet add package MarkMyWord
+</code></pre>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="markdown-to-word">Markdown to Word</h3>
+<pre><code class="lang-csharp">using MarkMyWord;
+
+// Convert markdown string to .docx file
+string markdown = &quot;# Hello World\n\nThis is **bold** text.&quot;;
+MarkdownConverter.ConvertToDocx(markdown, &quot;output.docx&quot;);
+</code></pre>
+<h3 id="word-to-markdown">Word to Markdown</h3>
+<pre><code class="lang-csharp">using MarkMyWord;
+using MarkMyWord.Configuration;
+
+// Convert Word document to markdown file
+WordConverter.ConvertToMarkdown(&quot;input.docx&quot;, &quot;output.md&quot;);
+
+// With options for LLM grounding
+var options = new WordToMarkdownOptions
+{
+    Flavor = MarkdownFlavor.GitHubFlavoredMarkdown,
+    OptimizeForLLM = true,
+    ExtractImages = true,
+    IncludeMetadata = false
+};
+WordConverter.ConvertToMarkdown(&quot;document.docx&quot;, &quot;output.md&quot;, options);
+
+// Convert to string
+string markdown = WordConverter.ConvertToMarkdownString(&quot;document.docx&quot;);
+</code></pre>
+<h3 id="convert-to-byte-array">Convert to Byte Array</h3>
+<pre><code class="lang-csharp">// Get the document as a byte array (useful for web scenarios)
+byte[] docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown);
+</code></pre>
+<h3 id="stream-based-conversion">Stream-based Conversion</h3>
+<pre><code class="lang-csharp">// Convert from stream to stream
+using var inputStream = File.OpenRead(&quot;input.md&quot;);
+using var outputStream = File.Create(&quot;output.docx&quot;);
+MarkdownConverter.ConvertToDocx(inputStream, outputStream);
+</code></pre>
+<h3 id="async-conversion">Async Conversion</h3>
+<pre><code class="lang-csharp">// Async conversion
+await MarkdownConverter.ConvertToDocxAsync(markdown, &quot;output.docx&quot;);
+</code></pre>
+<h3 id="lists">Lists</h3>
+<pre><code class="lang-csharp">// Unordered list
+string unorderedList = @&quot;
+# Shopping List
+- Apples
+- Bananas
+- Oranges
+  - Naval oranges
+  - Blood oranges
+&quot;;
+
+MarkdownConverter.ConvertToDocx(unorderedList, &quot;shopping.docx&quot;);
+
+// Ordered list
+string orderedList = @&quot;
+# Instructions
+1. Preheat oven to 350°F
+2. Mix ingredients
+3. Bake for 30 minutes
+   1. Check at 25 minutes
+   2. Test with toothpick
+4. Let cool
+&quot;;
+
+MarkdownConverter.ConvertToDocx(orderedList, &quot;instructions.docx&quot;);
+</code></pre>
+<h2 id="command-line-interface">Command-Line Interface</h2>
+<p>MarkMyWord includes a powerful CLI for converting markdown files from the command line.</p>
+<h3 id="installation-1">Installation</h3>
+<pre><code class="lang-bash">dotnet tool install --global SpecWorks.MarkMyWord.CLI
+</code></pre>
+<p>Or run directly from the project:</p>
+<pre><code class="lang-bash">dotnet run --project src/MarkMyWord.CLI/MarkMyWord.CLI.csproj -- [command] [options]
+</code></pre>
+<h3 id="usage">Usage</h3>
+<p>The CLI automatically detects the conversion direction based on file extension:</p>
+<ul>
+<li><code>.md</code> or <code>.markdown</code> input → converts to Word (<code>.docx</code>)</li>
+<li><code>.docx</code> input → converts to Markdown (<code>.md</code>)</li>
+</ul>
+<p><strong>Markdown to Word:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i README.md
+markmyword convert -i input.md -o output.docx
+</code></pre>
+<p><strong>Word to Markdown:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.docx
+markmyword convert -i input.docx -o output.md
+</code></pre>
+<p><strong>Specify output file:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i input.md -o output.docx
+</code></pre>
+<p><strong>Custom font and size:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md --font &quot;Times New Roman&quot; --font-size 12
+</code></pre>
+<p><strong>Use dark theme:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md --theme dark
+</code></pre>
+<p><strong>Use custom style configuration:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md --style custom-style.json
+</code></pre>
+<p><strong>Verbose output:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md -v
+</code></pre>
+<p><strong>Force overwrite:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md --force
+</code></pre>
+<p><strong>Word to Markdown with options:</strong></p>
+<pre><code class="lang-bash"># Convert Word to GitHub Flavored Markdown (default)
+markmyword convert -i document.docx -o output.md
+
+# Convert to strict CommonMark
+markmyword convert -i document.docx --commonmark
+
+# Optimize for LLM grounding (clean, semantic output)
+markmyword convert -i document.docx --optimize-llm
+
+# Include document metadata as YAML frontmatter
+markmyword convert -i document.docx --include-metadata
+
+# Don't extract images
+markmyword convert -i document.docx --extract-images false
+</code></pre>
+<p><strong>View version:</strong></p>
+<pre><code class="lang-bash">markmyword version
+</code></pre>
+<p><strong>Get help:</strong></p>
+<pre><code class="lang-bash">markmyword --help
+markmyword convert --help
+</code></pre>
+<h3 id="cli-options">CLI Options</h3>
+<h4 id="common-options">Common Options</h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--input</code></td>
+<td><code>-i</code></td>
+<td>Input file path (.md or .docx) (required)</td>
+</tr>
+<tr>
+<td><code>--output</code></td>
+<td><code>-o</code></td>
+<td>Output file path (auto-detects extension)</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td><code>-v</code></td>
+<td>Enable verbose output</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td>-</td>
+<td>Overwrite output file if it exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="markdown-to-word-options">Markdown to Word Options</h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--font</code></td>
+<td><code>-f</code></td>
+<td>Default font name (e.g., 'Calibri')</td>
+</tr>
+<tr>
+<td><code>--font-size</code></td>
+<td><code>-s</code></td>
+<td>Default font size (6-72 points)</td>
+</tr>
+<tr>
+<td><code>--theme</code></td>
+<td>-</td>
+<td>Color theme: <code>light</code> (default) or <code>dark</code></td>
+</tr>
+<tr>
+<td><code>--style</code></td>
+<td>-</td>
+<td>Path to JSON style configuration file</td>
+</tr>
+</tbody>
+</table>
+<h4 id="word-to-markdown-options">Word to Markdown Options</h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--to-markdown</code></td>
+<td>Explicitly convert to Markdown (auto-detected)</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>--extract-images</code></td>
+<td>Extract and save embedded images</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>--optimize-llm</code></td>
+<td>Optimize output for LLM grounding</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>--commonmark</code></td>
+<td>Use strict CommonMark instead of GFM</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>--include-metadata</code></td>
+<td>Include document metadata as YAML frontmatter</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="advanced-usage">Advanced Usage</h2>
+<h3 id="word-to-markdown-options-1">Word to Markdown Options</h3>
+<pre><code class="lang-csharp">using MarkMyWord;
+using MarkMyWord.Configuration;
+
+// Configure Word to Markdown conversion
+var options = new WordToMarkdownOptions
+{
+    // Use GitHub Flavored Markdown (supports tables, strikethrough, etc.)
+    Flavor = MarkdownFlavor.GitHubFlavoredMarkdown,
+
+    // Optimize for LLM grounding (clean, semantic content)
+    OptimizeForLLM = true,
+
+    // Extract embedded images to files
+    ExtractImages = true,
+
+    // Directory for extracted images (default: same as output file)
+    ImageOutputDirectory = &quot;./images&quot;,
+
+    // URL prefix for image links in markdown
+    ImageUrlPrefix = &quot;https://example.com/images/&quot;,
+
+    // Include document metadata as YAML frontmatter
+    IncludeMetadata = true,
+
+    // Preserve formatting metadata for roundtripping
+    PreserveFormattingMetadata = false,
+
+    // Use HTML for complex formatting when no markdown equivalent exists
+    UseHtmlForComplexFormatting = false,
+
+    // Line ending style
+    LineEndings = LineEndingStyle.LF
+};
+
+WordConverter.ConvertToMarkdown(&quot;document.docx&quot;, &quot;output.md&quot;, options);
+</code></pre>
+<h3 id="markdown-to-word-custom-styling">Markdown to Word Custom Styling</h3>
+<pre><code class="lang-csharp">using MarkMyWord.Configuration;
+
+var options = new ConversionOptions
+{
+    Styles = new StyleConfiguration
+    {
+        DefaultFontName = &quot;Georgia&quot;,
+        DefaultFontSize = 12,
+        CodeFontName = &quot;Fira Code&quot;,
+        CodeFontSize = 10,
+        CodeBackgroundColor = &quot;F5F5F5&quot;,
+        QuoteLeftBorderColor = &quot;4A90E2&quot;,
+        QuoteBackgroundColor = &quot;EEF7FF&quot;
+    }
+};
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;output.docx&quot;, options);
+</code></pre>
+<h3 id="custom-heading-styles">Custom Heading Styles</h3>
+<pre><code class="lang-csharp">var options = new ConversionOptions
+{
+    Styles = new StyleConfiguration
+    {
+        HeadingStyles = new[]
+        {
+            new HeadingStyle
+            {
+                Level = 1,
+                FontSize = 24,
+                Bold = true,
+                Color = &quot;2E74B5&quot;,
+                SpacingBeforeTwips = 480,  // 1/3 inch
+                SpacingAfterTwips = 240    // 1/6 inch
+            },
+            // ... configure levels 2-6
+        }
+    }
+};
+</code></pre>
+<h3 id="json-style-configuration">JSON Style Configuration</h3>
+<p>You can define styles in a JSON file and load them using the CLI or programmatically:</p>
+<p><strong>custom-style.json:</strong></p>
+<pre><code class="lang-json">{
+  &quot;styles&quot;: {
+    &quot;defaultFontName&quot;: &quot;Georgia&quot;,
+    &quot;defaultFontSize&quot;: 12,
+    &quot;headingStyles&quot;: [
+      {
+        &quot;level&quot;: 1,
+        &quot;fontSize&quot;: 28,
+        &quot;bold&quot;: true,
+        &quot;color&quot;: &quot;2E74B5&quot;,
+        &quot;spacingBeforeTwips&quot;: 480,
+        &quot;spacingAfterTwips&quot;: 240
+      },
+      {
+        &quot;level&quot;: 2,
+        &quot;fontSize&quot;: 20,
+        &quot;bold&quot;: true,
+        &quot;color&quot;: &quot;2E74B5&quot;,
+        &quot;spacingBeforeTwips&quot;: 400,
+        &quot;spacingAfterTwips&quot;: 200
+      },
+      {
+        &quot;level&quot;: 3,
+        &quot;fontSize&quot;: 16,
+        &quot;bold&quot;: true,
+        &quot;color&quot;: &quot;1F4D78&quot;,
+        &quot;spacingBeforeTwips&quot;: 320,
+        &quot;spacingAfterTwips&quot;: 160
+      }
+    ],
+    &quot;codeFontName&quot;: &quot;Fira Code&quot;,
+    &quot;codeFontSize&quot;: 10,
+    &quot;codeBackgroundColor&quot;: &quot;282C34&quot;,
+    &quot;quoteLeftBorderColor&quot;: &quot;4A90E2&quot;,
+    &quot;quoteLeftBorderWidth&quot;: 4,
+    &quot;quoteBackgroundColor&quot;: &quot;EEF7FF&quot;,
+    &quot;listIndentationTwips&quot;: 720
+  }
+}
+</code></pre>
+<p><strong>Use with CLI:</strong></p>
+<pre><code class="lang-bash">markmyword convert -i document.md --style custom-style.json
+</code></pre>
+<p><strong>Load programmatically:</strong></p>
+<pre><code class="lang-csharp">using System.Text.Json;
+
+var json = File.ReadAllText(&quot;custom-style.json&quot;);
+var config = JsonSerializer.Deserialize&lt;ConversionOptions&gt;(json);
+MarkdownConverter.ConvertToDocx(markdown, &quot;output.docx&quot;, config);
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Colors are hex values without the <code>#</code> prefix</li>
+<li>Spacing values are in twips (1440 twips = 1 inch)</li>
+<li>Font sizes are in points</li>
+</ul>
+<h3 id="document-metadata">Document Metadata</h3>
+<pre><code class="lang-csharp">var options = new ConversionOptions
+{
+    DocumentTitle = &quot;My Document&quot;,
+    Author = &quot;John Doe&quot;,
+    Subject = &quot;Technical Documentation&quot;
+};
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;output.docx&quot;, options);
+</code></pre>
+<h2 id="architecture">Architecture</h2>
+<p>MarkMyWord uses a three-stage conversion pipeline:</p>
+<ol>
+<li><strong>Parse</strong>: Markdown is parsed into an Abstract Syntax Tree (AST) using <a href="https://github.com/xoofx/markdig">Markdig</a></li>
+<li><strong>Render</strong>: The AST is traversed and converted to OpenXML elements using specialized renderers</li>
+<li><strong>Style</strong>: Styles are applied and the document is saved using <a href="https://github.com/dotnet/Open-XML-SDK">DocumentFormat.OpenXml</a></li>
+</ol>
+<pre><code>Markdown Text
+     ↓
+  Markdig Parser
+     ↓
+   AST (Syntax Tree)
+     ↓
+OpenXmlRenderer
+     ↓
+  OpenXML Elements
+     ↓
+ Word Document (.docx)
+</code></pre>
+<h2 id="project-structure">Project Structure</h2>
+<pre><code>MarkMyWord/
+├── src/
+│   ├── MarkMyWord/                    # Core library
+│   │   ├── MarkdownConverter.cs       # Public API
+│   │   ├── Converters/
+│   │   │   ├── OpenXmlRenderer.cs     # Main renderer
+│   │   │   ├── BlockRenderers/        # Block element renderers
+│   │   │   │   ├── CodeBlockRenderer.cs  # Code block rendering
+│   │   │   │   ├── ListRenderer.cs    # List rendering
+│   │   │   │   └── TableRenderer.cs   # Table rendering
+│   │   │   └── InlineRenderers/       # Inline element renderers
+│   │   │       └── LinkInlineRenderer.cs  # Links &amp; images
+│   │   ├── SyntaxHighlighting/        # Syntax highlighting
+│   │   │   ├── ISyntaxHighlighter.cs  # Highlighter interface
+│   │   │   ├── ColorCodeHighlighter.cs   # JSON highlighting
+│   │   │   ├── TypeSpecHighlighter.cs    # TypeSpec highlighting
+│   │   │   ├── BashHighlighter.cs     # Bash/Shell highlighting
+│   │   │   └── SyntaxHighlighterFactory.cs
+│   │   ├── OpenXml/
+│   │   │   ├── DocumentBuilder.cs     # OpenXML document builder
+│   │   │   ├── StyleManager.cs        # Style management
+│   │   │   └── ListManager.cs         # List numbering management
+│   │   └── Configuration/             # Configuration classes
+│   └── MarkMyWord.CLI/                # Command-line tool
+└── tests/
+    └── MarkMyWord.Tests/              # Unit tests (29 tests)
+</code></pre>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>.NET 9.0 or later</li>
+<li>Dependencies:
+<ul>
+<li>Markdig 0.37.0</li>
+<li>DocumentFormat.OpenXml 3.1.0</li>
+<li>ColorCode.Core 2.0.15</li>
+</ul>
+</li>
+</ul>
+<h2 id="building-from-source">Building from Source</h2>
+<pre><code class="lang-bash">git clone https://github.com/yourusername/MarkMyWord.git
+cd MarkMyWord
+dotnet build
+dotnet test
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="convert-a-readme-file">Convert a README file</h3>
+<pre><code class="lang-csharp">var markdown = File.ReadAllText(&quot;README.md&quot;);
+MarkdownConverter.ConvertToDocx(markdown, &quot;README.docx&quot;);
+</code></pre>
+<h3 id="lists-example">Lists Example</h3>
+<pre><code class="lang-csharp">string markdown = @&quot;
+# Shopping List
+
+## Groceries
+- Milk
+- Eggs
+- Bread
+
+## Tasks
+1. Buy groceries
+2. Clean house
+3. Do laundry
+   - Whites
+   - Colors
+&quot;;
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;shopping-list.docx&quot;);
+</code></pre>
+<h3 id="images-example">Images Example</h3>
+<pre><code class="lang-csharp">string markdown = @&quot;
+# Product Documentation
+
+![Product Logo](logo.png)
+
+Our product features:
+![Feature 1](https://example.com/feature1.png)
+![Feature 2](./images/feature2.jpg)
+&quot;;
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;product-doc.docx&quot;);
+</code></pre>
+<h3 id="tables-example">Tables Example</h3>
+<pre><code class="lang-csharp">string markdown = @&quot;
+# Sales Report
+
+| Product | Q1 Sales | Q2 Sales | Total |
+|---------|----------|----------|-------|
+| Widget A | $1,000 | $1,200 | $2,200 |
+| Widget B | $850 | $900 | $1,750 |
+| Widget C | $1,500 | $1,600 | $3,100 |
+&quot;;
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;sales-report.docx&quot;);
+</code></pre>
+<h3 id="syntax-highlighting">Syntax Highlighting</h3>
+<p>MarkMyWord supports syntax highlighting for code blocks, making code more readable in Word documents:</p>
+<p><strong>Supported Languages:</strong></p>
+<ul>
+<li><strong>JSON</strong> - Property names, strings, numbers, keywords (true/false/null)</li>
+<li><strong>TypeSpec</strong> - Keywords, types, decorators, comments</li>
+<li><strong>Bash/Shell</strong> - Commands, keywords, variables, strings, comments</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="lang-csharp">string markdown = @&quot;
+# API Response
+
+```json
+{
+  &quot;&quot;name&quot;&quot;: &quot;&quot;MarkMyWord&quot;&quot;,
+  &quot;&quot;version&quot;&quot;: &quot;&quot;0.2.0&quot;&quot;,
+  &quot;&quot;enabled&quot;&quot;: true
+}
+</code></pre>
+<pre><code class="lang-bash">#!/bin/bash
+echo &quot;&quot;Converting files...&quot;&quot;
+for file in *.md; do
+    markmyword convert -i &quot;&quot;$file&quot;&quot;
+done
+</code></pre>
+<p>&quot;;</p>
+<p>MarkdownConverter.ConvertToDocx(markdown, &quot;highlighted.docx&quot;);</p>
+<pre><code>
+**Features:**
+- Colors optimized for grey code block backgrounds
+- Automatic spell/grammar check suppression (no red squiggles!)
+- Trailing empty lines automatically removed
+- Property names vs values distinguished in JSON
+
+**Disable syntax highlighting:**
+```csharp
+var options = new ConversionOptions
+{
+    EnableSyntaxHighlighting = false
+};
+
+MarkdownConverter.ConvertToDocx(markdown, &quot;plain-code.docx&quot;, options);
+</code></pre>
+<p><strong>Custom syntax colors:</strong></p>
+<pre><code class="lang-csharp">var options = new ConversionOptions
+{
+    Styles = new StyleConfiguration
+    {
+        SyntaxColorScheme = new SyntaxColorScheme
+        {
+            KeywordColor = &quot;0000FF&quot;,     // Blue
+            StringColor = &quot;A31515&quot;,      // Red
+            NumberColor = &quot;098658&quot;,      // Green
+            CommentColor = &quot;6A9955&quot;,     // Green
+            TypeColor = &quot;4EC9B0&quot;,        // Cyan
+            FunctionColor = &quot;C4A000&quot;     // Gold
+        }
+    }
+};
+</code></pre>
+<h3 id="convert-with-custom-code-block-styling">Convert with custom code block styling</h3>
+<pre><code class="lang-csharp">var options = new ConversionOptions
+{
+    Styles = new StyleConfiguration
+    {
+        CodeFontName = &quot;Consolas&quot;,
+        CodeFontSize = 9,
+        CodeBackgroundColor = &quot;F5F5F5&quot;  // Light grey
+    }
+};
+
+string code = @&quot;
+# Code Example
+
+```json
+{
+  &quot;&quot;message&quot;&quot;: &quot;&quot;Hello, World!&quot;&quot;
+}
+</code></pre>
+<p>&quot;;</p>
+<p>MarkdownConverter.ConvertToDocx(code, &quot;code.docx&quot;, options);</p>
+<pre><code>
+## Testing
+
+The library includes comprehensive unit tests covering all supported markdown syntax:
+
+```bash
+dotnet test
+</code></pre>
+<p>Current test coverage (29 tests):</p>
+<ul>
+<li>✅ Basic paragraph conversion</li>
+<li>✅ Headings (levels 1-6)</li>
+<li>✅ Bold and italic text</li>
+<li>✅ Inline code</li>
+<li>✅ Code blocks with language labels</li>
+<li>✅ Hyperlinks</li>
+<li>✅ <strong>Lists</strong> (ordered, unordered, nested, mixed, with formatting)</li>
+<li>✅ <strong>Images</strong> (with fallback for missing images)</li>
+<li>✅ <strong>Tables</strong> (headers, multiple rows, shading, borders)</li>
+</ul>
+<h2 id="specifications">Specifications</h2>
+<p>MarkMyWord implements:</p>
+<ul>
+<li><a href="https://spec.commonmark.org/0.31.2/">CommonMark 0.31.2</a> - Markdown specification</li>
+<li><a href="https://learn.microsoft.com/en-us/office/open-xml/">Office Open XML</a> - Word document format</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>Contributions are welcome! Areas for contribution:</p>
+<ul>
+<li>Task lists and checkboxes</li>
+<li>Footnotes and references</li>
+<li>Definition lists</li>
+<li>Extended markdown features</li>
+<li>Performance optimizations</li>
+<li>Additional tests</li>
+</ul>
+<h2 id="license">License</h2>
+<p>MIT License - See LICENSE file for details</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<ul>
+<li>Built with <a href="https://github.com/xoofx/markdig">Markdig</a> by Alexandre Mutel</li>
+<li>Uses <a href="https://github.com/dotnet/Open-XML-SDK">DocumentFormat.OpenXml</a> by Microsoft</li>
+<li>Implements <a href="https://commonmark.org/">CommonMark</a> specification</li>
+</ul>
+<h2 id="status">Status</h2>
+<p>🚀 <strong>Beta</strong> - Core functionality and CLI are fully working with comprehensive CommonMark support.</p>
+<p><strong>Fully supported:</strong></p>
+<ul>
+<li>Headings, paragraphs, emphasis (bold/italic)</li>
+<li>Code blocks (fenced and indented) with <strong>syntax highlighting</strong> (JSON, TypeSpec, Bash)</li>
+<li>Inline code</li>
+<li>Links and hyperlinks</li>
+<li>Block quotes</li>
+<li>Horizontal rules / thematic breaks</li>
+<li><strong>Lists</strong> (ordered, unordered, nested with proper numbering)</li>
+<li><strong>Images</strong> (local files and URLs with fallback support)</li>
+<li><strong>Tables</strong> (with headers, borders, and shading)</li>
+<li>Command-line interface with full options</li>
+<li>Spell/grammar check suppression for code</li>
+</ul>
+<p><strong>Coming soon:</strong> Task lists, footnotes, definition lists</p>
+<hr>
+<p>Generated with ❤️ using Claude Code</p>
+<h2 id="api-reference">API Reference</h2>
+<ul>
+<li><a href="api/SpecWorks.MarkMyWord.html">MarkMyWord API Documentation</a> - Library API reference</li>
+<li><a href="api/SpecWorks.MarkMyWord.CLI.html">MarkMyWord.CLI API Documentation</a> - CLI API reference</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/spec-works/MarkMyWord/blob/main/docs/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <a href='https://spec-works.github.io/'>SpecWorks Factory</a> | <a href='https://github.com/spec-works/MarkMyWord'>GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

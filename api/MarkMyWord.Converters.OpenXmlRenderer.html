@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class OpenXmlRenderer | MarkMyWord Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class OpenXmlRenderer | MarkMyWord Documentation ">
+      
+      <meta name="description" content="Renders Markdig AST to OpenXML format.">
+      <link rel="icon" href="../images/logo.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/spec-works/MarkMyWord/new/main/apiSpec/new?filename=MarkMyWord_Converters_OpenXmlRenderer.md&amp;value=---%0Auid%3A%20MarkMyWord.Converters.OpenXmlRenderer%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="MarkMyWord">
+            MarkMyWord
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="MarkMyWord.Converters.OpenXmlRenderer">
+
+
+
+  <h1 id="MarkMyWord_Converters_OpenXmlRenderer" data-uid="MarkMyWord.Converters.OpenXmlRenderer" class="text-break">
+Class OpenXmlRenderer  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="MarkMyWord.html">MarkMyWord</a>.<a class="xref" href="MarkMyWord.Converters.html">Converters</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>MarkMyWord.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Renders Markdig AST to OpenXML format.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class OpenXmlRenderer : RendererBase, IMarkdownRenderer</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">RendererBase</span></div>
+      <div><span class="xref">OpenXmlRenderer</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><span class="xref">IMarkdownRenderer</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <span class="xref">RendererBase.WriteChildren(ContainerBlock)</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.WriteChildren(ContainerInline)</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.Write(MarkdownObject)</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.ObjectRenderers</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.IsFirstInContainer</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.IsLastInContainer</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.ObjectWriteBefore</span>
+    </div>
+    <div>
+      <span class="xref">RendererBase.ObjectWriteAfter</span>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer__ctor_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.#ctor*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer__ctor_System_IO_Stream_MarkMyWord_Configuration_ConversionOptions_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.#ctor(System.IO.Stream,MarkMyWord.Configuration.ConversionOptions)">
+  OpenXmlRenderer(Stream, ConversionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OpenXmlRenderer(Stream outputStream, ConversionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>outputStream</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="MarkMyWord.Configuration.ConversionOptions.html">ConversionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_DocumentBuilder_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.DocumentBuilder*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_DocumentBuilder" data-uid="MarkMyWord.Converters.OpenXmlRenderer.DocumentBuilder">
+  DocumentBuilder
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentBuilder DocumentBuilder { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.OpenXml.DocumentBuilder.html">DocumentBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_ListManager_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.ListManager*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_ListManager" data-uid="MarkMyWord.Converters.OpenXmlRenderer.ListManager">
+  ListManager
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListManager ListManager { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.OpenXml.ListManager.html">ListManager</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_Options_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Options*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_Options" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Options">
+  Options
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConversionOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.Configuration.ConversionOptions.html">ConversionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_StyleManager_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.StyleManager*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_StyleManager" data-uid="MarkMyWord.Converters.OpenXmlRenderer.StyleManager">
+  StyleManager
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StyleManager StyleManager { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.OpenXml.StyleManager.html">StyleManager</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_Dispose_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Dispose*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_Dispose" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disposes the renderer and underlying document builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_FinalizeDocument_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.FinalizeDocument*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_FinalizeDocument" data-uid="MarkMyWord.Converters.OpenXmlRenderer.FinalizeDocument">
+  FinalizeDocument()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finalizes the document by applying styles and saving.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FinalizeDocument()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Converters_OpenXmlRenderer_Render_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Render*"></a>
+
+  <h3 id="MarkMyWord_Converters_OpenXmlRenderer_Render_Markdig_Syntax_MarkdownObject_" data-uid="MarkMyWord.Converters.OpenXmlRenderer.Render(Markdig.Syntax.MarkdownObject)">
+  Render(MarkdownObject)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renders a markdown object to OpenXML.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override object Render(MarkdownObject markdownObject)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>markdownObject</code> <span class="xref">MarkdownObject</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Converters/OpenXmlRenderer.cs/#L14" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <a href='https://spec-works.github.io/'>SpecWorks Factory</a> | <a href='https://github.com/spec-works/MarkMyWord'>GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

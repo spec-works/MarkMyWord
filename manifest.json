@@ -1,0 +1,891 @@
+{
+  "source_base_path": "/home/runner/work/MarkMyWord/MarkMyWord/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.CLI.Commands.ConvertCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.CLI.Commands.ConvertCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.CLI.Commands.ConvertCommand",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.CLI.Commands.ConvertCommand.yml\" sourcestartlinenumber=\"1\">Handles the convert command logic.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.CLI.Commands.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.CLI.Commands.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.CLI.Commands",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Comments.ConversionResultWithComments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Comments.ConversionResultWithComments.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Comments.ConversionResultWithComments",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Comments.ConversionResultWithComments.yml\" sourcestartlinenumber=\"1\">Result of a Word-to-Markdown conversion that includes extracted Sidemark comments.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Comments.SidemarkCommentMapper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Comments.SidemarkCommentMapper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Comments.SidemarkCommentMapper",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Comments.SidemarkCommentMapper.yml\" sourcestartlinenumber=\"1\">Converts between Word document comments (via <xref href=\"MarkMyWord.Comments.WordCommentExtractor\" data-throw-if-not-resolved=\"false\"></xref>) and\nMRSF sidecar documents (<xref href=\"Sidemark.MrsfDocument\" data-throw-if-not-resolved=\"false\"></xref>). Handles the bidirectional mapping\nof comment anchors to markdown line numbers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Comments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Comments.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Comments",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.ConversionOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.ConversionOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.ConversionOptions",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.ConversionOptions.yml\" sourcestartlinenumber=\"1\">Options for converting markdown to Word documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.DocumentTheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.DocumentTheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.DocumentTheme",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.DocumentTheme.yml\" sourcestartlinenumber=\"1\">Document color theme.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.HeadingStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.HeadingStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.HeadingStyle",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.HeadingStyle.yml\" sourcestartlinenumber=\"1\">Style configuration for a heading level.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.ImageHandlingStrategy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.ImageHandlingStrategy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.ImageHandlingStrategy",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.ImageHandlingStrategy.yml\" sourcestartlinenumber=\"1\">Strategy for handling images in markdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.LineEndingStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.LineEndingStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.LineEndingStyle",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.LineEndingStyle.yml\" sourcestartlinenumber=\"1\">Line ending style for markdown output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.MarkdownFlavor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.MarkdownFlavor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.MarkdownFlavor",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.MarkdownFlavor.yml\" sourcestartlinenumber=\"1\">Markdown flavor to use for output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.StyleConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.StyleConfiguration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.StyleConfiguration",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.StyleConfiguration.yml\" sourcestartlinenumber=\"1\">Configuration for document styling.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.SyntaxColorScheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.SyntaxColorScheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.SyntaxColorScheme",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.SyntaxColorScheme.yml\" sourcestartlinenumber=\"1\">Color scheme for syntax highlighting.\nAll colors are hex format without # prefix (e.g., &quot;569CD6&quot; for blue).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.WordToMarkdownOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.WordToMarkdownOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration.WordToMarkdownOptions",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Configuration.WordToMarkdownOptions.yml\" sourcestartlinenumber=\"1\">Options for converting Word documents to Markdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Configuration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Configuration",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.CodeBlockRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.CodeBlockRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.CodeBlockRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.CodeBlockRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for code blocks (both fenced and indented).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.HeadingRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.HeadingRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.HeadingRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.HeadingRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for heading blocks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.ListRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.ListRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.ListRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.ListRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for list blocks (ordered and unordered).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.ParagraphRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.ParagraphRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.ParagraphRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.ParagraphRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for paragraph blocks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.QuoteBlockRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.QuoteBlockRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.QuoteBlockRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.QuoteBlockRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for quote blocks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.TableRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.TableRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.TableRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.TableRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for table blocks.\nGenerates Word Online–compatible OpenXML with explicit TableGrid,\nfixed column widths, border colors, cell margins, and TableLook.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.ThematicBreakRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.ThematicBreakRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers.ThematicBreakRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.BlockRenderers.ThematicBreakRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for thematic breaks (horizontal rules).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.BlockRenderers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.BlockRenderers.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.BlockRenderers",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.CodeInlineRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.CodeInlineRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers.CodeInlineRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.InlineRenderers.CodeInlineRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for inline code elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.EmphasisInlineRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.EmphasisInlineRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers.EmphasisInlineRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.InlineRenderers.EmphasisInlineRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for emphasis (bold/italic) inline elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.LineBreakInlineRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.LineBreakInlineRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers.LineBreakInlineRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.InlineRenderers.LineBreakInlineRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for line break inline elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.LinkInlineRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.LinkInlineRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers.LinkInlineRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.InlineRenderers.LinkInlineRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for link inline elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.LiteralInlineRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.LiteralInlineRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers.LiteralInlineRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.InlineRenderers.LiteralInlineRenderer.yml\" sourcestartlinenumber=\"1\">Renderer for literal inline text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.InlineRenderers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.InlineRenderers.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.InlineRenderers",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.OpenXmlMarkdownWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.OpenXmlMarkdownWriter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.OpenXmlMarkdownWriter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.OpenXmlMarkdownWriter.yml\" sourcestartlinenumber=\"1\">Converts OpenXML Word documents to Markdown format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.OpenXmlObjectRenderer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.OpenXmlObjectRenderer-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.OpenXmlObjectRenderer<TObject>",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.OpenXmlObjectRenderer-1.yml\" sourcestartlinenumber=\"1\">Base class for OpenXML object renderers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.OpenXmlRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.OpenXmlRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters.OpenXmlRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Converters.OpenXmlRenderer.yml\" sourcestartlinenumber=\"1\">Renders Markdig AST to OpenXML format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Converters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Converters.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Converters",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Diagrams.MermaidRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Diagrams.MermaidRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Diagrams.MermaidRenderer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Diagrams.MermaidRenderer.yml\" sourcestartlinenumber=\"1\">Provides functionality to render Mermaid diagrams to SVG format using MermaidSharp (Naiad).\nPure .NET implementation — no browser or JavaScript runtime required.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Diagrams.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Diagrams.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Diagrams",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Exceptions.EncryptedDocumentException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Exceptions.EncryptedDocumentException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Exceptions.EncryptedDocumentException",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.Exceptions.EncryptedDocumentException.yml\" sourcestartlinenumber=\"1\">Exception thrown when attempting to convert an encrypted or password-protected Word document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.Exceptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.Exceptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.MarkdownConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.MarkdownConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.MarkdownConverter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.MarkdownConverter.yml\" sourcestartlinenumber=\"1\">Provides methods to convert Markdown to Word documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OfficeTalk.OfficeTalkCompiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OfficeTalk.OfficeTalkCompiler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OfficeTalk.OfficeTalkCompiler",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OfficeTalk.OfficeTalkCompiler.yml\" sourcestartlinenumber=\"1\">Compiles Markdown to an OfficeTalk (.otk) document string.\nWalks the Markdig AST and emits OfficeTalk operations instead of OpenXML elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OfficeTalk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OfficeTalk.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OfficeTalk",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.DocumentBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.DocumentBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.DocumentBuilder",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.DocumentBuilder.yml\" sourcestartlinenumber=\"1\">Manages the creation and manipulation of OpenXML Word documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.EmojiRunHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.EmojiRunHelper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.EmojiRunHelper",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.EmojiRunHelper.yml\" sourcestartlinenumber=\"1\">Helper for creating Word runs that apply the correct font for emoji characters.\nSplits text into emoji and non-emoji segments, applying &quot;Segoe UI Emoji&quot; to\nemoji runs so that Word renders them in full color instead of monochrome outlines.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.EmojiSegmenter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.EmojiSegmenter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.EmojiSegmenter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.EmojiSegmenter.yml\" sourcestartlinenumber=\"1\">Segments text into emoji and non-emoji runs for proper font handling in Word.\nUses grapheme-cluster-aware segmentation to correctly handle composite emoji\n(ZWJ sequences, flags, skin tones, variation selectors).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.ListManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.ListManager.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.ListManager",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.ListManager.yml\" sourcestartlinenumber=\"1\">Manages list numbering definitions and state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.StyleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.StyleManager.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.StyleManager",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.StyleManager.yml\" sourcestartlinenumber=\"1\">Manages styles for the Word document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.TextSanitizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.TextSanitizer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.TextSanitizer",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.TextSanitizer.yml\" sourcestartlinenumber=\"1\">Sanitizes text for safe inclusion in OpenXML Word documents.\nPreserves all valid Unicode including astral plane characters (emoji, symbols).\nStrips only XML-invalid control characters and orphaned surrogates.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.TextSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.TextSegment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml.TextSegment",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.OpenXml.TextSegment.yml\" sourcestartlinenumber=\"1\">Represents a contiguous segment of text that is either all-emoji or all-non-emoji.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.OpenXml.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.OpenXml.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.OpenXml",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.BashHighlighter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.BashHighlighter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.BashHighlighter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.BashHighlighter.yml\" sourcestartlinenumber=\"1\">Custom syntax highlighter for Bash/Shell scripts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.ColorCodeHighlighter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.ColorCodeHighlighter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.ColorCodeHighlighter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.ColorCodeHighlighter.yml\" sourcestartlinenumber=\"1\">Syntax highlighter implementation using ColorCode.Core library.\nSupports 25+ languages including JSON, C#, JavaScript, TypeScript, Python, and more.\nNote: This is a simplified implementation that uses regex-based parsing for common patterns.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.HttpHighlighter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.HttpHighlighter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.HttpHighlighter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.HttpHighlighter.yml\" sourcestartlinenumber=\"1\">Syntax highlighter for HTTP requests and responses with media-type-aware body highlighting.\nSupports HTTP/1.1 and HTTP/2 message formats.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.ISyntaxHighlighter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.ISyntaxHighlighter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.ISyntaxHighlighter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.ISyntaxHighlighter.yml\" sourcestartlinenumber=\"1\">Interface for syntax highlighters that tokenize code into colored segments.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.SyntaxHighlighterFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.SyntaxHighlighterFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.SyntaxHighlighterFactory",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.SyntaxHighlighterFactory.yml\" sourcestartlinenumber=\"1\">Factory for creating and selecting appropriate syntax highlighters based on language.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.SyntaxToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.SyntaxToken.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.SyntaxToken",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.SyntaxToken.yml\" sourcestartlinenumber=\"1\">Represents a syntax token with its text content and classification type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.TokenType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.TokenType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.TokenType",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.TokenType.yml\" sourcestartlinenumber=\"1\">Classification types for syntax tokens.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.TypeSpecHighlighter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.TypeSpecHighlighter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting.TypeSpecHighlighter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.SyntaxHighlighting.TypeSpecHighlighter.yml\" sourcestartlinenumber=\"1\">Custom syntax highlighter for TypeSpec language (formerly Cadl).\nImplements regex-based tokenization for TypeSpec syntax elements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.SyntaxHighlighting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.SyntaxHighlighting.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.SyntaxHighlighting",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.WordConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.WordConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord.WordConverter",
+      "Summary": "<p sourcefile=\"api/MarkMyWord.WordConverter.yml\" sourcestartlinenumber=\"1\">Provides methods to convert Word documents to Markdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/MarkMyWord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/MarkMyWord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "MarkMyWord",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

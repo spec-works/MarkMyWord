@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class WordToMarkdownOptions | MarkMyWord Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class WordToMarkdownOptions | MarkMyWord Documentation ">
+      
+      <meta name="description" content="Options for converting Word documents to Markdown.">
+      <link rel="icon" href="../images/logo.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/spec-works/MarkMyWord/new/main/apiSpec/new?filename=MarkMyWord_Configuration_WordToMarkdownOptions.md&amp;value=---%0Auid%3A%20MarkMyWord.Configuration.WordToMarkdownOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="MarkMyWord">
+            MarkMyWord
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="MarkMyWord.Configuration.WordToMarkdownOptions">
+
+
+
+  <h1 id="MarkMyWord_Configuration_WordToMarkdownOptions" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions" class="text-break">
+Class WordToMarkdownOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L6"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="MarkMyWord.html">MarkMyWord</a>.<a class="xref" href="MarkMyWord.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>MarkMyWord.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Options for converting Word documents to Markdown.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class WordToMarkdownOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">WordToMarkdownOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractComments_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractComments*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractComments" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractComments">
+  ExtractComments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extract comments from the Word document as markdown comments.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ExtractComments { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractCommentsAsSidemark_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractCommentsAsSidemark*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractCommentsAsSidemark" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractCommentsAsSidemark">
+  ExtractCommentsAsSidemark
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extract Word comments as an MRSF (Sidemark) sidecar document.
+When true, comments are extracted into a structured <span class="xref">Sidemark.MrsfDocument</span>
+with line-level targeting, enabling roundtripping between Word and Markdown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ExtractCommentsAsSidemark { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractImages_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractImages*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_ExtractImages" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ExtractImages">
+  ExtractImages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extract images from the document and save them to disk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ExtractImages { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_Flavor_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.Flavor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_Flavor" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.Flavor">
+  Flavor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Target markdown flavor for output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MarkdownFlavor Flavor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.Configuration.MarkdownFlavor.html">MarkdownFlavor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_ImageOutputDirectory_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ImageOutputDirectory*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_ImageOutputDirectory" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ImageOutputDirectory">
+  ImageOutputDirectory
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Directory path where extracted images will be saved.
+If null, images are saved relative to the output markdown file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ImageOutputDirectory { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_ImageUrlPrefix_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ImageUrlPrefix*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_ImageUrlPrefix" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.ImageUrlPrefix">
+  ImageUrlPrefix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>URL prefix for image links in the generated markdown.
+If null, uses relative file paths.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ImageUrlPrefix { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_IncludeMetadata_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.IncludeMetadata*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_IncludeMetadata" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.IncludeMetadata">
+  IncludeMetadata
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extract and include document metadata (title, author, subject) as YAML frontmatter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeMetadata { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_LineEndings_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.LineEndings*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_LineEndings" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.LineEndings">
+  LineEndings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Line ending style for the output markdown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LineEndingStyle LineEndings { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="MarkMyWord.Configuration.LineEndingStyle.html">LineEndingStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_OptimizeForLLM_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.OptimizeForLLM*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_OptimizeForLLM" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.OptimizeForLLM">
+  OptimizeForLLM
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optimize output for LLM grounding by removing unnecessary formatting.
+When true, focuses on semantic content over visual formatting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OptimizeForLLM { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_PreserveFormattingMetadata_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.PreserveFormattingMetadata*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_PreserveFormattingMetadata" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.PreserveFormattingMetadata">
+  PreserveFormattingMetadata
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Preserve formatting details that may not have direct markdown equivalents.
+Useful for roundtripping back to Word.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PreserveFormattingMetadata { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_UseHtmlForComplexFormatting_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.UseHtmlForComplexFormatting*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_UseHtmlForComplexFormatting" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.UseHtmlForComplexFormatting">
+  UseHtmlForComplexFormatting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Convert complex formatting (colors, fonts, etc.) to HTML when no markdown equivalent exists.
+Only applicable when Flavor is GitHubFlavoredMarkdown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UseHtmlForComplexFormatting { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_WordToMarkdownOptions_WriteSidemarkFile_" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.WriteSidemarkFile*"></a>
+
+  <h3 id="MarkMyWord_Configuration_WordToMarkdownOptions_WriteSidemarkFile" data-uid="MarkMyWord.Configuration.WordToMarkdownOptions.WriteSidemarkFile">
+  WriteSidemarkFile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When <a class="xref" href="MarkMyWord.Configuration.WordToMarkdownOptions.html#MarkMyWord_Configuration_WordToMarkdownOptions_ExtractCommentsAsSidemark">ExtractCommentsAsSidemark</a> is true and the conversion
+target is a file, automatically write the .review.yaml sidecar file
+alongside the output markdown file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool WriteSidemarkFile { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/WordToMarkdownOptions.cs/#L6" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <a href='https://spec-works.github.io/'>SpecWorks Factory</a> | <a href='https://github.com/spec-works/MarkMyWord'>GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
