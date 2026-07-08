@@ -166,7 +166,8 @@ public static class MarkdownConverter
             throw new ArgumentNullException(nameof(outputStream));
 
         // Parse markdown using Markdig with extensions
-        var pipelineBuilder = new MarkdownPipelineBuilder();
+        var pipelineBuilder = new MarkdownPipelineBuilder()
+            .UseYamlFrontMatter();
 
         // Enable extensions based on options
         if (options?.EnableTables ?? true)
@@ -177,8 +178,20 @@ public static class MarkdownConverter
         var pipeline = pipelineBuilder.Build();
         var document = Markdown.Parse(markdown, pipeline);
 
+        // Extract frontmatter and apply title to document properties
+        var frontmatter = FrontmatterExtractor.Extract(document);
+
         // Render to OpenXML
         using var renderer = new OpenXmlRenderer(outputStream, options);
+
+        if (frontmatter?.Title != null && string.IsNullOrEmpty(options?.DocumentTitle))
+        {
+            renderer.DocumentBuilder.SetDocumentProperties(title: frontmatter.Title);
+        }
+
+        // Render frontmatter metadata as document header (title heading + author/date)
+        RenderFrontmatterHeader(renderer, frontmatter);
+
         renderer.Render(document);
 
         // Inject Sidemark comments if provided
@@ -264,5 +277,64 @@ public static class MarkdownConverter
     public static async Task ConvertToDocxAsync(Stream markdownStream, Stream outputStream, ConversionOptions? options = null, CancellationToken cancellationToken = default)
     {
         await Task.Run(() => ConvertToDocx(markdownStream, outputStream, options), cancellationToken);
+    }
+
+    /// <summary>
+    /// Renders frontmatter metadata as the document header:
+    /// title as an H1 heading, followed by author and date lines with bold labels.
+    /// </summary>
+    private static void RenderFrontmatterHeader(Converters.OpenXmlRenderer renderer, FrontmatterData? frontmatter)
+    {
+        if (frontmatter == null)
+            return;
+
+        // Render title as H1 heading
+        if (!string.IsNullOrEmpty(frontmatter.Title))
+        {
+            var headingProps = renderer.StyleManager.GetHeadingProperties(1);
+            var titleParagraph = renderer.DocumentBuilder.AddParagraph();
+            titleParagraph.ParagraphProperties = headingProps;
+
+            var titleRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+            titleRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(frontmatter.Title)
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            titleParagraph.AppendChild(titleRun);
+        }
+
+        // Render authors with bold label
+        if (frontmatter.Authors.Count > 0)
+        {
+            var authorParagraph = renderer.DocumentBuilder.AddParagraph();
+            var labelRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+            labelRun.RunProperties = new DocumentFormat.OpenXml.Wordprocessing.RunProperties(
+                new DocumentFormat.OpenXml.Wordprocessing.Bold());
+            var labelText = frontmatter.Authors.Count == 1 ? "Author: " : "Authors: ";
+            labelRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(labelText)
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            authorParagraph.AppendChild(labelRun);
+
+            var valueRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+            valueRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(
+                string.Join(", ", frontmatter.Authors))
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            authorParagraph.AppendChild(valueRun);
+        }
+
+        // Render date with bold label
+        if (!string.IsNullOrEmpty(frontmatter.Date))
+        {
+            var dateParagraph = renderer.DocumentBuilder.AddParagraph();
+            var labelRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+            labelRun.RunProperties = new DocumentFormat.OpenXml.Wordprocessing.RunProperties(
+                new DocumentFormat.OpenXml.Wordprocessing.Bold());
+            labelRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text("Date: ")
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            dateParagraph.AppendChild(labelRun);
+
+            var valueRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+            valueRun.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Text(frontmatter.Date)
+            { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
+            dateParagraph.AppendChild(valueRun);
+        }
     }
 }
