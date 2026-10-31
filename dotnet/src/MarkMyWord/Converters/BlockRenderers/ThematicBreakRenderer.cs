@@ -13,6 +13,7 @@ public class ThematicBreakRenderer : OpenXmlObjectRenderer<ThematicBreakBlock>
     {
         // Create a paragraph with a bottom border to simulate a horizontal rule
         var paragraph = renderer.DocumentBuilder.AddParagraph();
+        renderer.TrackParagraph(obj, paragraph);
         paragraph.ParagraphProperties = new ParagraphProperties(
             new ParagraphBorders(
                 new BottomBorder

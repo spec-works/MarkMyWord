@@ -12,6 +12,7 @@ public class ParagraphRenderer : OpenXmlObjectRenderer<ParagraphBlock>
     {
         // Create a new paragraph
         var paragraph = renderer.DocumentBuilder.AddParagraph();
+        renderer.TrackParagraph(obj, paragraph);
 
         // Render inline content
         if (obj.Inline != null)

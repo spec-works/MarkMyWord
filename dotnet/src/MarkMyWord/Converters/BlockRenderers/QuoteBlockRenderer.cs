@@ -18,6 +18,7 @@ public class QuoteBlockRenderer : OpenXmlObjectRenderer<QuoteBlock>
                 // Create paragraph with quote styling
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
                 paragraph.ParagraphProperties = renderer.StyleManager.GetQuoteProperties();
+                renderer.TrackParagraph(paragraphBlock, paragraph);
 
                 // Render inline content
                 if (paragraphBlock.Inline != null)

@@ -18,6 +18,8 @@ MarkMyWord provides bidirectional conversion between Markdown and Word:
 - Thematic breaks (`---`, `***`, `___`)
 - **Lists** (ordered, unordered, nested with proper indentation)
 - **Tables** (with headers, borders, and shading)
+- Table cells support inline formatting and hyperlinks.
+- YAML frontmatter is omitted from Word content; its `title` becomes the document title.
 
 ✅ **Inline Elements**
 - Bold (`**text**` or `__text__`)

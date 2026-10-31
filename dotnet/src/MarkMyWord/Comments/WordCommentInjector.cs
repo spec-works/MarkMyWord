@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Markdig.Syntax;
 using Sidemark;
 
 namespace MarkMyWord.Comments;
@@ -11,6 +12,8 @@ namespace MarkMyWord.Comments;
 /// </summary>
 internal static class WordCommentInjector
 {
+    private sealed record ParagraphTarget(Paragraph Paragraph, int StartLine, int EndLine, int SpanLength, int Index);
+
     /// <summary>
     /// Adds comments from an MRSF document into an existing Word document.
     /// Maps markdown line numbers to Word paragraphs and creates proper comment anchors.
@@ -19,7 +22,9 @@ internal static class WordCommentInjector
     /// <param name="commentMappings">Comments paired with their markdown start/end lines.</param>
     public static void InjectComments(
         WordprocessingDocument document,
-        List<(MrsfComment Comment, int StartLine, int EndLine)> commentMappings)
+        List<(MrsfComment Comment, int StartLine, int EndLine)> commentMappings,
+        IReadOnlyList<(Block SourceBlock, Paragraph Paragraph)> paragraphMappings,
+        string markdown)
     {
         if (commentMappings.Count == 0) return;
 
@@ -33,8 +38,15 @@ internal static class WordCommentInjector
             ?? mainPart.AddNewPart<WordprocessingCommentsPart>();
         commentsPart.Comments ??= new DocumentFormat.OpenXml.Wordprocessing.Comments();
 
-        // Get all paragraphs in document order (these roughly correspond to markdown lines)
-        var paragraphs = body.Elements<Paragraph>().ToList();
+        var paragraphTargets = paragraphMappings
+            .Select((mapping, index) => new ParagraphTarget(
+                mapping.Paragraph,
+                GetLineNumber(markdown, mapping.SourceBlock.Span.Start),
+                GetLineNumber(markdown, mapping.SourceBlock.Span.End),
+                Math.Max(0, mapping.SourceBlock.Span.End - mapping.SourceBlock.Span.Start),
+                index))
+            .ToList();
+        var paragraphs = paragraphTargets.Select(target => target.Paragraph).ToList();
 
         int nextCommentId = 0;
 
@@ -47,25 +59,18 @@ internal static class WordCommentInjector
             var wordComment = CreateWordComment(commentId, comment);
             commentsPart.Comments.AppendChild(wordComment);
 
-            // Determine which paragraph(s) to anchor to
-            // Markdown lines map roughly to paragraphs, but it's not 1:1
-            // We use a best-effort mapping: find the paragraph closest to the line number
-            if (startLine > 0 && paragraphs.Count > 0)
-            {
-                var startIdx = Math.Min(startLine - 1, paragraphs.Count - 1);
-                var endIdx = endLine > 0
-                    ? Math.Min(endLine - 1, paragraphs.Count - 1)
-                    : startIdx;
+            if (paragraphs.Count == 0)
+                continue;
 
-                AnchorComment(commentId, paragraphs, startIdx, endIdx);
+            var startIdx = FindTargetParagraph(paragraphTargets, startLine, comment.SelectedText);
+            if (startLine > 0)
+            {
+                var endIdx = FindTargetParagraph(paragraphTargets, endLine, null);
+                AnchorComment(commentId, paragraphs, startIdx, Math.Max(startIdx, endIdx), comment.SelectedText);
             }
             else
             {
-                // Document-level comment: anchor to first paragraph
-                if (paragraphs.Count > 0)
-                {
-                    AnchorComment(commentId, paragraphs, 0, 0);
-                }
+                AnchorComment(commentId, paragraphs, 0, 0, comment.SelectedText);
             }
         }
 
@@ -105,10 +110,67 @@ internal static class WordCommentInjector
         return comment;
     }
 
-    private static void AnchorComment(string commentId, List<Paragraph> paragraphs, int startIdx, int endIdx)
+    private static int FindTargetParagraph(
+        List<ParagraphTarget> paragraphTargets,
+        int targetLine,
+        string? selectedText)
+    {
+        if (!string.IsNullOrEmpty(selectedText))
+        {
+            var textMatches = paragraphTargets
+                .Where(target => target.Paragraph.InnerText.Contains(selectedText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (textMatches.Count > 0)
+            {
+                return textMatches
+                    .OrderBy(target => targetLine > 0 && targetLine >= target.StartLine && targetLine <= target.EndLine ? 0 : 1)
+                    .ThenBy(target => target.SpanLength)
+                    .First().Index;
+            }
+        }
+
+        if (targetLine <= 0)
+            return 0;
+
+        var lineMatches = paragraphTargets
+            .Where(target => targetLine >= target.StartLine && targetLine <= target.EndLine)
+            .ToList();
+        if (lineMatches.Count > 0)
+            return lineMatches.OrderBy(target => target.SpanLength).First().Index;
+
+        return paragraphTargets
+            .OrderBy(target => Math.Min(Math.Abs(targetLine - target.StartLine), Math.Abs(targetLine - target.EndLine)))
+            .First().Index;
+    }
+
+    private static int GetLineNumber(string markdown, int position)
+    {
+        var line = 1;
+        var end = Math.Clamp(position, 0, markdown.Length);
+        for (var i = 0; i < end; i++)
+        {
+            if (markdown[i] == '\n')
+                line++;
+        }
+
+        return line;
+    }
+
+    private static void AnchorComment(
+        string commentId,
+        List<Paragraph> paragraphs,
+        int startIdx,
+        int endIdx,
+        string? selectedText)
     {
         var startParagraph = paragraphs[startIdx];
         var endParagraph = paragraphs[endIdx];
+
+        if (startIdx == endIdx && !string.IsNullOrEmpty(selectedText) &&
+            TryAnchorSelectedText(commentId, startParagraph, selectedText))
+        {
+            return;
+        }
 
         // Insert CommentRangeStart before the first run of the start paragraph
         var rangeStart = new CommentRangeStart { Id = commentId };
@@ -130,6 +192,106 @@ internal static class WordCommentInjector
 
         endParagraph.AppendChild(rangeEnd);
         endParagraph.AppendChild(commentRef);
+    }
+
+    private static bool TryAnchorSelectedText(string commentId, Paragraph paragraph, string selectedText)
+    {
+        var segment = new List<Run>();
+        foreach (var child in paragraph.ChildElements)
+        {
+            if (child is Run run &&
+                run.ChildElements.All(runChild => runChild is RunProperties or Text))
+            {
+                segment.Add(run);
+                continue;
+            }
+
+            if (TryAnchorSelectedTextInRuns(commentId, paragraph, segment, selectedText))
+                return true;
+            segment.Clear();
+        }
+
+        return TryAnchorSelectedTextInRuns(commentId, paragraph, segment, selectedText);
+    }
+
+    private static bool TryAnchorSelectedTextInRuns(
+        string commentId,
+        Paragraph paragraph,
+        List<Run> runs,
+        string selectedText)
+    {
+        if (runs.Count == 0)
+            return false;
+
+        var runTexts = runs
+            .Select(run => string.Concat(run.Elements<Text>().Select(text => text.Text)))
+            .ToList();
+        var start = string.Concat(runTexts).IndexOf(selectedText, StringComparison.Ordinal);
+        if (start < 0)
+            return false;
+
+        var selectionEnd = start + selectedText.Length;
+        var currentPosition = 0;
+        var firstRunIndex = -1;
+        var lastRunIndex = -1;
+        var selectedRuns = new List<Run>();
+        string? prefix = null;
+        string? suffix = null;
+
+        for (var i = 0; i < runs.Count; i++)
+        {
+            var runText = runTexts[i];
+            var runStart = currentPosition;
+            var runEnd = runStart + runText.Length;
+            currentPosition = runEnd;
+
+            var selectedStart = Math.Max(start, runStart);
+            var selectedEnd = Math.Min(selectionEnd, runEnd);
+            if (selectedStart >= selectedEnd)
+                continue;
+
+            if (firstRunIndex < 0)
+            {
+                firstRunIndex = i;
+                if (selectedStart > runStart)
+                    prefix = runText[..(selectedStart - runStart)];
+            }
+
+            lastRunIndex = i;
+            selectedRuns.Add(CreateTextRun(runs[i], runText[(selectedStart - runStart)..(selectedEnd - runStart)]));
+            if (selectedEnd < runEnd)
+                suffix = runText[(selectedEnd - runStart)..];
+        }
+
+        if (firstRunIndex < 0 || lastRunIndex < 0)
+            return false;
+
+        var firstRun = runs[firstRunIndex];
+        if (!string.IsNullOrEmpty(prefix))
+            paragraph.InsertBefore(CreateTextRun(firstRun, prefix), firstRun);
+
+        paragraph.InsertBefore(new CommentRangeStart { Id = commentId }, firstRun);
+        foreach (var selectedRun in selectedRuns)
+            paragraph.InsertBefore(selectedRun, firstRun);
+        paragraph.InsertBefore(new CommentRangeEnd { Id = commentId }, firstRun);
+        paragraph.InsertBefore(new Run(new CommentReference { Id = commentId }), firstRun);
+
+        if (!string.IsNullOrEmpty(suffix))
+            paragraph.InsertBefore(CreateTextRun(runs[lastRunIndex], suffix), firstRun);
+
+        for (var i = firstRunIndex; i <= lastRunIndex; i++)
+            runs[i].Remove();
+
+        return true;
+    }
+
+    private static Run CreateTextRun(Run originalRun, string text)
+    {
+        var run = new Run();
+        if (originalRun.RunProperties != null)
+            run.RunProperties = (RunProperties)originalRun.RunProperties.CloneNode(true);
+        run.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
+        return run;
     }
 
     private static string GetInitials(string author)

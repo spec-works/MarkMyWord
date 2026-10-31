@@ -48,6 +48,18 @@ public class OfficeTalkCompilerTests
     }
 
     [Fact]
+    public void Compile_FrontmatterTitle_EmitsDocumentPropertyWithoutRenderingMetadata()
+    {
+        var compiler = new OfficeTalkCompiler();
+
+        var result = compiler.Compile("---\ntitle: \"Release Notes\"\nauthor: Example\n---\n\nContent.");
+
+        result.Should().Contain("PROPERTY title=\"Release Notes\"");
+        result.Should().NotContain("author");
+        result.Should().Contain("SET \"Content.\"");
+    }
+
+    [Fact]
     public void Compile_BoldText_ProducesSetRunsWithBold()
     {
         var compiler = new OfficeTalkCompiler();
