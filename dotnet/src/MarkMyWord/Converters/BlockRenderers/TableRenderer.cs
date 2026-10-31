@@ -164,6 +164,11 @@ public class TableRenderer : OpenXmlObjectRenderer<MarkdigTable>
 
         // Create a paragraph for the cell content with alignment and tight spacing
         var paragraph = new Paragraph();
+        var sourceParagraph = tableCell.OfType<Markdig.Syntax.ParagraphBlock>().FirstOrDefault();
+        if (sourceParagraph != null)
+        {
+            renderer.TrackParagraph(sourceParagraph, paragraph);
+        }
         var paragraphProperties = new ParagraphProperties();
 
         var justification = alignment switch

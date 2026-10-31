@@ -71,6 +71,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
                 bool isLastLine = (i == lastNonEmptyLine);
 
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
+                renderer.TrackParagraph(obj, paragraph);
                 paragraph.ParagraphProperties = isLastLine
                     ? renderer.StyleManager.GetCodeBlockProperties(isLastParagraph: true)
                     : renderer.StyleManager.GetCodeBlockProperties();
@@ -142,7 +143,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
             string relationshipId = renderer.DocumentBuilder.GetImageRelationshipId(imagePart);
 
             // Insert the diagram as a Drawing element
-            InsertDiagramDrawing(renderer, relationshipId, widthEmu, heightEmu);
+            InsertDiagramDrawing(renderer, obj, relationshipId, widthEmu, heightEmu);
         }
         catch
         {
@@ -178,6 +179,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
     {
         // Add error message as first paragraph
         var errorPara = renderer.DocumentBuilder.AddParagraph();
+        renderer.TrackParagraph(obj, errorPara);
         errorPara.ParagraphProperties = renderer.StyleManager.GetCodeBlockProperties();
 
         var errorRun = new Run(
@@ -196,6 +198,7 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
                 var text = TextSanitizer.Sanitize(line.Slice.ToString());
 
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
+                renderer.TrackParagraph(obj, paragraph);
                 paragraph.ParagraphProperties = renderer.StyleManager.GetCodeBlockProperties();
 
                 var run = new Run(
@@ -296,11 +299,13 @@ public class CodeBlockRenderer : OpenXmlObjectRenderer<CodeBlock>
     /// </summary>
     private static void InsertDiagramDrawing(
         OpenXmlRenderer renderer,
+        CodeBlock sourceBlock,
         string relationshipId,
         long widthEmu,
         long heightEmu)
     {
         var paragraph = renderer.DocumentBuilder.AddParagraph();
+        renderer.TrackParagraph(sourceBlock, paragraph);
 
         // Generate unique IDs for the drawing
         uint drawingId = (uint)(DateTime.UtcNow.Ticks % int.MaxValue);

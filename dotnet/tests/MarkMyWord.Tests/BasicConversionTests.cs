@@ -146,6 +146,78 @@ Console.WriteLine(x);
     }
 
     [Fact]
+    public void HyperlinksInsideTableCells_ShouldCreateHyperlinksAndRelationships()
+    {
+        var markdown = """
+            # Repro
+
+            A link in prose: [foo](https://example.com/foo)
+
+            | col1 | col2 |
+            |---|---|
+            | plain | [bar](https://example.com/bar) |
+            | [baz](https://example.com/baz) | text with [inline link](https://example.com/inline) inside |
+            """;
+
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown);
+
+        using var stream = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(stream, false);
+
+        var hyperlinks = doc.MainDocumentPart!.Document.Body!.Descendants<Hyperlink>().ToList();
+        hyperlinks.Should().HaveCount(4);
+        doc.MainDocumentPart.HyperlinkRelationships
+            .Select(relationship => relationship.Uri.AbsoluteUri)
+            .Should().BeEquivalentTo(
+                "https://example.com/foo",
+                "https://example.com/bar",
+                "https://example.com/baz",
+                "https://example.com/inline");
+    }
+
+    [Fact]
+    public void Frontmatter_ShouldBeOmittedAndTitleUsedAsDocumentProperty()
+    {
+        var markdown = """
+            ---
+            title: "Release Notes"
+            author: Example Author
+            draft: true
+            ---
+
+            # Introduction
+
+            Content remains in the document.
+            """;
+
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown);
+
+        using var stream = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(stream, false);
+
+        var bodyText = doc.MainDocumentPart!.Document.Body!.InnerText;
+        bodyText.Should().NotContain("author");
+        bodyText.Should().NotContain("draft");
+        bodyText.Should().Contain("Introduction");
+        bodyText.Should().Contain("Content remains");
+        doc.PackageProperties.Title.Should().Be("Release Notes");
+    }
+
+    [Fact]
+    public void FrontmatterTitle_ShouldNotOverrideExplicitDocumentTitle()
+    {
+        var markdown = "---\ntitle: Frontmatter title\n---\n\nContent.";
+        var options = new MarkMyWord.Configuration.ConversionOptions { DocumentTitle = "Explicit title" };
+
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(markdown, options);
+
+        using var stream = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(stream, false);
+
+        doc.PackageProperties.Title.Should().Be("Explicit title");
+    }
+
+    [Fact]
     public void ConsecutiveLines_ShouldNotMergeIntoOneLine()
     {
         // Arrange — two lines in the same paragraph block, separated by a soft break

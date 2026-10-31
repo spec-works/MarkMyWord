@@ -218,6 +218,67 @@ public class SidemarkCommentTests
     }
 
     [Fact]
+    public void MarkdownToWord_MapsCommentToRenderedParagraphAndSelectedText()
+    {
+        var markdown = """
+            ---
+            title: Review
+            author: Example
+            ---
+
+            # Heading
+
+            - first list item
+            - Before **selected phrase** after.
+
+            A later paragraph.
+            """;
+        var mrsfDoc = new MrsfDocument
+        {
+            MrsfVersion = "1.0",
+            Document = "test.md",
+            Comments =
+            [
+                new MrsfComment
+                {
+                    Id = "mapped-comment",
+                    Author = "Reviewer",
+                    Text = "Check this phrase",
+                    Resolved = false,
+                    Line = 9,
+                    SelectedText = "selected phrase"
+                },
+                new MrsfComment
+                {
+                    Id = "line-mapped-comment",
+                    Author = "Reviewer",
+                    Text = "Check this paragraph",
+                    Resolved = false,
+                    Line = 11
+                }
+            ]
+        };
+
+        var docxBytes = MarkdownConverter.ConvertToDocxBytes(
+            markdown,
+            new ConversionOptions { SidemarkDocument = mrsfDoc });
+
+        using var stream = new MemoryStream(docxBytes);
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var paragraphs = doc.MainDocumentPart!.Document.Body!.Descendants<Paragraph>().ToList();
+        var target = paragraphs.Single(paragraph => paragraph.InnerText == "Before selected phrase after.");
+        var startIndex = target.ChildElements.ToList().FindIndex(element => element is CommentRangeStart);
+        var endIndex = target.ChildElements.ToList().FindIndex(element => element is CommentRangeEnd);
+
+        startIndex.Should().BeGreaterThanOrEqualTo(0);
+        endIndex.Should().BeGreaterThan(startIndex);
+        string.Concat(target.ChildElements.Skip(startIndex + 1).Take(endIndex - startIndex - 1).Select(element => element.InnerText))
+            .Should().Be("selected phrase");
+        paragraphs.Single(paragraph => paragraph.InnerText == "A later paragraph.")
+            .Elements<CommentRangeStart>().Should().ContainSingle();
+    }
+
+    [Fact]
     public void MarkdownToWord_WithNoSidemark_ProducesNormalDocument()
     {
         var markdown = "# Title\n\nJust a normal paragraph.";

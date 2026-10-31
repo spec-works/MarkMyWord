@@ -45,6 +45,7 @@ public class ListRenderer : OpenXmlObjectRenderer<ListBlock>
         {
             // Empty list item - create empty paragraph with numbering
             var emptyPara = renderer.DocumentBuilder.AddParagraph();
+            renderer.TrackParagraph(listItem, emptyPara);
             if (emptyPara.ParagraphProperties == null)
                 emptyPara.ParagraphProperties = new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties();
             emptyPara.ParagraphProperties.AppendChild(numberingProperties!);
@@ -59,6 +60,7 @@ public class ListRenderer : OpenXmlObjectRenderer<ListBlock>
             {
                 // Create paragraph
                 var paragraph = renderer.DocumentBuilder.AddParagraph();
+                renderer.TrackParagraph(paragraphBlock, paragraph);
 
                 // Apply numbering only to the first paragraph
                 if (isFirstBlock)

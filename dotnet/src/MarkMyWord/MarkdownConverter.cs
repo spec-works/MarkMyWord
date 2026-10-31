@@ -174,11 +174,12 @@ public static class MarkdownConverter
             pipelineBuilder = pipelineBuilder.UseAdvancedExtensions();
         }
 
+        var input = MarkdownFrontmatter.Process(markdown);
         var pipeline = pipelineBuilder.Build();
-        var document = Markdown.Parse(markdown, pipeline);
+        var document = Markdown.Parse(input.Markdown, pipeline);
 
         // Render to OpenXML
-        using var renderer = new OpenXmlRenderer(outputStream, options);
+        using var renderer = new OpenXmlRenderer(outputStream, options, input.Title);
         renderer.Render(document);
 
         // Inject Sidemark comments if provided
@@ -192,7 +193,11 @@ public static class MarkdownConverter
         if (mrsfDoc != null && mrsfDoc.Comments.Count > 0)
         {
             var mappings = SidemarkCommentMapper.MapToMarkdownLines(mrsfDoc, markdown);
-            WordCommentInjector.InjectComments(renderer.DocumentBuilder.WordDocument, mappings);
+            WordCommentInjector.InjectComments(
+                renderer.DocumentBuilder.WordDocument,
+                mappings,
+                renderer.ParagraphMappings,
+                markdown);
         }
 
         renderer.FinalizeDocument();

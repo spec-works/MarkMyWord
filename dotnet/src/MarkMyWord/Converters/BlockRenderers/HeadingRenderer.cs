@@ -14,6 +14,7 @@ public class HeadingRenderer : OpenXmlObjectRenderer<HeadingBlock>
         var properties = renderer.StyleManager.GetHeadingProperties(obj.Level);
         var paragraph = renderer.DocumentBuilder.AddParagraph();
         paragraph.ParagraphProperties = properties;
+        renderer.TrackParagraph(obj, paragraph);
 
         // Render inline content
         if (obj.Inline != null)

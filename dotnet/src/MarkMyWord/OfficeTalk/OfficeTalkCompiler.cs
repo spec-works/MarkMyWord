@@ -35,18 +35,24 @@ public class OfficeTalkCompiler
     /// </summary>
     public string Compile(string markdown)
     {
+        var input = MarkdownFrontmatter.Process(markdown);
         var pipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .Build();
 
-        var document = Markdown.Parse(markdown, pipeline);
-        return Compile(document);
+        var document = Markdown.Parse(input.Markdown, pipeline);
+        return Compile(document, _options.DocumentTitle ?? input.Title);
     }
 
     /// <summary>
     /// Compiles a parsed Markdig document to an OfficeTalk document string.
     /// </summary>
     public string Compile(MarkdownDocument document)
+    {
+        return Compile(document, _options.DocumentTitle);
+    }
+
+    private string Compile(MarkdownDocument document, string? documentTitle)
     {
         _output.Clear();
         _headingIndex = 0;
@@ -60,14 +66,14 @@ public class OfficeTalkCompiler
         _output.AppendLine();
 
         // Document properties
-        if (_options.DocumentTitle != null)
-            _output.AppendLine($"PROPERTY title=\"{Escape(_options.DocumentTitle)}\"");
+        if (documentTitle != null)
+            _output.AppendLine($"PROPERTY title=\"{Escape(documentTitle)}\"");
         if (_options.Author != null)
             _output.AppendLine($"PROPERTY author=\"{Escape(_options.Author)}\"");
         if (_options.Subject != null)
             _output.AppendLine($"PROPERTY subject=\"{Escape(_options.Subject)}\"");
 
-        if (_options.DocumentTitle != null || _options.Author != null || _options.Subject != null)
+        if (documentTitle != null || _options.Author != null || _options.Subject != null)
             _output.AppendLine();
 
         // Walk AST blocks
