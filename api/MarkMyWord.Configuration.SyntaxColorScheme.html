@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class SyntaxColorScheme | MarkMyWord Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class SyntaxColorScheme | MarkMyWord Documentation ">
+      
+      <meta name="description" content="Color scheme for syntax highlighting. All colors are hex format without # prefix (e.g., &amp;quot;569CD6&amp;quot; for blue).">
+      <link rel="icon" href="../images/logo.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/spec-works/MarkMyWord/new/main/apiSpec/new?filename=MarkMyWord_Configuration_SyntaxColorScheme.md&amp;value=---%0Auid%3A%20MarkMyWord.Configuration.SyntaxColorScheme%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="MarkMyWord">
+            MarkMyWord
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="MarkMyWord.Configuration.SyntaxColorScheme">
+
+
+
+  <h1 id="MarkMyWord_Configuration_SyntaxColorScheme" data-uid="MarkMyWord.Configuration.SyntaxColorScheme" class="text-break">
+Class SyntaxColorScheme  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="MarkMyWord.html">MarkMyWord</a>.<a class="xref" href="MarkMyWord.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>MarkMyWord.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Color scheme for syntax highlighting.
+All colors are hex format without # prefix (e.g., &quot;569CD6&quot; for blue).</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class SyntaxColorScheme</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">SyntaxColorScheme</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_CommentColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.CommentColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_CommentColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.CommentColor">
+  CommentColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for comments (default: VS Code green).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CommentColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_DefaultColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.DefaultColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_DefaultColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.DefaultColor">
+  DefaultColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Default color for unclassified text (default: darker gray for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DefaultColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_FunctionColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.FunctionColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_FunctionColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.FunctionColor">
+  FunctionColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for function names (default: darker yellow/gold for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FunctionColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_IdentifierColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.IdentifierColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_IdentifierColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.IdentifierColor">
+  IdentifierColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for identifiers (default: darker gray for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string IdentifierColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_KeywordColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.KeywordColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_KeywordColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.KeywordColor">
+  KeywordColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for language keywords (default: VS Code blue).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string KeywordColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_NumberColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.NumberColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_NumberColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.NumberColor">
+  NumberColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for numeric literals (default: darker green for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NumberColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_OperatorColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.OperatorColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_OperatorColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.OperatorColor">
+  OperatorColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for operators (default: darker gray for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string OperatorColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_PropertyColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.PropertyColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_PropertyColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.PropertyColor">
+  PropertyColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for property names (default: darker blue for better contrast).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PropertyColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_StringColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.StringColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_StringColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.StringColor">
+  StringColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for string literals (default: VS Code orange).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string StringColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_TypeColor_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.TypeColor*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_TypeColor" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.TypeColor">
+  TypeColor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L203"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color for type names (default: VS Code cyan).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string TypeColor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="MarkMyWord_Configuration_SyntaxColorScheme_GetColorForTokenType_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.GetColorForTokenType*"></a>
+
+  <h3 id="MarkMyWord_Configuration_SyntaxColorScheme_GetColorForTokenType_MarkMyWord_SyntaxHighlighting_TokenType_" data-uid="MarkMyWord.Configuration.SyntaxColorScheme.GetColorForTokenType(MarkMyWord.SyntaxHighlighting.TokenType)">
+  GetColorForTokenType(TokenType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L230"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the color for a specific token type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetColorForTokenType(TokenType type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="MarkMyWord.SyntaxHighlighting.TokenType.html">TokenType</a></dt>
+    <dd><p>The token type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>Hex color string without # prefix.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/spec-works/MarkMyWord/blob/main/dotnet/src/MarkMyWord/Configuration/StyleConfiguration.cs/#L173" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <a href='https://spec-works.github.io/'>SpecWorks Factory</a> | <a href='https://github.com/spec-works/MarkMyWord'>GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
